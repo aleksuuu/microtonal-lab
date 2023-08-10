@@ -1,0 +1,55 @@
+// modified from Andy Bell's basic button styles https://codepen.io/andy-set-studio/pen/Vxpjvo
+@import "../../styles/variables";
+
+
+button {
+    display: inline-block;
+    border: solid 1px transparent;
+    padding: 8px 16px;
+    margin: 4px;
+    border-radius: 8px;
+    font-size: large;
+    cursor: pointer;
+    text-align: center;
+    transition: background 250ms ease-in-out, transform 150ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-color: $secondary-background-color;
+    color: $primary-text-color;
+
+    &:hover, &:focus {
+        background-color: $primary-background-color;
+        color: $inverse-primary-text-color;
+    }
+    &:focus {
+        outline: 1px solid #fff;
+        outline-offset: -4px;
+    }
+    &:active {
+        transform: scale(0.98);
+    }
+    &.ans-button {
+        background-color: $default-background-color;
+        &:hover {
+            background-color: $primary-background-color;
+            color: $inverse-primary-text-color;
+        }
+        &:focus {
+            color: $primary-text-color;
+        }
+    }
+    &.border-hidden {
+        border-color: transparent;
+    }
+    &.border-normal {
+        border-color: $normal-border-color;
+    }
+    &.border-success {
+        border-color: $success-border-color;
+    }  
+    &.border-failure {
+        border-color: $failure-border-color;
+    }  
+}
+

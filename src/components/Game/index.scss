@@ -1,0 +1,14 @@
+@import "../../styles/variables";
+
+.answer-area {
+  max-width: 50%;
+  margin: $space-narrow auto;
+}
+.option-buttons {
+  padding: $space-narrow;
+}
+
+.button-group {
+  padding-top: $space-narrow;
+  padding-bottom: $space-wide;
+}

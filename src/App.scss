@@ -1,0 +1,66 @@
+@use "./styles/reset";
+@import "./styles/variables";
+
+.center {
+  text-align: center;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.small-text {
+  font-size: small;
+}
+
+.large-text {
+  font-size: large;
+}
+
+.largest-text {
+  font-size: xx-large;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  //   grid-column-gap: 0px;
+  //   grid-row-gap: 0px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+}
+
+// .inline-block {
+//     display: inline-block;
+// }
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.border-bottom {
+  border-bottom: 0.5px solid $divider-border-color;
+}
