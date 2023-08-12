@@ -1,0 +1,15 @@
+@import "../../styles/variables";
+
+.react-numeric-input {
+  input {
+    width: 80px;
+  }
+  b {
+    box-shadow: none !important;
+    background: $secondary-background-color !important;
+  }
+}
+
+.note-name {
+  padding-left: $space-narrow * 0.5;
+}

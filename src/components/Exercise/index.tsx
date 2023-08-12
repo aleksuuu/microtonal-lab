@@ -4,7 +4,7 @@ import Stopwatch from "../Stopwatch";
 import Button from "../Button";
 import "./index.scss";
 
-const Game = () => {
+const Exercise = () => {
   return (
     <div className="center">
       <div className="grid-3 border-bottom option-buttons">
@@ -20,8 +20,8 @@ const Game = () => {
           </Button>
         </span>
       </div>
-      <div className="answer-area large-text center">
-        <div className="grid-2">
+      <div className="answer-area center">
+        <div className="grid-2 small-text">
           <span>
             <Stopwatch />
           </span>
@@ -48,4 +48,4 @@ const Game = () => {
   );
 };
 
-export default Game;
+export default Exercise;

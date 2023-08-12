@@ -8,9 +8,11 @@ const NavBar = () => {
 
   return (
     <nav>
-      <input type="checkbox" id="nav-check" checked={checked}></input>
+      <input type="checkbox" id="nav-check" checked={checked} readOnly></input>
       <header>
-        <h1 className="nav-title largest-text">microtonal lab</h1>
+        <NavLink to="/" onClick={() => setChecked(false)}>
+          <h1 className="nav-title">microtonal lab</h1>
+        </NavLink>
       </header>
       <div className="nav-btn">
         <label htmlFor="nav-check">
@@ -22,7 +24,7 @@ const NavBar = () => {
         </label>
       </div>
 
-      <div className="nav-links large-text">
+      <p className="nav-links">
         <NavLink to="/" onClick={() => setChecked(false)}>
           Home
         </NavLink>
@@ -32,7 +34,7 @@ const NavBar = () => {
         <NavLink to="/about" onClick={() => setChecked(false)}>
           About
         </NavLink>
-      </div>
+      </p>
     </nav>
   );
 };

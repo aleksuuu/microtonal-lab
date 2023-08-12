@@ -24,15 +24,21 @@
 }
 
 .small-text {
-  font-size: small;
+  font-size: $font-s;
 }
 
-.large-text {
-  font-size: large;
+.unimportant {
+  font-size: $font-s;
+  color: $secondary-text-color;
 }
 
-.largest-text {
-  font-size: xx-large;
+h1 {
+  font-size: $font-l;
+}
+
+p,
+button {
+  font-size: $font-m;
 }
 
 .grid-3 {

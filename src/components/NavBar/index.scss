@@ -21,7 +21,7 @@ nav > header {
   display: inline;
 }
 
-nav > header > .nav-title {
+nav > header > a > .nav-title {
   display: inline-block;
   color: $primary-text-color;
   padding: $space-narrow;

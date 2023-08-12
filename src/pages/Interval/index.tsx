@@ -1,7 +1,13 @@
-import Game from "../../components/Game";
+import Exercise from "../../components/Exercise";
+import ExerciseSetUp from "../../components/ExerciseSetUp";
 
 const Interval = () => {
-  return <Game />;
+  return (
+    <>
+      <ExerciseSetUp />
+      {/* <Exercise /> */}
+    </>
+  );
 };
 
 export default Interval;
