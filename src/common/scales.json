@@ -1,0 +1,34 @@
+{
+    "scales":[
+        {"name": "24edo",
+        "intervals": [
+            {"name": "P1", "cents": 0}, 
+            {"name": "vm2", "cents": 50}, 
+            {"name": "m2", "cents": 100}, 
+            {"name": "~2", "cents": 150}, 
+            {"name": "M2", "cents": 200}, 
+            {"name": "vm3", "cents": 250}, 
+            {"name": "m3", "cents": 300}, 
+            {"name": "~3", "cents": 350}, 
+            {"name": "M3", "cents": 400}, 
+            {"name": "v4", "cents": 450}, 
+            {"name": "P4", "cents": 500}, 
+            {"name": "^4", "cents": 550}, 
+            {"name": "A4/d5", "cents": 600}, 
+            {"name": "v5", "cents": 650}, 
+            {"name": "P5", "cents": 700}, 
+            {"name": "vm6", "cents": 750}, 
+            {"name": "m6", "cents": 800}, 
+            {"name": "~6", "cents": 850}, 
+            {"name": "M6", "cents": 900}, 
+            {"name": "vm7", "cents": 950}, 
+            {"name": "m7", "cents": 1000}, 
+            {"name": "~7", "cents": 1050}, 
+            {"name": "M7", "cents": 1100},
+            {"name": "v8", "cents": 1150},
+            {"name": "P8", "cents": 1200}
+            ]
+    }
+    ]
+}
+

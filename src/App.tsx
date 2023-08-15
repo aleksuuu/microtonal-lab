@@ -8,10 +8,12 @@ function App() {
   return (
     <>
       <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/interval" element={<Interval />} />
-      </Routes>
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/interval" element={<Interval />} />
+        </Routes>
+      </main>
     </>
   );
 }

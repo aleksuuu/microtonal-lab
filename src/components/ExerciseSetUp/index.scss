@@ -1,0 +1,24 @@
+@import "../../styles/variables";
+
+.exercise-set-up {
+  // margin: auto;
+  // max-width: 50%;
+  h2 {
+    padding-bottom: $space-narrow;
+    padding-top: $space-wide;
+  }
+}
+
+p,
+label {
+  line-height: 1.5;
+}
+
+.freq-input {
+  display: inline-block; /* Use inline-block to place elements side by side */
+  padding-right: $space-narrow;
+}
+
+button {
+  margin-top: $space-wide * 1.5;
+}

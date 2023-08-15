@@ -1,6 +1,10 @@
 @use "./styles/reset";
 @import "./styles/variables";
 
+main {
+  padding-left: $space-wide;
+}
+
 .center {
   text-align: center;
 }
@@ -33,12 +37,32 @@
 }
 
 h1 {
+  font-size: $font-xl;
+}
+
+h2 {
   font-size: $font-l;
 }
 
 p,
-button {
+button,
+label {
   font-size: $font-m;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+  min-width: 420px;
 }
 
 .grid-3 {

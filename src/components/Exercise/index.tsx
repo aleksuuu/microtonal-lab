@@ -3,16 +3,29 @@ import ButtonGroup from "../ButtonGroup";
 import Stopwatch from "../Stopwatch";
 import Button from "../Button";
 import "./index.scss";
+import { ExerciseMaker } from "../../common/ExerciseMaker";
 
-const Exercise = () => {
+interface Props {
+  maker: ExerciseMaker;
+  hidden: boolean;
+  onClickBack: () => void;
+}
+
+const Exercise = ({ maker, hidden, onClickBack }: Props) => {
   return (
-    <div className="center">
+    <div className="center" hidden={hidden}>
       <div className="grid-3 border-bottom option-buttons">
         <span>
-          <Button onClick={() => console.log("BACK")}>back to options</Button>
+          <Button onClick={onClickBack}>back to options</Button>
         </span>
         <span>
-          <Button onClick={() => console.log("replay")}>replay</Button>
+          <Button
+            onClick={() => {
+              maker.playInterval();
+            }}
+          >
+            replay
+          </Button>
         </span>
         <span>
           <Button onClick={() => console.log("end")}>

@@ -2,16 +2,29 @@ import * as NumericInput from "react-numeric-input";
 import "./index.scss";
 
 interface Props {
+  children?: string;
+  className?: string;
+  disabled?: boolean;
   id: string;
   initValue: number;
   isFreqValue?: boolean;
   onChange: (id: string, v: number) => void;
 }
 
-const NumberInput = ({ id, initValue, isFreqValue, onChange }: Props) => {
+const NumberInput = ({
+  children,
+  className,
+  disabled,
+  id,
+  initValue,
+  isFreqValue,
+  onChange,
+}: Props) => {
   return (
-    <>
+    <span className={className}>
+      <p>{children}</p>
       <NumericInput
+        disabled={disabled}
         id={id}
         min={isFreqValue ? 20 : 0}
         max={isFreqValue ? 10000 : 1000}
@@ -24,7 +37,7 @@ const NumberInput = ({ id, initValue, isFreqValue, onChange }: Props) => {
           }
         }}
       />
-    </>
+    </span>
   );
 };
 
