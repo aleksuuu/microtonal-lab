@@ -1,20 +1,26 @@
 import QuestionCount from "../QuestionCount";
 import ButtonGroup from "../ButtonGroup";
 import Stopwatch from "../Stopwatch";
-import { CanUseStopwatch } from "../Stopwatch";
 import Button from "../Button";
 import "./index.scss";
 import { ExerciseMaker } from "../../common/ExerciseMaker";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 interface Props {
   maker: ExerciseMaker;
   hidden: boolean;
-  ref: React.RefObject<CanUseStopwatch>;
   onClickBack: () => void;
+  totalSeconds: number;
+  stopwatchPause: () => void;
 }
 
-const Exercise = ({ maker, hidden, ref, onClickBack }: Props) => {
+const Exercise = ({
+  maker,
+  hidden,
+  onClickBack,
+  totalSeconds,
+  stopwatchPause,
+}: Props) => {
   const [answerIsCorrect, setAnswerIsCorrect] = useState(false);
   const [answerIsHidden, setAnswerIsHidden] = useState(true);
   const [highlightButton, setHighlightButton] = useState("");
@@ -91,7 +97,7 @@ const Exercise = ({ maker, hidden, ref, onClickBack }: Props) => {
       <div className="answer-area center">
         <div className="grid-2 small-text">
           <span>
-            <Stopwatch ref={ref} />
+            <Stopwatch totalSeconds={totalSeconds} />
           </span>
           <span>
             <QuestionCount
@@ -129,7 +135,6 @@ const Exercise = ({ maker, hidden, ref, onClickBack }: Props) => {
           </a>
           .
         </p>
-        <Button onClick={() => ref.current?.reset()}>asdlfkj</Button>
       </div>
     </div>
   );

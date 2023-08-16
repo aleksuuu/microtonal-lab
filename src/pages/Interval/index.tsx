@@ -1,11 +1,10 @@
 import Exercise from "../../components/Exercise";
 import ExerciseSetUp from "../../components/ExerciseSetUp";
 import { ExerciseMaker } from "../../common/ExerciseMaker";
-import { useRef, useState } from "react";
-import { CanUseStopwatch } from "../../components/Stopwatch";
+import { useState } from "react";
+import { useStopwatch } from "react-timer-hook";
 
 const Interval = () => {
-  const ref = useRef<CanUseStopwatch>(null);
   let exerciseMaker = new ExerciseMaker(
     "24edo",
     true,
@@ -17,6 +16,9 @@ const Interval = () => {
     5,
     true
   );
+  const { totalSeconds, reset, pause } = useStopwatch({
+    autoStart: true,
+  });
 
   const loadExercise = () => {
     const err = exerciseMaker.validate();
@@ -26,7 +28,7 @@ const Interval = () => {
       exerciseMaker.playInterval();
       setExerciseMakerObj(exerciseMaker);
       setExerciseIsHidden(false);
-      ref.current?.reset();
+      reset();
     }
   };
 
@@ -45,8 +47,9 @@ const Interval = () => {
       <Exercise
         maker={exerciseMakerObj}
         hidden={exerciseIsHidden}
-        ref={ref}
         onClickBack={() => setExerciseIsHidden(true)}
+        totalSeconds={totalSeconds}
+        stopwatchPause={pause}
       ></Exercise>
     </>
   );
