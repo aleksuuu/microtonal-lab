@@ -1,9 +1,11 @@
 import Exercise from "../../components/Exercise";
 import ExerciseSetUp from "../../components/ExerciseSetUp";
 import { ExerciseMaker } from "../../common/ExerciseMaker";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { CanUseStopwatch } from "../../components/Stopwatch";
 
 const Interval = () => {
+  const ref = useRef<CanUseStopwatch>(null);
   let exerciseMaker = new ExerciseMaker(
     "24edo",
     true,
@@ -24,6 +26,7 @@ const Interval = () => {
       exerciseMaker.playInterval();
       setExerciseMakerObj(exerciseMaker);
       setExerciseIsHidden(false);
+      ref.current?.reset();
     }
   };
 
@@ -42,6 +45,7 @@ const Interval = () => {
       <Exercise
         maker={exerciseMakerObj}
         hidden={exerciseIsHidden}
+        ref={ref}
         onClickBack={() => setExerciseIsHidden(true)}
       ></Exercise>
     </>

@@ -1,9 +1,23 @@
 import { useStopwatch } from "react-timer-hook";
+import { forwardRef, useImperativeHandle } from "react";
 
-const Stopwatch = () => {
-  const { totalSeconds } = useStopwatch({
+interface Props {}
+
+export interface CanUseStopwatch {
+  totalSeconds: number;
+  start: () => void;
+  reset: () => void;
+}
+
+const Stopwatch = forwardRef<CanUseStopwatch, {}>((props, ref) => {
+  const { totalSeconds, start, reset } = useStopwatch({
     autoStart: true,
   });
+  useImperativeHandle(ref, () => ({
+    totalSeconds,
+    start,
+    reset,
+  }));
 
   const min = Math.floor(totalSeconds / 60),
     sec = totalSeconds % 60;
@@ -13,6 +27,6 @@ const Stopwatch = () => {
       <span>{sec.toString().padStart(2, "0")}</span>
     </>
   );
-};
+});
 
 export default Stopwatch;
