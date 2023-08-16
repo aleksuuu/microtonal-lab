@@ -16,8 +16,13 @@ button {
   background-color: $secondary-background-color;
   color: $primary-text-color;
 
-  &:hover,
-  &:focus {
+  &:disabled {
+    color: rgba($primary-text-color, 0.3);
+    background-color: rgba($secondary-background-color, 0.3);
+  }
+
+  &:hover:enabled,
+  &:focus:enabled {
     background-color: $primary-background-color;
     color: $inverse-primary-text-color;
   }
@@ -25,7 +30,7 @@ button {
     outline: 1px solid #fff;
     outline-offset: -4px;
   }
-  &:active {
+  &:active:enabled {
     transform: scale(0.98);
   }
   &.ans-button {

@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 export const midiToFreq = (midiNote: number) => {
   return Math.pow(2, (midiNote - 69) / 12) * 440;
 };
@@ -37,3 +39,11 @@ export const freqToNoteName = (freq: number) => {
 export const centsToFreq = (cents: number) => {
   return midiToFreq(cents * 0.01);
 };
+
+export function usePrevious(value: any) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value; //assign the value of ref to the argument
+  }, [value]); //this code will run when the value of 'value' changes
+  return ref.current; //in the end, return the current ref value.
+}

@@ -2,47 +2,35 @@ import { useState } from "react";
 import Button from "../Button";
 import { BorderType } from "../Button";
 
-// interface Props {
-//   items: string[];
-//   onSelectItem: (item: string) => void;
-// }
+interface Props {
+  answerIsCorrect: boolean;
+  disabled?: boolean;
+  highlightButton?: string;
+  items: string[];
+  resetBorder?: boolean;
+  onSelectItem: (item: string) => void;
+}
 
-const ButtonGroup = () => {
+const ButtonGroup = ({
+  answerIsCorrect,
+  disabled,
+  highlightButton,
+  items,
+  resetBorder,
+  onSelectItem,
+}: Props) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [counter, setCounter] = useState(0);
-  const items = [
-    "vm2",
-    "m2",
-    "~2",
-    "M2",
-    "vm3",
-    "m3",
-    "~3",
-    "M3",
-    "v4",
-    "P4",
-    "^4",
-    "A4/d5",
-    "v5",
-    "P5",
-    "vm6",
-    "m6",
-    "~6",
-    "M6",
-    "vm7",
-    "m7",
-    "~7",
-    "M7",
-    "v8",
-    "P8",
-  ];
-  const onSelectItem = (item: string) => {
-    console.log(item);
-  };
 
-  const getBorderType = (index: number): BorderType => {
+  const getBorderType = (item: string, index: number): BorderType => {
+    if (resetBorder) {
+      return BorderType.Normal;
+    }
+    if (item === highlightButton) {
+      return BorderType.Success;
+    }
     if (selectedIndex === index) {
-      if (counter % 2 === 0) {
+      if (answerIsCorrect) {
         return BorderType.Success;
       } else {
         return BorderType.Failure;
@@ -57,7 +45,8 @@ const ButtonGroup = () => {
         {items.map((item, index) => (
           <li key={item}>
             <Button
-              border={getBorderType(index)}
+              border={getBorderType(item, index)}
+              disabled={disabled}
               isAnswerButton={true}
               onClick={() => {
                 setCounter(counter + 1);

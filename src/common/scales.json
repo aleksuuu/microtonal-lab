@@ -27,6 +27,33 @@
             {"name": "M7", "cents": 1100},
             {"name": "v8", "cents": 1150},
             {"name": "P8", "cents": 1200}
+            ],
+            "notes": [
+                {"name": "C", "cents": 0}, 
+            {"name": "C\uE282", "cents": 50}, 
+            {"name": "C♯", "cents": 100}, 
+            {"name": "D\uE280", "cents": 150}, 
+            {"name": "D", "cents": 200}, 
+            {"name": "D\uE282", "cents": 250}, 
+            {"name": "D♯", "cents": 300}, 
+            {"name": "E\uE280", "cents": 350}, 
+            {"name": "E", "cents": 400}, 
+            {"name": "E\uE282", "cents": 450}, 
+            {"name": "F", "cents": 500}, 
+            {"name": "F\uE282", "cents": 550}, 
+            {"name": "F♯", "cents": 600}, 
+            {"name": "G\uE280", "cents": 650}, 
+            {"name": "G", "cents": 700}, 
+            {"name": "G\uE282", "cents": 750}, 
+            {"name": "G♯", "cents": 800}, 
+            {"name": "A\uE280", "cents": 850}, 
+            {"name": "A", "cents": 900}, 
+            {"name": "A\uE282", "cents": 950}, 
+            {"name": "A♯", "cents": 1000}, 
+            {"name": "B\uE280", "cents": 1050}, 
+            {"name": "B", "cents": 1100},
+            {"name": "B\uE282", "cents": 1150},
+            {"name": "C", "cents": 1200}
             ]
     }
     ]

@@ -2,6 +2,11 @@ import { Synth, PolySynth, now } from "tone";
 import scales from "./scales.json";
 import { freqToMidi, centsToFreq } from "./UtilityFuncs";
 
+type Note = {
+  name: string;
+  cents: number;
+};
+
 export class ExerciseMaker {
   scaleName: string;
   intervalsSmallerThanOctave: boolean;
@@ -13,7 +18,8 @@ export class ExerciseMaker {
   numQuestions: number;
   infiniteMode: boolean;
 
-  scale = scales.scales[0].name;
+  questionIndex = 0;
+  correctAnswers = 0;
 
   constructor(
     scaleName: string,
@@ -38,8 +44,14 @@ export class ExerciseMaker {
   }
 
   possibleIntervals: { name: string; cents: number }[] = new Array();
+  notesInScale: { name: string; cents: number }[] = new Array();
 
-  currInterval?: { name: string; freq1: number; freq2: number };
+  currInterval?: {
+    name: string;
+    note1: Note;
+    note2: Note;
+    playArp: boolean;
+  };
 
   // if valid, return an empty string
   validate(): string {
@@ -64,7 +76,7 @@ export class ExerciseMaker {
       return "Can't find requested scale.";
     }
     this.possibleIntervals = scale.intervals;
-    console.log(this.possibleIntervals);
+    this.notesInScale = scale.notes;
     return "";
   }
 
@@ -84,7 +96,6 @@ export class ExerciseMaker {
 
   quantizeToScaleDegreeAndCents(
     freq: number,
-    scale: number[], // cents values
     direction: "up" | "down"
   ): { degree: number; cents: number } | null {
     if (freq <= 0) {
@@ -95,28 +106,28 @@ export class ExerciseMaker {
     const midiNote = freqToMidi(freq);
 
     // The cents per octave of the microtonal scale
-    const centsPerOctave = scale[scale.length - 1];
+    // const centsPerEquave = scale[scale.length - 1];
 
     // The number of midi notes per octave of the microtonal scale
-    const midiNotesPerOctave = centsPerOctave / 100;
+    const midiNotesPerEquave = this.centsPerEquave / 100;
 
-    const octaveNum = Math.floor(midiNote / midiNotesPerOctave);
+    const octaveNum = Math.floor(midiNote / midiNotesPerEquave);
 
-    const scaleDegreeInMidi = midiNote % midiNotesPerOctave;
+    const scaleDegreeInMidi = midiNote % midiNotesPerEquave;
 
     const scaleDegreeInCents = scaleDegreeInMidi * 100;
 
-    let indexOfClosest = scale.reduce(function (prev, curr, index) {
+    let indexOfClosest = this.scaleCents.reduce(function (prev, curr, index) {
       return Math.abs(curr - scaleDegreeInCents) <
         Math.abs(prev - scaleDegreeInCents)
         ? index
         : index - 1;
     });
 
-    let closestCents = scale[indexOfClosest];
+    let closestCents = this.scaleCents[indexOfClosest];
 
     if (direction === "up" && closestCents < scaleDegreeInCents) {
-      if (indexOfClosest < scale.length - 1) {
+      if (indexOfClosest < this.scaleCents.length - 1) {
         indexOfClosest++;
       } else {
         indexOfClosest = 0;
@@ -125,35 +136,31 @@ export class ExerciseMaker {
       if (indexOfClosest > 0) {
         indexOfClosest--;
       } else {
-        indexOfClosest = scale.length - 1;
+        indexOfClosest = this.scaleCents.length - 1;
       }
     }
 
-    closestCents = scale[indexOfClosest];
+    closestCents = this.scaleCents[indexOfClosest];
 
     return { degree: indexOfClosest, cents: closestCents * octaveNum };
   }
 
+  get centsPerEquave() {
+    return this.scaleCents[this.scaleCents.length - 1];
+  }
+
   get scaleCents() {
-    return this.possibleIntervals.map((interval) => interval.cents);
+    return this.notesInScale.map((note) => note.cents);
   }
   get minDegreeAndCents() {
-    return this.quantizeToScaleDegreeAndCents(
-      this.minFreq,
-      this.scaleCents,
-      "up"
-    );
+    return this.quantizeToScaleDegreeAndCents(this.minFreq, "up");
   }
 
   get maxDegreeAndCents() {
-    return this.quantizeToScaleDegreeAndCents(
-      this.maxFreq,
-      this.scaleCents,
-      "down"
-    );
+    return this.quantizeToScaleDegreeAndCents(this.maxFreq, "down");
   }
 
-  get availableCents() {
+  get availableNotes() {
     if (!this.minDegreeAndCents || !this.maxDegreeAndCents) {
       return null;
     }
@@ -162,16 +169,17 @@ export class ExerciseMaker {
       return this.scaleCents[degree + 1] - this.scaleCents[degree];
     };
 
-    var cents: number[] = new Array();
+    var notes: Note[] = new Array();
 
     for (
       var d = this.minDegreeAndCents.degree, c = this.minDegreeAndCents.cents;
       c < this.maxDegreeAndCents.cents;
       d++, c += getCentsDiffBtwTwoDegrees(d)
     ) {
-      cents.push(c);
+      const currNote = this.notesInScale[d % (this.notesInScale.length - 1)];
+      notes.push({ name: currNote.name, cents: c });
     }
-    return cents;
+    return notes;
   }
 
   doPlayArp = (freq1: number, freq2: number) => {
@@ -183,60 +191,113 @@ export class ExerciseMaker {
     this.synth.triggerAttackRelease([freq1, freq2], 1);
   };
 
-  doPlay = (freq1: number, freq2: number) => {
-    if (this.playArp && this.playSim) {
-      if (Math.random() < 0.5) {
-        this.doPlaySim(freq1, freq2);
-      } else {
-        this.doPlayArp(freq1, freq2);
-      }
-    } else if (this.playArp) {
-      this.doPlayArp(freq1, freq2);
-    } else {
-      this.doPlaySim(freq1, freq2);
-    }
-  };
-
-  makeInterval(
-    firstNoteCents: number
-  ): { intervalName: string; secondNoteCents: number } | null {
+  // recursive
+  private getIntervalNameAndNote2(
+    note1: Note
+  ): { intervalName: string; note2: Note } | null {
     const direction = Math.random() > 0.5 ? 1 : -1;
     const interval =
       this.possibleIntervals[
         Math.floor(Math.random() * this.possibleIntervals.length)
       ];
-    const secondNoteCents = firstNoteCents + direction * interval.cents;
+    const note2Cents = note1.cents + direction * interval.cents;
     if (!this.minDegreeAndCents || !this.maxDegreeAndCents) {
       console.error("Error accessing min degree and cents");
       return null;
     }
+
+    const note2 = this.availableNotes?.filter(
+      (note) => note.cents == note2Cents
+    )[0];
+
     if (
-      secondNoteCents > this.maxDegreeAndCents.cents ||
-      secondNoteCents < this.minDegreeAndCents.cents
+      !note2 ||
+      note2Cents > this.maxDegreeAndCents.cents ||
+      note2Cents < this.minDegreeAndCents.cents
     ) {
-      return this.makeInterval(firstNoteCents);
+      return this.getIntervalNameAndNote2(note1);
     } else {
-      return { intervalName: interval.name, secondNoteCents: secondNoteCents };
+      return { intervalName: interval.name, note2: note2 };
     }
   }
 
-  playInterval() {
-    if (!this.availableCents) {
+  makeInterval() {
+    if (!this.availableNotes) {
       return;
     }
-    const firstNoteCents =
-      this.availableCents[
-        Math.floor(Math.random() * this.availableCents.length)
-      ];
-    const intervalAndSecondNoteCents = this.makeInterval(firstNoteCents);
+    const note1Index = Math.floor(Math.random() * this.availableNotes.length);
+    let note1 = this.availableNotes[note1Index];
+    const intervalAndNote2 = this.getIntervalNameAndNote2(note1);
+    if (!intervalAndNote2) {
+      return;
+    }
+    let playArp = true;
+    if (this.playArp && this.playSim) {
+      playArp = Math.random() > 0.5;
+    } else if (this.playSim) {
+      playArp = false;
+    }
+    // if playing simultaneously, sort the notes from low to high so that note1.cents < note2.cents
+    if (!playArp) {
+      if (note1.cents > intervalAndNote2.note2.cents) {
+        const tmp = note1;
+        note1 = intervalAndNote2.note2;
+        intervalAndNote2.note2 = tmp;
+      }
+    }
+    this.currInterval = {
+      name: intervalAndNote2.intervalName,
+      note1: note1,
+      note2: intervalAndNote2.note2,
+      playArp: playArp,
+    };
+    this.questionIndex++;
+  }
 
-    if (!intervalAndSecondNoteCents) {
-      console.error("Error making the second note in the interval.");
+  playInterval() {
+    if (!this.currInterval) {
+      console.error("Error accessing current interval.");
       return;
     }
-    this.doPlay(
-      centsToFreq(firstNoteCents),
-      centsToFreq(intervalAndSecondNoteCents.secondNoteCents)
+    const freq1 = centsToFreq(this.currInterval.note1.cents);
+    const freq2 = centsToFreq(this.currInterval.note2.cents);
+    if (this.currInterval.playArp) {
+      this.doPlayArp(freq1, freq2);
+    } else {
+      this.doPlaySim(freq1, freq2);
+    }
+  }
+
+  private getEquaveFromCents(cents: number) {
+    return Math.floor(cents / this.centsPerEquave);
+  }
+
+  verifyAnswer(answer: string) {
+    if (!this.currInterval) {
+      console.error("Error accessing current interval.");
+      return;
+    }
+    if (answer == this.currInterval.name) {
+      this.correctAnswers++;
+      return true;
+    }
+    return false;
+  }
+
+  get currentNotes() {
+    if (!this.currInterval) {
+      console.error("Error accessing current notes.");
+      return;
+    }
+    const note1 = this.currInterval?.note1;
+    const note2 = this.currInterval?.note2;
+
+    return (
+      note1.name +
+      this.getEquaveFromCents(note1.cents) +
+      ", " +
+      note2.name +
+      this.getEquaveFromCents(note2.cents)
     );
   }
 }

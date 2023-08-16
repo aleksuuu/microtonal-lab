@@ -5,6 +5,15 @@ main {
   padding-left: $space-wide;
 }
 
+@font-face {
+  font-family: Bravura;
+  src: url(./assets/BravuraText.otf);
+}
+
+.smufl {
+  font-family: "Bravura Text";
+}
+
 .center {
   text-align: center;
 }

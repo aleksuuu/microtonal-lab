@@ -140,7 +140,6 @@ const ExerciseSetUp = ({ error, maker, hidden, onClickStart }: Props) => {
 
       <Button onClick={restoreDefault}>restore default</Button>
       <Button onClick={onClickStart}>start</Button>
-      <Button onClick={maker.playInterval}>play</Button>
 
       <p>{error}</p>
     </div>

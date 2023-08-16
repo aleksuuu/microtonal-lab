@@ -10,8 +10,8 @@ const Interval = () => {
     false,
     true,
     true,
-    130.8,
-    523.3,
+    220,
+    659.3,
     5,
     true
   );
@@ -20,7 +20,8 @@ const Interval = () => {
     const err = exerciseMaker.validate();
     setError(err);
     if (err === "") {
-      // exerciseMaker.makeInterval();
+      exerciseMaker.makeInterval();
+      exerciseMaker.playInterval();
       setExerciseMakerObj(exerciseMaker);
       setExerciseIsHidden(false);
     }

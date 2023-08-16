@@ -10,17 +10,24 @@ export enum BorderType {
 interface Props {
   children: string;
   border?: BorderType;
+  disabled?: boolean;
   isAnswerButton?: boolean;
   onClick: () => void;
 }
 
-const Button = ({ children, border, isAnswerButton, onClick }: Props) => {
+const Button = ({
+  children,
+  border,
+  disabled,
+  isAnswerButton,
+  onClick,
+}: Props) => {
   const classes = [
     isAnswerButton ? "ans-button" : "",
     border ? border : BorderType.Hidden,
   ];
   return (
-    <button className={classes.join(" ")} onClick={onClick}>
+    <button className={classes.join(" ")} disabled={disabled} onClick={onClick}>
       {children}
     </button>
   );
