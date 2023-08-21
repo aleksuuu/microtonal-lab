@@ -8,19 +8,12 @@ import { useState } from "react";
 
 interface Props {
   maker: ExerciseMaker;
-  hidden: boolean;
   onClickBack: () => void;
   totalSeconds: number;
   stopwatchPause: () => void;
 }
 
-const Exercise = ({
-  maker,
-  hidden,
-  onClickBack,
-  totalSeconds,
-  stopwatchPause,
-}: Props) => {
+const Exercise = ({ maker, onClickBack, totalSeconds }: Props) => {
   const [answerIsCorrect, setAnswerIsCorrect] = useState(false);
   const [answerIsHidden, setAnswerIsHidden] = useState(true);
   const [highlightButton, setHighlightButton] = useState("");
@@ -74,7 +67,7 @@ const Exercise = ({
   };
 
   return (
-    <div className="center" hidden={hidden}>
+    <div className="center">
       <div className="grid-3 border-bottom option-buttons">
         <span>
           <Button onClick={back}>back to options</Button>
@@ -95,10 +88,11 @@ const Exercise = ({
         </span>
       </div>
       <div className="answer-area center">
-        <div className="grid-2 small-text">
+        <div className="grid-3 small-text">
           <span>
             <Stopwatch totalSeconds={totalSeconds} />
           </span>
+          <span>"test"</span>
           <span>
             <QuestionCount
               count={maker.questionIndex}

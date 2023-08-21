@@ -75,7 +75,22 @@ export class ExerciseMaker {
     if (scale === undefined) {
       return "Can't find requested scale.";
     }
-    this.possibleIntervals = scale.intervals;
+    if (this.intervalsSmallerThanOctave && this.intervalsLargerThanOctave) {
+      const smallerThanOctave = scale.intervals;
+      const largerThanOctave = scale.intervals.map((interval) => ({
+        name: interval.name,
+        cents: interval.cents + 1200,
+      }));
+      this.possibleIntervals = smallerThanOctave.concat(largerThanOctave);
+    } else if (this.intervalsSmallerThanOctave) {
+      this.possibleIntervals = scale.intervals;
+    } else {
+      this.possibleIntervals = scale.intervals.map((interval) => ({
+        name: interval.name,
+        cents: interval.cents + 1200,
+      }));
+      console.log(this.possibleIntervals);
+    }
     this.notesInScale = scale.notes;
     return "";
   }

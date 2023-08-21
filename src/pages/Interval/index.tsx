@@ -21,38 +21,63 @@ const Interval = () => {
   });
 
   const loadExercise = () => {
+    console.log(exerciseMaker);
     const err = exerciseMaker.validate();
+
     setError(err);
     if (err === "") {
       exerciseMaker.makeInterval();
       exerciseMaker.playInterval();
       setExerciseMakerObj(exerciseMaker);
-      setExerciseIsHidden(false);
+      // setExerciseIsHidden(false);
       reset();
+      setExerciseState(ExerciseState.exercise);
     }
   };
 
-  const [exerciseIsHidden, setExerciseIsHidden] = useState(true);
+  const backToSetUp = () => {
+    // setExerciseIsHidden(true);
+    setExerciseState(ExerciseState.setUp);
+  };
+
   const [error, setError] = useState("");
   const [exerciseMakerObj, setExerciseMakerObj] = useState(exerciseMaker);
 
-  return (
-    <>
-      <ExerciseSetUp
-        error={error}
-        maker={exerciseMaker}
-        hidden={!exerciseIsHidden}
-        onClickStart={loadExercise}
-      ></ExerciseSetUp>
-      <Exercise
-        maker={exerciseMakerObj}
-        hidden={exerciseIsHidden}
-        onClickBack={() => setExerciseIsHidden(true)}
-        totalSeconds={totalSeconds}
-        stopwatchPause={pause}
-      ></Exercise>
-    </>
-  );
+  enum ExerciseState {
+    setUp,
+    exercise,
+    result,
+  }
+
+  const [exerciseState, setExerciseState] = useState(ExerciseState.setUp);
+
+  let render: JSX.Element;
+  switch (exerciseState) {
+    case ExerciseState.setUp:
+      render = (
+        <ExerciseSetUp
+          error={error}
+          maker={exerciseMaker}
+          onClickStart={loadExercise}
+        ></ExerciseSetUp>
+      );
+      break;
+    case ExerciseState.exercise:
+      render = (
+        <Exercise
+          maker={exerciseMakerObj}
+          onClickBack={backToSetUp}
+          totalSeconds={totalSeconds}
+          stopwatchPause={pause}
+        ></Exercise>
+      );
+      break;
+    case ExerciseState.result:
+      render = <p>test</p>;
+      break;
+  }
+
+  return <>{render}</>;
 };
 
 export default Interval;

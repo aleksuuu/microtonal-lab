@@ -9,11 +9,10 @@ import { useState } from "react";
 interface Props {
   error: string;
   maker: ExerciseMaker;
-  hidden: boolean;
   onClickStart: () => void;
 }
 
-const ExerciseSetUp = ({ error, maker, hidden, onClickStart }: Props) => {
+const ExerciseSetUp = ({ error, maker, onClickStart }: Props) => {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (e.target.id) {
       case "smaller-than-octave":
@@ -34,9 +33,9 @@ const ExerciseSetUp = ({ error, maker, hidden, onClickStart }: Props) => {
         if (maker.infiniteMode) {
           setNumQuestionsInitValue(maker.numQuestions); // not sure why this is necessary but it is
         }
-
         break;
     }
+    console.log(maker);
   };
   const handleNumInputChange = (id: string, v: number) => {
     switch (id) {
@@ -64,7 +63,7 @@ const ExerciseSetUp = ({ error, maker, hidden, onClickStart }: Props) => {
   };
 
   return (
-    <div className="exercise-set-up" hidden={hidden}>
+    <div className="exercise-set-up">
       <div>
         <h2>include intervals…</h2>
         <Checkbox
