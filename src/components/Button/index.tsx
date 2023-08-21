@@ -13,6 +13,7 @@ interface Props {
   disabled?: boolean;
   isAnswerButton?: boolean;
   onClick: () => void;
+  type?: "button" | "submit" | "reset" | undefined;
 }
 
 const Button = ({
@@ -21,13 +22,19 @@ const Button = ({
   disabled,
   isAnswerButton,
   onClick,
+  type,
 }: Props) => {
   const classes = [
     isAnswerButton ? "ans-button" : "",
     border ? border : BorderType.Hidden,
   ];
   return (
-    <button className={classes.join(" ")} disabled={disabled} onClick={onClick}>
+    <button
+      className={classes.join(" ")}
+      disabled={disabled}
+      onClick={onClick}
+      type={type}
+    >
       {children}
     </button>
   );

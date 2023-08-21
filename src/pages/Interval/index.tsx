@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useStopwatch } from "react-timer-hook";
 
 const Interval = () => {
-  let exerciseMaker = new ExerciseMaker(
+  const maker = new ExerciseMaker(
     "24edo",
     true,
     false,
@@ -20,28 +20,13 @@ const Interval = () => {
     autoStart: true,
   });
 
-  const loadExercise = () => {
-    console.log(exerciseMaker);
-    const err = exerciseMaker.validate();
-
-    setError(err);
-    if (err === "") {
-      exerciseMaker.makeInterval();
-      exerciseMaker.playInterval();
-      setExerciseMakerObj(exerciseMaker);
-      // setExerciseIsHidden(false);
-      reset();
-      setExerciseState(ExerciseState.exercise);
-    }
-  };
-
   const backToSetUp = () => {
     // setExerciseIsHidden(true);
     setExerciseState(ExerciseState.setUp);
   };
 
   const [error, setError] = useState("");
-  const [exerciseMakerObj, setExerciseMakerObj] = useState(exerciseMaker);
+  const [makerObj, setMakerObj] = useState(maker);
 
   enum ExerciseState {
     setUp,
@@ -50,6 +35,77 @@ const Interval = () => {
   }
 
   const [exerciseState, setExerciseState] = useState(ExerciseState.setUp);
+  const [numQuestionsIsDisabled, setNumQuestionsIsDisabled] = useState(true);
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    switch (e.target.id) {
+      case "smaller-than-octave":
+        maker.intervalsSmallerThanOctave = e.target.checked;
+        break;
+      case "larger-than-octave":
+        maker.intervalsLargerThanOctave = e.target.checked;
+        break;
+      case "play-arp":
+        maker.playArp = e.target.checked;
+        break;
+      case "play-sim":
+        maker.playSim = e.target.checked;
+        break;
+      case "infinite":
+        maker.infiniteMode = e.target.checked;
+        setNumQuestionsIsDisabled(maker.infiniteMode);
+        // if (maker.infiniteMode) {
+        //   setNumQuestionsInitValue(maker.numQuestions); // not sure why this is necessary but it is
+        // }
+        break;
+    }
+    console.log(maker);
+  };
+  const handleNumInputChange = (id: string, v: number) => {
+    switch (id) {
+      case "min-freq":
+        maker.minFreq = v;
+        break;
+      case "max-freq":
+        maker.maxFreq = v;
+        break;
+      case "num-questions":
+        maker.numQuestions = v;
+        break;
+    }
+  };
+
+  const loadExercise = () => {
+    setMakerObj(maker);
+    console.log(makerObj);
+    const err = maker.validate();
+
+    setError(err);
+    // if (err === "") {
+    //   maker.makeInterval();
+    //   maker.playInterval();
+    //   setMakerObj(maker);
+    //   // setExerciseIsHidden(false);
+    //   reset();
+    //   setExerciseState(ExerciseState.exercise);
+    // }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // Prevent the browser from reloading the page
+    e.preventDefault();
+
+    // Read the form data
+    const form = e.target;
+    const formData = new FormData(form as HTMLFormElement);
+
+    // You can pass formData as a fetch body directly:
+    // fetch("/some-api", { method: form.method, body: formData });
+
+    // Or you can work with it as a plain object:
+    const formJson = Object.fromEntries(formData.entries());
+    console.log(formJson);
+  };
 
   let render: JSX.Element;
   switch (exerciseState) {
@@ -57,15 +113,19 @@ const Interval = () => {
       render = (
         <ExerciseSetUp
           error={error}
-          maker={exerciseMaker}
+          handleSubmit={handleSubmit}
+          maker={maker} // contains default values
+          numQuestionsIsDisabled={numQuestionsIsDisabled}
           onClickStart={loadExercise}
+          onCheckboxChange={handleCheckboxChange}
+          onNumInputChange={handleNumInputChange}
         ></ExerciseSetUp>
       );
       break;
     case ExerciseState.exercise:
       render = (
         <Exercise
-          maker={exerciseMakerObj}
+          maker={makerObj}
           onClickBack={backToSetUp}
           totalSeconds={totalSeconds}
           stopwatchPause={pause}

@@ -28,6 +28,7 @@ const NumberInput = ({
         id={id}
         min={isFreqValue ? 20 : 0}
         max={isFreqValue ? 10000 : 1000}
+        name={id}
         value={initValue}
         step={1}
         precision={isFreqValue ? 1 : 0}

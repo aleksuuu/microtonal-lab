@@ -8,75 +8,49 @@ import { useState } from "react";
 
 interface Props {
   error: string;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   maker: ExerciseMaker;
+  numQuestionsIsDisabled: boolean;
   onClickStart: () => void;
+  onCheckboxChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onNumInputChange: (id: string, v: number) => void;
 }
 
-const ExerciseSetUp = ({ error, maker, onClickStart }: Props) => {
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    switch (e.target.id) {
-      case "smaller-than-octave":
-        maker.intervalsSmallerThanOctave = e.target.checked;
-        break;
-      case "larger-than-octave":
-        maker.intervalsLargerThanOctave = e.target.checked;
-        break;
-      case "play-arp":
-        maker.playArp = e.target.checked;
-        break;
-      case "play-sim":
-        maker.playSim = e.target.checked;
-        break;
-      case "infinite":
-        maker.infiniteMode = e.target.checked;
-        setNumQuestionsIsDisabled(maker.infiniteMode);
-        if (maker.infiniteMode) {
-          setNumQuestionsInitValue(maker.numQuestions); // not sure why this is necessary but it is
-        }
-        break;
-    }
-    console.log(maker);
-  };
-  const handleNumInputChange = (id: string, v: number) => {
-    switch (id) {
-      case "min-freq":
-        maker.minFreq = v;
-        break;
-      case "max-freq":
-        maker.maxFreq = v;
-        break;
-      case "num-questions":
-        maker.numQuestions = v;
-        break;
-    }
-  };
-
-  const [numQuestionsIsDisabled, setNumQuestionsIsDisabled] = useState(
-    maker.infiniteMode
-  );
-  const [numQuestionsInitValue, setNumQuestionsInitValue] = useState(
-    maker.numQuestions
-  );
+const ExerciseSetUp = ({
+  error,
+  handleSubmit,
+  maker,
+  numQuestionsIsDisabled,
+  onClickStart,
+  onCheckboxChange,
+  onNumInputChange,
+}: Props) => {
+  // const [numQuestionsIsDisabled, setNumQuestionsIsDisabled] = useState(
+  //   maker.infiniteMode
+  // );
+  // const [numQuestionsInitValue, setNumQuestionsInitValue] = useState(
+  //   maker.numQuestions
+  // );
 
   const restoreDefault = () => {
     window.location.reload();
   };
 
   return (
-    <div className="exercise-set-up">
+    <form className="exercise-set-up" method="post" onSubmit={handleSubmit}>
       <div>
         <h2>include intervals…</h2>
         <Checkbox
           id="smaller-than-octave"
           initValue={maker.intervalsSmallerThanOctave}
-          onChange={handleCheckboxChange}
+          onChange={onCheckboxChange}
         >
           smaller than an octave
         </Checkbox>
         <Checkbox
           id="larger-than-octave"
           initValue={maker.intervalsLargerThanOctave}
-          onChange={handleCheckboxChange}
+          onChange={onCheckboxChange}
         >
           larger than an octave
         </Checkbox>
@@ -86,14 +60,14 @@ const ExerciseSetUp = ({ error, maker, onClickStart }: Props) => {
         <Checkbox
           id="play-arp"
           initValue={maker.playArp}
-          onChange={handleCheckboxChange}
+          onChange={onCheckboxChange}
         >
           as arpeggios
         </Checkbox>
         <Checkbox
           id="play-sim"
           initValue={maker.playSim}
-          onChange={handleCheckboxChange}
+          onChange={onCheckboxChange}
         >
           simultaneously
         </Checkbox>
@@ -106,7 +80,7 @@ const ExerciseSetUp = ({ error, maker, onClickStart }: Props) => {
             className="freq-input"
             id="min-freq"
             initValue={maker.minFreq}
-            onChange={handleNumInputChange}
+            onChange={onNumInputChange}
           >
             from
           </FreqInput>
@@ -114,7 +88,7 @@ const ExerciseSetUp = ({ error, maker, onClickStart }: Props) => {
             className="freq-input"
             id="max-freq"
             initValue={maker.maxFreq}
-            onChange={handleNumInputChange}
+            onChange={onNumInputChange}
           >
             to
           </FreqInput>
@@ -125,23 +99,25 @@ const ExerciseSetUp = ({ error, maker, onClickStart }: Props) => {
         <NumberInput
           disabled={numQuestionsIsDisabled}
           id="num-questions"
-          initValue={numQuestionsInitValue}
-          onChange={handleNumInputChange}
+          initValue={maker.numQuestions}
+          onChange={onNumInputChange}
         ></NumberInput>
         <Checkbox
           id="infinite"
           initValue={maker.infiniteMode}
-          onChange={handleCheckboxChange}
+          onChange={onCheckboxChange}
         >
           infinite mode
         </Checkbox>
       </div>
 
       <Button onClick={restoreDefault}>restore default</Button>
-      <Button onClick={onClickStart}>start</Button>
+      <Button onClick={onClickStart} type="submit">
+        start
+      </Button>
 
       <p>{error}</p>
-    </div>
+    </form>
   );
 };
 

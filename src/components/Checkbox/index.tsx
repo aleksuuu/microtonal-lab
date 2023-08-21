@@ -14,6 +14,7 @@ const Checkbox = ({ children, id, initValue, onChange }: Props) => {
       <label>
         <input
           id={id}
+          name={id}
           type="checkbox"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             onChange(e);
