@@ -4,6 +4,8 @@ import { ExerciseMaker } from "../../common/ExerciseMaker";
 import { useState } from "react";
 import { useStopwatch } from "react-timer-hook";
 
+// run with `npm run dev`
+
 const Interval = () => {
   const maker = new ExerciseMaker(
     "24edo",

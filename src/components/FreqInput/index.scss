@@ -1,0 +1,10 @@
+@import "../../styles/variables";
+
+.freq-input {
+  display: inline-block; /* Use inline-block to place elements side by side */
+  padding-right: $space-narrow;
+}
+
+.note-name {
+  padding-left: $space-narrow * 0.5;
+}

@@ -14,11 +14,15 @@ label {
   line-height: 1.5;
 }
 
-.freq-input {
-  display: inline-block; /* Use inline-block to place elements side by side */
-  padding-right: $space-narrow;
-}
+// .freq-input {
+//   display: inline-block; /* Use inline-block to place elements side by side */
+//   padding-right: $space-narrow;
+// }
 
 button {
   margin-top: $space-wide * 1.5;
+}
+
+.num-questions {
+  margin-right: $space-narrow;
 }

@@ -59,6 +59,10 @@ label {
   font-size: $font-m;
 }
 
+label {
+  margin-right: $space-narrow;
+}
+
 .row {
   display: flex;
   flex-direction: row;

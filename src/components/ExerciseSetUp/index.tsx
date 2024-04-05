@@ -77,7 +77,6 @@ const ExerciseSetUp = ({
         <h2>range (in Hz)</h2>
         <div>
           <FreqInput
-            className="freq-input"
             id="min-freq"
             initValue={maker.minFreq}
             onChange={onNumInputChange}
@@ -85,7 +84,6 @@ const ExerciseSetUp = ({
             from
           </FreqInput>
           <FreqInput
-            className="freq-input"
             id="max-freq"
             initValue={maker.maxFreq}
             onChange={onNumInputChange}
@@ -97,6 +95,7 @@ const ExerciseSetUp = ({
       <div>
         <h2>number of questions</h2>
         <NumberInput
+          className="num-questions"
           disabled={numQuestionsIsDisabled}
           id="num-questions"
           initValue={maker.numQuestions}

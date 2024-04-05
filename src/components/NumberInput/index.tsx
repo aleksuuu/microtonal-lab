@@ -21,7 +21,7 @@ const NumberInput = ({
   onChange,
 }: Props) => {
   return (
-    <span className={className}>
+    <span className={`number-input ${className}`}>
       <p>{children}</p>
       <NumericInput
         disabled={disabled}

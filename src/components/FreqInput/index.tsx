@@ -1,6 +1,7 @@
 import { useState } from "react";
 import NumberInput from "../NumberInput";
 import { freqToNoteName } from "../../common/UtilityFuncs";
+import "./index.scss";
 
 interface Props {
   children?: string;
@@ -13,7 +14,7 @@ interface Props {
 
 const FreqInput = ({
   children,
-  className,
+  className = "freq-input",
   disabled,
   id,
   initValue,
