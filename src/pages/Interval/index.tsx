@@ -7,6 +7,8 @@ import { useStopwatch } from "react-timer-hook";
 
 // run with `npm run dev`
 
+// TODO: useState until validation
+
 const Interval = () => {
   const maker = new ExerciseMaker(
     "24edo",
