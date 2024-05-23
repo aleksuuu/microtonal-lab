@@ -4,7 +4,6 @@ import NumberInput from "../NumberInput";
 import Button from "../Button";
 import "./index.scss";
 import { ExerciseMaker } from "../../common/ExerciseMaker";
-import { useState } from "react";
 
 interface Props {
   error: string;

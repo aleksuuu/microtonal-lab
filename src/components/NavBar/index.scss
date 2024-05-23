@@ -24,7 +24,7 @@ nav > header {
 nav > header > a > .nav-title {
   display: inline-block;
   color: $primary-text-color;
-  padding: $space-narrow;
+  padding: $space-default * 3;
 }
 
 nav > .nav-btn {
@@ -62,7 +62,7 @@ nav > #nav-check {
   nav > .nav-btn > label {
     display: inline-block;
     // width: 50px;
-    padding: $space-narrow;
+    padding: $space-default;
   }
   nav > .nav-btn > label:hover,
   nav #nav-check:checked ~ .nav-btn > label {

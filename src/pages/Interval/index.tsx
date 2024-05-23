@@ -1,5 +1,6 @@
 import Exercise from "../../components/Exercise";
 import ExerciseSetUp from "../../components/ExerciseSetUp";
+import ExerciseResult from "../../components/ExerciseResult";
 import { ExerciseMaker } from "../../common/ExerciseMaker";
 import { useState } from "react";
 import { useStopwatch } from "react-timer-hook";
@@ -27,8 +28,25 @@ const Interval = () => {
     setExerciseState(ExerciseState.setUp);
   };
 
+  const endExercise = () => {
+    setExerciseState(ExerciseState.result);
+  };
+
+  const onAnswer = (isCorrect: boolean) => {
+    setTotalCorrect(totalCorrect + Number(isCorrect));
+    setTotalWrong(totalWrong + Number(!isCorrect));
+  };
+
+  const onNext = () => {
+    setTotalQuestionsAnswered(totalQuestionsAnswered + 1);
+  };
+
   const [error, setError] = useState("");
   const [makerObj, setMakerObj] = useState(maker);
+
+  const [totalCorrect, setTotalCorrect] = useState(0);
+  const [totalWrong, setTotalWrong] = useState(0);
+  const [totalQuestionsAnswered, setTotalQuestionsAnswered] = useState(0);
 
   enum ExerciseState {
     setUp,
@@ -83,14 +101,14 @@ const Interval = () => {
     const err = maker.validate();
 
     setError(err);
-    // if (err === "") {
-    //   maker.makeInterval();
-    //   maker.playInterval();
-    //   setMakerObj(maker);
-    //   // setExerciseIsHidden(false);
-    //   reset();
-    //   setExerciseState(ExerciseState.exercise);
-    // }
+    if (err === "") {
+      maker.makeInterval();
+      maker.playInterval();
+      setMakerObj(maker);
+      // setExerciseIsHidden(false);
+      reset();
+      setExerciseState(ExerciseState.exercise);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -101,10 +119,6 @@ const Interval = () => {
     const form = e.target;
     const formData = new FormData(form as HTMLFormElement);
 
-    // You can pass formData as a fetch body directly:
-    // fetch("/some-api", { method: form.method, body: formData });
-
-    // Or you can work with it as a plain object:
     const formJson = Object.fromEntries(formData.entries());
     console.log(formJson);
   };
@@ -129,13 +143,22 @@ const Interval = () => {
         <Exercise
           maker={makerObj}
           onClickBack={backToSetUp}
+          onClickEnd={endExercise}
+          onAnswer={onAnswer}
+          onNext={onNext}
           totalSeconds={totalSeconds}
-          stopwatchPause={pause}
         ></Exercise>
       );
       break;
     case ExerciseState.result:
-      render = <p>test</p>;
+      render = (
+        <ExerciseResult
+          totalCorrect={totalCorrect}
+          totalWrong={totalWrong}
+          totalQuestionsAnswered={totalQuestionsAnswered}
+          totalSeconds={totalSeconds}
+        ></ExerciseResult>
+      );
       break;
   }
 

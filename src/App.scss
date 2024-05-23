@@ -2,7 +2,7 @@
 @import "./styles/variables";
 
 main {
-  padding-left: $space-wide;
+  padding-left: $space-default * 4;
 }
 
 @font-face {
@@ -60,7 +60,7 @@ label {
 }
 
 label {
-  margin-right: $space-narrow;
+  margin-right: $space-default;
 }
 
 .row {

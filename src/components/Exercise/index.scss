@@ -2,17 +2,17 @@
 
 .answer-area {
   max-width: 50%;
-  margin: $space-narrow auto;
+  margin: $space-default auto;
 }
 .option-buttons {
-  padding: $space-narrow;
+  padding: $space-default;
 }
 
 .button-group {
-  padding-top: $space-narrow;
-  padding-bottom: $space-narrow;
+  padding-top: $space-default;
+  padding-bottom: $space-default;
 }
 
 .learn-more {
-  padding-top: $space-wide;
+  padding-top: $space-default * 2;
 }

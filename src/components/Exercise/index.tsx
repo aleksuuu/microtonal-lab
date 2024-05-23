@@ -6,14 +6,25 @@ import "./index.scss";
 import { ExerciseMaker } from "../../common/ExerciseMaker";
 import { useState } from "react";
 
+// TODO: figure out hwo to stop stopwatch
+
 interface Props {
   maker: ExerciseMaker;
   onClickBack: () => void;
+  onClickEnd: () => void;
+  onAnswer: (isCorrect: boolean) => void;
+  onNext: () => void;
   totalSeconds: number;
-  stopwatchPause: () => void;
 }
 
-const Exercise = ({ maker, onClickBack, totalSeconds }: Props) => {
+const Exercise = ({
+  maker,
+  onClickBack,
+  onClickEnd,
+  onAnswer,
+  onNext,
+  totalSeconds,
+}: Props) => {
   const [answerIsCorrect, setAnswerIsCorrect] = useState(false);
   const [answerIsHidden, setAnswerIsHidden] = useState(true);
   const [highlightButton, setHighlightButton] = useState("");
@@ -26,8 +37,10 @@ const Exercise = ({ maker, onClickBack, totalSeconds }: Props) => {
   const onSelectButton = (item: string) => {
     setResetBorder(false);
     if (maker.verifyAnswer(item)) {
+      onAnswer(true);
       setAnswerIsCorrect(true);
     } else {
+      onAnswer(false);
       setAnswerIsCorrect(false);
     }
   };
@@ -44,12 +57,18 @@ const Exercise = ({ maker, onClickBack, totalSeconds }: Props) => {
   };
 
   const next = () => {
+    onNext();
     setResetBorder(true);
     setAnswerIsHidden(true);
     maker.makeInterval();
     maker.playInterval();
     setAnswerIsCorrect(false);
     setHighlightButton("");
+  };
+
+  const end = () => {
+    onNext();
+    onClickEnd();
   };
 
   const initStates = () => {
@@ -82,9 +101,7 @@ const Exercise = ({ maker, onClickBack, totalSeconds }: Props) => {
           </Button>
         </span>
         <span>
-          <Button onClick={() => console.log("end")}>
-            end exercise & view score
-          </Button>
+          <Button onClick={end}>end exercise & view score</Button>
         </span>
       </div>
       <div className="answer-area center">
