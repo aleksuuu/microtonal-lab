@@ -15,6 +15,7 @@ interface Props {
   onAnswer: (isCorrect: boolean) => void;
   onNext: () => void;
   totalSeconds: number;
+  pause: () => void;
 }
 
 const Exercise = ({
@@ -24,6 +25,7 @@ const Exercise = ({
   onAnswer,
   onNext,
   totalSeconds,
+  pause,
 }: Props) => {
   const [answerIsCorrect, setAnswerIsCorrect] = useState(false);
   const [answerIsHidden, setAnswerIsHidden] = useState(true);
@@ -67,6 +69,7 @@ const Exercise = ({
   };
 
   const end = () => {
+    pause();
     onNext();
     onClickEnd();
   };

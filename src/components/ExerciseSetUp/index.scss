@@ -3,26 +3,21 @@
 .exercise-set-up {
   // margin: auto;
   // max-width: 50%;
-  h2 {
-    padding-bottom: $space-default;
-    padding-top: $space-default * 2;
+  p,
+  label {
+    line-height: 1.5;
   }
-}
 
-p,
-label {
-  line-height: 1.5;
-}
+  // .freq-input {
+  //   display: inline-block; /* Use inline-block to place elements side by side */
+  //   padding-right: $space-default;
+  // }
 
-// .freq-input {
-//   display: inline-block; /* Use inline-block to place elements side by side */
-//   padding-right: $space-default;
-// }
+  button {
+    margin-top: $space-default * 2 * 1.5;
+  }
 
-button {
-  margin-top: $space-default * 2 * 1.5;
-}
-
-.num-questions {
-  margin-right: $space-default;
+  .num-questions {
+    margin-right: $space-default;
+  }
 }

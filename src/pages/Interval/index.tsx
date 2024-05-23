@@ -79,7 +79,6 @@ const Interval = () => {
         // }
         break;
     }
-    console.log(maker);
   };
   const handleNumInputChange = (id: string, v: number) => {
     switch (id) {
@@ -147,6 +146,7 @@ const Interval = () => {
           onAnswer={onAnswer}
           onNext={onNext}
           totalSeconds={totalSeconds}
+          pause={pause}
         ></Exercise>
       );
       break;
@@ -157,6 +157,7 @@ const Interval = () => {
           totalWrong={totalWrong}
           totalQuestionsAnswered={totalQuestionsAnswered}
           totalSeconds={totalSeconds}
+          reset={reset}
         ></ExerciseResult>
       );
       break;

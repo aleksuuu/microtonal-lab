@@ -1,3 +1,5 @@
+import Button from "../Button";
+import Stopwatch from "../Stopwatch";
 import "./index.scss";
 
 interface Props {
@@ -5,6 +7,7 @@ interface Props {
   totalWrong: number;
   totalQuestionsAnswered: number;
   totalSeconds: number;
+  reset: () => void;
 }
 
 const ExerciseResult = ({
@@ -12,11 +15,26 @@ const ExerciseResult = ({
   totalWrong,
   totalQuestionsAnswered,
   totalSeconds,
+  reset,
 }: Props) => {
   return (
-    <p>
-      {totalCorrect} {totalWrong} {totalQuestionsAnswered} {totalSeconds}
-    </p>
+    <div className="exercise-result">
+      <h2>Result</h2>
+      <ul>
+        <li>
+          Time: <Stopwatch totalSeconds={totalSeconds}></Stopwatch>
+        </li>
+        <li>Total Questions Answered: {totalQuestionsAnswered}</li>
+        <li>
+          Average Number of Attempts:{" "}
+          {(totalQuestionsAnswered
+            ? (totalCorrect + totalWrong) / totalQuestionsAnswered
+            : 0
+          ).toFixed(2)}
+        </li>
+        <Button onClick={reset}>reset</Button>
+      </ul>
+    </div>
   );
 };
 

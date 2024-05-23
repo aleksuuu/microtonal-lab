@@ -2,7 +2,7 @@
 @import "./styles/variables";
 
 main {
-  padding-left: $space-default * 4;
+  padding-left: $space-default * 6;
 }
 
 @font-face {
@@ -51,11 +51,15 @@ h1 {
 
 h2 {
   font-size: $font-l;
+
+  margin-bottom: $space-default;
+  margin-top: $space-default * 2;
 }
 
 p,
 button,
-label {
+label,
+li {
   font-size: $font-m;
 }
 
