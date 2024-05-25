@@ -4,8 +4,10 @@ import NumberInput from "../NumberInput";
 import Button from "../Button";
 import "./index.scss";
 import { ExerciseMaker } from "../../common/ExerciseMaker";
+import { Option } from "../../common/types";
 
 interface Props {
+  options: Option[];
   error: string;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   maker: ExerciseMaker;
@@ -16,6 +18,7 @@ interface Props {
 }
 
 const ExerciseSetUp = ({
+  options,
   error,
   handleSubmit,
   maker,
@@ -41,7 +44,9 @@ const ExerciseSetUp = ({
         <h2>include intervals…</h2>
         <Checkbox
           id="smaller-than-octave"
-          initValue={maker.intervalsSmallerThanOctave}
+          initValue={Boolean(
+            options.find((o) => (o.id = "smaller-than-octave"))?.v
+          )}
           onChange={onCheckboxChange}
         >
           smaller than an octave
