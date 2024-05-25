@@ -133,7 +133,8 @@ const Interval = () => {
 
   const loadExercise = () => {
     setMakerObj(maker);
-    console.log(makerObj);
+    console.log(options);
+    // console.log(makerObj);
     const err = maker.validate();
 
     setError(err);
@@ -246,7 +247,7 @@ const optionsReducer = (options: Option[], action: UserAction): Option[] => {
         }
       });
     case UserActionType.SUBMIT:
-      console.log("SUBMIT");
+      console.log(options);
       return options;
     default:
       throw new Error();
