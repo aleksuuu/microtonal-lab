@@ -31,16 +31,42 @@ export class ExerciseMaker {
     maxFreq: number,
     numQuestions: number,
     infiniteMode: boolean
-  ) {
-    this.scaleName = scaleName;
-    this.intervalsSmallerThanOctave = intervalsSmallerThanOctave;
-    this.intervalsLargerThanOctave = intervalsLargerThanOctave;
-    this.playArp = playArp;
-    this.playSim = playSim;
-    this.minFreq = minFreq;
-    this.maxFreq = maxFreq;
-    this.numQuestions = numQuestions;
-    this.infiniteMode = infiniteMode;
+  );
+  // ) {
+  //   this.scaleName = scaleName;
+  //   this.intervalsSmallerThanOctave = intervalsSmallerThanOctave;
+  //   this.intervalsLargerThanOctave = intervalsLargerThanOctave;
+  //   this.playArp = playArp;
+  //   this.playSim = playSim;
+  //   this.minFreq = minFreq;
+  //   this.maxFreq = maxFreq;
+  //   this.numQuestions = numQuestions;
+  //   this.infiniteMode = infiniteMode;
+  // }
+  constructor();
+
+  constructor(...params: any[]) {
+    if (params.length === 9) {
+      this.scaleName = params[0];
+      this.intervalsSmallerThanOctave = params[1];
+      this.intervalsLargerThanOctave = params[2];
+      this.playArp = params[3];
+      this.playSim = params[4];
+      this.minFreq = params[5];
+      this.maxFreq = params[6];
+      this.numQuestions = params[7];
+      this.infiniteMode = params[8];
+    } else {
+      this.scaleName = "default";
+      this.intervalsSmallerThanOctave = true;
+      this.intervalsLargerThanOctave = false;
+      this.playArp = true;
+      this.playSim = true;
+      this.minFreq = 220;
+      this.maxFreq = 659.3;
+      this.numQuestions = 5;
+      this.infiniteMode = true;
+    }
   }
 
   possibleIntervals: { name: string; cents: number }[] = new Array();

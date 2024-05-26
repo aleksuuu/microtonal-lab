@@ -12,7 +12,7 @@ interface Props {
   border?: BorderType;
   disabled?: boolean;
   isAnswerButton?: boolean;
-  onClick: () => void;
+  onClick?: () => void;
   type?: "button" | "submit" | "reset" | undefined;
 }
 
@@ -32,7 +32,7 @@ const Button = ({
     <button
       className={classes.join(" ")}
       disabled={disabled}
-      onClick={onClick}
+      onClick={onClick ? onClick : undefined}
       type={type}
     >
       {children}
