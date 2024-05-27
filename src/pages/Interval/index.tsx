@@ -5,17 +5,51 @@ import { ExerciseMaker } from "../../common/ExerciseMaker";
 import { useState } from "react";
 import { useStopwatch } from "react-timer-hook";
 import { useReducer } from "react";
-import { Option } from "../../common/types";
+import { ExerciseOptions, Option, OptionType } from "../../common/types";
 
 // run with `npm run dev`
 
 const Interval = () => {
-  const [options, dispatch] = useReducer(optionsReducer, initialOptions);
+  const [options, dispatch] = useReducer(optionsReducer, initOptions);
+  const getNewOptions = (action: UserAction): ExerciseOptions => {
+    switch (action.id) {
+      case OptionType.SCALENAME:
+        options.scaleName.v = String(action.v);
+        break;
+      case OptionType.SMALLERTHANOCTAVE:
+        options.smallerThanOctave.v = Boolean(action.v);
+        break;
+      case OptionType.LARGERTHANOCTAVE:
+        options.largerThanOctave.v = Boolean(action.v);
+        break;
+      case OptionType.PLAYARP:
+        options.playArp.v = Boolean(action.v);
+        break;
+      case OptionType.PLAYSIM:
+        options.playSim.v = Boolean(action.v);
+        break;
+      case OptionType.MINFREQ:
+        options.minFreq.v = Number(action.v);
+        break;
+      case OptionType.MAXFREQ:
+        options.maxFreq.v = Number(action.v);
+        break;
+      case OptionType.NUMQUESTIONS:
+        options.numQuestions.v = Number(action.v);
+        break;
+      case OptionType.INFINITEMODE:
+        options.infiniteMode.v = Boolean(action.v);
+        break;
+      default:
+        throw new Error();
+    }
+    return options;
+  };
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({
       type: UserActionType.CHECKBOX,
       id: e.target.id,
-      checked: e.target.checked,
+      v: e.target.checked,
     });
   };
   const handleNumInputChange = (id: string, v: number) => {
@@ -90,8 +124,8 @@ const Interval = () => {
   const loadExercise = () => {
     // TODO: data would not update until submit has been clicked twice??
     // setMakerObj(maker);
-    setMaker(toMaker(options));
-    console.log(options);
+    // setMaker(toMaker(options));
+    // console.log(options);
     console.log(maker);
     // console.log(makerObj);
     const err = maker.validate();
@@ -166,16 +200,21 @@ enum UserActionType {
 }
 
 type UserAction =
-  | { type: UserActionType.CHECKBOX; id: string; checked: boolean }
-  | { type: UserActionType.NUMINPUT; id: string; v: number }
-  | { type: UserActionType.SUBMIT };
+  | { type: UserActionType.CHECKBOX; id: string; v: boolean }
+  | { type: UserActionType.NUMINPUT; id: string; v: number };
+// | { type: UserActionType.SUBMIT };
 
-const optionsReducer = (options: Option[], action: UserAction): Option[] => {
+const optionsReducer = (
+  options: ExerciseOptions,
+  action: UserAction
+): ExerciseOptions => {
   switch (action.type) {
     case UserActionType.CHECKBOX:
+      for (var option of options) {
+      }
       return options.map((o) => {
         if (o.id === action.id) {
-          return { id: action.id, v: action.checked };
+          return { id: action.id, v: action.v };
         } else {
           return o;
         }
@@ -188,49 +227,61 @@ const optionsReducer = (options: Option[], action: UserAction): Option[] => {
           return o;
         }
       });
-    case UserActionType.SUBMIT:
-      return options;
+    // case UserActionType.SUBMIT:
+    //   return options;
     default:
       throw new Error();
   }
 };
 
-const toMaker = (options: Option[]): ExerciseMaker => {
-  const maker = new ExerciseMaker();
-  for (var option of options) {
-    switch (option.id) {
-      case "scale-name":
-        maker.scaleName = String(option.v);
-        break;
-      case "smaller-than-octave":
-        maker.intervalsSmallerThanOctave = Boolean(option.v);
-        break;
-      case "larger-than-octave":
-        maker.intervalsLargerThanOctave = Boolean(option.v);
-        break;
-      case "play-arp":
-        maker.playArp = Boolean(option.v);
-        break;
-      case "play-sim":
-        maker.playSim = Boolean(option.v);
-        break;
-      case "min-freq":
-        maker.minFreq = Number(option.v);
-        break;
-      case "max-freq":
-        maker.maxFreq = Number(option.v);
-        break;
-      case "num-questions":
-        maker.numQuestions = Number(option.v);
-        break;
-      case "infinite":
-        maker.infiniteMode = Boolean(option.v);
-        break;
-      default:
-        throw new Error();
-    }
-  }
-  return maker;
+// const toMaker = (options: Option[]): ExerciseMaker => {
+//   const maker = new ExerciseMaker();
+//   for (var option of options) {
+//     switch (option.id) {
+//       case "scale-name":
+//         maker.scaleName = String(action.v);
+//         break;
+//       case "smaller-than-octave":
+//         maker.intervalsSmallerThanOctave = Boolean(action.v);
+//         break;
+//       case "larger-than-octave":
+//         maker.intervalsLargerThanOctave = Boolean(action.v);
+//         break;
+//       case "play-arp":
+//         maker.playArp = Boolean(action.v);
+//         break;
+//       case "play-sim":
+//         maker.playSim = Boolean(action.v);
+//         break;
+//       case "min-freq":
+//         maker.minFreq = Number(action.v);
+//         break;
+//       case "max-freq":
+//         maker.maxFreq = Number(action.v);
+//         break;
+//       case "num-questions":
+//         maker.numQuestions = Number(action.v);
+//         break;
+//       case "infinite":
+//         maker.infiniteMode = Boolean(action.v);
+//         break;
+//       default:
+//         throw new Error();
+//     }
+//   }
+//   return maker;
+// };
+
+const initOptions: ExerciseOptions = {
+  scaleName: { type: OptionType.SCALENAME, v: "24edo" },
+  smallerThanOctave: { type: OptionType.SMALLERTHANOCTAVE, v: true },
+  largerThanOctave: { type: OptionType.LARGERTHANOCTAVE, v: false },
+  playArp: { type: OptionType.PLAYARP, v: true },
+  playSim: { type: OptionType.PLAYSIM, v: true },
+  minFreq: { type: OptionType.MINFREQ, v: 220 },
+  maxFreq: { type: OptionType.MAXFREQ, v: 659.3 },
+  numQuestions: { type: OptionType.NUMQUESTIONS, v: 5 },
+  infiniteMode: { type: OptionType.INFINITEMODE, v: true },
 };
 
 const initialOptions = [
