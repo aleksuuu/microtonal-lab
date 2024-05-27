@@ -2,58 +2,73 @@ import Exercise from "../../components/Exercise";
 import ExerciseSetUp from "../../components/ExerciseSetUp";
 import ExerciseResult from "../../components/ExerciseResult";
 import { ExerciseMaker } from "../../common/ExerciseMaker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
 import { useReducer } from "react";
 import { ExerciseOptions, Option, OptionType } from "../../common/types";
+import useExerciseMaker from "../../common/UseExerciseMaker";
 
 // run with `npm run dev`
 
 const Interval = () => {
-  const [options, dispatch] = useReducer(optionsReducer, initOptions);
-  const getNewOptions = (action: UserAction): ExerciseOptions => {
+  // const [options, dispatch] = useReducer(optionsReducer, initOptions);
+  const [options, setOptions] = useState(initOptions);
+  // const [isSubmitting, setIsSubmitting] = useState(false);
+  // useEffect(() => {
+  //   if (isSubmitting) {
+  //     playInterval();
+  //     setIsSubmitting(false);
+  //   }
+  // }, [isSubmitting]);
+  const setNewOptions = (action: UserAction) => {
+    var tmpOptions = options;
     switch (action.id) {
       case OptionType.SCALENAME:
-        options.scaleName.v = String(action.v);
+        tmpOptions.scaleName.v = String(action.v);
         break;
       case OptionType.SMALLERTHANOCTAVE:
-        options.smallerThanOctave.v = Boolean(action.v);
+        tmpOptions.smallerThanOctave.v = Boolean(action.v);
         break;
       case OptionType.LARGERTHANOCTAVE:
-        options.largerThanOctave.v = Boolean(action.v);
+        tmpOptions.largerThanOctave.v = Boolean(action.v);
         break;
       case OptionType.PLAYARP:
-        options.playArp.v = Boolean(action.v);
+        tmpOptions.playArp.v = Boolean(action.v);
         break;
       case OptionType.PLAYSIM:
-        options.playSim.v = Boolean(action.v);
+        tmpOptions.playSim.v = Boolean(action.v);
         break;
       case OptionType.MINFREQ:
-        options.minFreq.v = Number(action.v);
+        tmpOptions.minFreq.v = Number(action.v);
         break;
       case OptionType.MAXFREQ:
-        options.maxFreq.v = Number(action.v);
+        tmpOptions.maxFreq.v = Number(action.v);
         break;
       case OptionType.NUMQUESTIONS:
-        options.numQuestions.v = Number(action.v);
+        tmpOptions.numQuestions.v = Number(action.v);
         break;
       case OptionType.INFINITEMODE:
-        options.infiniteMode.v = Boolean(action.v);
+        tmpOptions.infiniteMode.v = Boolean(action.v);
         break;
       default:
         throw new Error();
     }
-    return options;
+    setOptions(tmpOptions);
   };
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({
+    // dispatch({
+    //   type: UserActionType.CHECKBOX,
+    //   id: e.target.id,
+    //   v: e.target.checked,
+    // });
+    setNewOptions({
       type: UserActionType.CHECKBOX,
       id: e.target.id,
       v: e.target.checked,
     });
   };
   const handleNumInputChange = (id: string, v: number) => {
-    dispatch({
+    setNewOptions({
       type: UserActionType.NUMINPUT,
       id: id,
       v: v,
@@ -88,6 +103,8 @@ const Interval = () => {
   } = useStopwatch({
     autoStart: true,
   });
+
+  const { setUp: makerSetUp, setIsSubmitting } = useExerciseMaker(options);
 
   const backToSetUp = () => {
     setExerciseState(ExerciseState.setUp);
@@ -125,18 +142,23 @@ const Interval = () => {
     // TODO: data would not update until submit has been clicked twice??
     // setMakerObj(maker);
     // setMaker(toMaker(options));
-    // console.log(options);
-    console.log(maker);
-    // console.log(makerObj);
-    const err = maker.validate();
+    console.log(options);
 
-    setError(err);
-    if (err === "") {
-      maker.makeInterval();
-      maker.playInterval();
-      // setMakerObj(maker);
-      stopwatchReset();
-      setExerciseState(ExerciseState.exercise);
+    // console.log(maker);
+    // console.log(makerObj);
+    // const err = maker.validate();
+
+    setError(makerSetUp());
+
+    if (error === "") {
+      setIsSubmitting(true);
+      // setDoPlayInterval(true);
+      // playInterval();
+      // maker.makeInterval();
+      // maker.playInterval();
+      // // setMakerObj(maker);
+      // stopwatchReset();
+      // setExerciseState(ExerciseState.exercise);
     }
   };
 
@@ -204,35 +226,35 @@ type UserAction =
   | { type: UserActionType.NUMINPUT; id: string; v: number };
 // | { type: UserActionType.SUBMIT };
 
-const optionsReducer = (
-  options: ExerciseOptions,
-  action: UserAction
-): ExerciseOptions => {
-  switch (action.type) {
-    case UserActionType.CHECKBOX:
-      for (var option of options) {
-      }
-      return options.map((o) => {
-        if (o.id === action.id) {
-          return { id: action.id, v: action.v };
-        } else {
-          return o;
-        }
-      });
-    case UserActionType.NUMINPUT:
-      return options.map((o) => {
-        if (o.id === action.id) {
-          return { id: action.id, v: action.v };
-        } else {
-          return o;
-        }
-      });
-    // case UserActionType.SUBMIT:
-    //   return options;
-    default:
-      throw new Error();
-  }
-};
+// const optionsReducer = (
+//   options: ExerciseOptions,
+//   action: UserAction
+// ): ExerciseOptions => {
+//   switch (action.type) {
+//     case UserActionType.CHECKBOX:
+//       for (var option of options) {
+//       }
+//       return options.map((o) => {
+//         if (o.id === action.id) {
+//           return { id: action.id, v: action.v };
+//         } else {
+//           return o;
+//         }
+//       });
+//     case UserActionType.NUMINPUT:
+//       return options.map((o) => {
+//         if (o.id === action.id) {
+//           return { id: action.id, v: action.v };
+//         } else {
+//           return o;
+//         }
+//       });
+//     // case UserActionType.SUBMIT:
+//     //   return options;
+//     default:
+//       throw new Error();
+//   }
+// };
 
 // const toMaker = (options: Option[]): ExerciseMaker => {
 //   const maker = new ExerciseMaker();
