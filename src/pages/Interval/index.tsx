@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
 import { useReducer } from "react";
 import { ExerciseOptions, Option, OptionType } from "../../common/types";
-import useExerciseMaker from "../../common/UseExerciseMaker";
+import useExerciseMaker from "../../common/useExerciseMaker";
 
 // run with `npm run dev`
 
@@ -104,7 +104,11 @@ const Interval = () => {
     autoStart: true,
   });
 
-  const { setUp: makerSetUp, setIsSubmitting } = useExerciseMaker(options);
+  const {
+    setUp: makerSetUp,
+    setWillMakeInterval,
+    setWillPlayInterval,
+  } = useExerciseMaker(options);
 
   const backToSetUp = () => {
     setExerciseState(ExerciseState.setUp);
@@ -151,7 +155,8 @@ const Interval = () => {
     setError(makerSetUp());
 
     if (error === "") {
-      setIsSubmitting(true);
+      setWillMakeInterval(true);
+      setWillPlayInterval(true);
       // setDoPlayInterval(true);
       // playInterval();
       // maker.makeInterval();

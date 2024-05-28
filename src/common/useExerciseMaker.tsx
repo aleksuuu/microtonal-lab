@@ -40,17 +40,26 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [numOfCorrectAnswers, setNumOfCorrectAnswers] = useState(0);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [willMakeInterval, setWillMakeInterval] = useState(false);
+  const [didSetUp, setDidSetUp] = useState(false);
+  const [didMakeInterval, setDidMakeInterval] = useState(false);
+  const [willPlayInterval, setWillPlayInterval] = useState(false);
 
   useEffect(() => {
-    if (isSubmitting && notesInScale.length > 0) {
+    if (willMakeInterval && didSetUp) {
       console.log(notesInScale);
       makeInterval();
+      setWillMakeInterval(false);
+    }
+  }, [willMakeInterval, didSetUp]);
+
+  useEffect(() => {
+    console.log(didMakeInterval);
+    if (willPlayInterval && didMakeInterval) {
       console.log(currInterval);
       playInterval();
-      setIsSubmitting(false);
     }
-  }, [isSubmitting, notesInScale]);
+  }, [willPlayInterval, didMakeInterval]);
 
   //   useEffect(() => {
   //     console.log(possibleIntervals);
@@ -58,6 +67,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
   // const validate = useCallback(() => )
   const setUp = (): string => {
+    setDidSetUp(false);
     console.log(exerciseOptions);
     if (
       !exerciseOptions.smallerThanOctave.v &&
@@ -94,7 +104,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     ) {
       const smallerThanOctave = scale.intervals;
       const largerThanOctave = scale.intervals.map((interval) => ({
-        name: interval.name,
+        name: interval.cents % 1200 ? interval.name : "P8", // if it's an octave it shouldn't be labeled as a P1
         cents: interval.cents + 1200,
       }));
       setPossibleIntervals(smallerThanOctave.concat(largerThanOctave));
@@ -110,6 +120,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     }
     setNotesInScale(scale.notes);
     console.log(scale.notes);
+    setDidSetUp(true);
     return "";
   };
   //   const testOptions: ExerciseOptions = {
@@ -218,8 +229,6 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     };
 
     var notes: Note[] = new Array();
-    console.log(minDegreeAndCents);
-    console.log(maxDegreeAndCents);
     for (
       var d = minDegreeAndCents.degree, c = minDegreeAndCents.cents;
       c < maxDegreeAndCents.cents;
@@ -271,6 +280,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   };
 
   const makeInterval = () => {
+    setDidMakeInterval(false);
     const availableNotes = getAvailableNotes();
     if (!availableNotes) {
       return;
@@ -303,6 +313,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       playArpForThisInterval: playArpForThisInterval,
     });
     setQuestionIndex(questionIndex + 1);
+    setDidMakeInterval(true);
   };
 
   const playInterval = () => {
@@ -318,6 +329,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     } else {
       doPlayArpOrSim(freq1, freq2, false);
     }
+    setWillPlayInterval(false);
   };
 
   const getEquaveFromCents = (cents: number): number => {
@@ -354,7 +366,8 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   };
 
   return {
-    setIsSubmitting,
+    setWillMakeInterval,
+    setWillPlayInterval,
     setUp,
     playInterval,
     getFormattedCurrNotes,
