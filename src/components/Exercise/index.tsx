@@ -3,75 +3,77 @@ import ButtonGroup from "../ButtonGroup";
 import Stopwatch from "../Stopwatch";
 import Button from "../Button";
 import "./index.scss";
-import { ExerciseMaker } from "../../common/ExerciseMaker";
 import { useState } from "react";
+import { Interval, IntervalWithNotes } from "../../common/types";
 
 // TODO: figure out hwo to stop stopwatch
 
 interface Props {
-  maker: ExerciseMaker;
-  onClickBack: () => void;
-  onClickEnd: () => void;
-  onAnswer: (isCorrect: boolean) => void;
-  onNext: () => void;
+  answerIsCorrect: boolean;
+  currInterval: IntervalWithNotes | null;
+  handleBack: () => void;
+  handleEnd: () => void;
+  handleAnswer: (answer: string) => void;
+  handleReplay: () => void;
+  handleNext: () => void;
   totalSeconds: number;
   pause: () => void;
+  formattedCurrNotes: string;
+  numAnswered: number;
+  numQuestions: number;
+  infiniteMode: boolean;
+  possibleIntervals: Interval[];
 }
 
+// pass down answerIsCorrect??
 const Exercise = ({
-  maker,
-  onClickBack,
-  onClickEnd,
-  onAnswer,
-  onNext,
+  answerIsCorrect,
+  currInterval,
+  handleBack,
+  handleEnd,
+  handleAnswer,
+  handleReplay,
+  handleNext,
   totalSeconds,
   pause,
+  formattedCurrNotes,
+  numAnswered,
+  numQuestions,
+  infiniteMode,
+  possibleIntervals,
 }: Props) => {
-  const [answerIsCorrect, setAnswerIsCorrect] = useState(false);
+  // const [answerIsCorrect, setAnswerIsCorrect] = useState(false);
   const [answerIsHidden, setAnswerIsHidden] = useState(true);
   const [highlightButton, setHighlightButton] = useState("");
-  const [resetBorder, setResetBorder] = useState(true);
+  const [doResetBorder, setDoResetBorder] = useState(true);
 
   const nextIsDisabled = !answerIsCorrect && highlightButton === "";
 
   const buttonGroupIsDisabled = !nextIsDisabled;
 
-  const onSelectButton = (item: string) => {
-    setResetBorder(false);
-    if (maker.verifyAnswer(item)) {
-      onAnswer(true);
-      setAnswerIsCorrect(true);
-    } else {
-      onAnswer(false);
-      setAnswerIsCorrect(false);
-    }
-  };
-
   const tellMe = () => {
-    setResetBorder(false);
-    setHighlightButton(maker.currInterval?.name ?? "");
+    setDoResetBorder(false);
+    setHighlightButton(currInterval?.name ?? "");
     setAnswerIsHidden(false);
   };
 
   const back = () => {
     initStates();
-    onClickBack();
+    handleBack();
   };
 
   const next = () => {
-    onNext();
-    setResetBorder(true);
+    setDoResetBorder(true);
     setAnswerIsHidden(true);
-    maker.makeInterval();
-    maker.playInterval();
-    setAnswerIsCorrect(false);
+    handleNext();
+    // setAnswerIsCorrect(false);
     setHighlightButton("");
   };
 
   const end = () => {
     pause();
-    onNext();
-    onClickEnd();
+    // handleNext();
+    handleEnd();
   };
 
   const initStates = () => {
@@ -79,12 +81,12 @@ const Exercise = ({
       answerIsCorrect ||
       !answerIsHidden ||
       highlightButton != "" ||
-      !resetBorder
+      !doResetBorder
     ) {
-      setAnswerIsCorrect(false);
+      // setAnswerIsCorrect(false);
       setAnswerIsHidden(true);
       setHighlightButton("");
-      setResetBorder(true);
+      setDoResetBorder(true);
     }
   };
 
@@ -95,13 +97,7 @@ const Exercise = ({
           <Button onClick={back}>back to options</Button>
         </span>
         <span>
-          <Button
-            onClick={() => {
-              maker.playInterval();
-            }}
-          >
-            replay
-          </Button>
+          <Button onClick={handleReplay}>replay</Button>
         </span>
         <span>
           <Button onClick={end}>end exercise & view score</Button>
@@ -115,9 +111,9 @@ const Exercise = ({
           <span>"test"</span>
           <span>
             <QuestionCount
-              count={maker.questionIndex}
-              total={maker.numQuestions}
-              infiniteMode={maker.infiniteMode}
+              count={numAnswered}
+              total={numQuestions}
+              infiniteMode={infiniteMode}
             ></QuestionCount>
           </span>
         </div>
@@ -126,13 +122,16 @@ const Exercise = ({
             answerIsCorrect={answerIsCorrect}
             disabled={buttonGroupIsDisabled}
             highlightButton={highlightButton}
-            items={maker.possibleIntervals.map((interval) => interval.name)}
-            resetBorder={resetBorder}
-            onSelectItem={onSelectButton}
+            items={possibleIntervals.map((interval) => interval.name)}
+            resetBorder={doResetBorder}
+            onSelectItem={(item: string) => {
+              setDoResetBorder(false);
+              handleAnswer(item);
+            }}
           ></ButtonGroup>
         </div>
         <p hidden={answerIsHidden} className="smufl">
-          {maker.currentNotes}
+          {formattedCurrNotes}
         </p>
 
         <Button onClick={tellMe}>tell me</Button>

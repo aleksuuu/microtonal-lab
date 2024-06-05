@@ -1,11 +1,9 @@
 import Exercise from "../../components/Exercise";
 import ExerciseSetUp from "../../components/ExerciseSetUp";
 import ExerciseResult from "../../components/ExerciseResult";
-import { ExerciseMaker } from "../../common/ExerciseMaker";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useStopwatch } from "react-timer-hook";
-import { useReducer } from "react";
-import { ExerciseOptions, Option, OptionType } from "../../common/types";
+import { ExerciseOptions, OptionType } from "../../common/types";
 import useExerciseMaker from "../../common/useExerciseMaker";
 
 // run with `npm run dev`
@@ -56,11 +54,6 @@ const Interval = () => {
     setOptions(tmpOptions);
   };
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // dispatch({
-    //   type: UserActionType.CHECKBOX,
-    //   id: e.target.id,
-    //   v: e.target.checked,
-    // });
     setNewOptions({
       type: UserActionType.CHECKBOX,
       id: e.target.id,
@@ -77,25 +70,8 @@ const Interval = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     loadExercise();
-    // dispatch({
-    //   type: UserActionType.SUBMIT,
-    // });
-    // var m = toMaker(options);
-    // console.log(m);
-    // setMaker(m);
   };
 
-  // const maker = new ExerciseMaker(
-  //   "24edo",
-  //   true,
-  //   false,
-  //   true,
-  //   true,
-  //   220,
-  //   659.3,
-  //   5,
-  //   true
-  // );
   const {
     totalSeconds,
     reset: stopwatchReset,
@@ -105,34 +81,39 @@ const Interval = () => {
   });
 
   const {
+    currInterval,
+    possibleIntervals,
     setUp: makerSetUp,
     setWillMakeInterval,
     setWillPlayInterval,
+    verifyAnswer,
+    currAnswerIsCorrect,
+    formattedCurrNotes,
+    numAnswered,
+    numCorrect,
+    numWrong,
+    numQuestions,
+    infiniteMode,
   } = useExerciseMaker(options);
 
-  const backToSetUp = () => {
+  const handleBack = () => {
     setExerciseState(ExerciseState.setUp);
   };
 
-  const endExercise = () => {
+  const handleEnd = () => {
     setExerciseState(ExerciseState.result);
   };
 
-  const onAnswer = (isCorrect: boolean) => {
-    setTotalCorrect(totalCorrect + Number(isCorrect));
-    setTotalWrong(totalWrong + Number(!isCorrect));
+  const handleNext = () => {
+    setWillMakeInterval(true);
+    setWillPlayInterval(true);
   };
 
-  const onNext = () => {
-    setTotalQuestionsAnswered(totalQuestionsAnswered + 1);
+  const handleReplay = () => {
+    setWillPlayInterval(true);
   };
 
   const [error, setError] = useState("");
-  const [maker, setMaker] = useState(new ExerciseMaker());
-
-  const [totalCorrect, setTotalCorrect] = useState(0);
-  const [totalWrong, setTotalWrong] = useState(0);
-  const [totalQuestionsAnswered, setTotalQuestionsAnswered] = useState(0);
 
   enum ExerciseState {
     setUp,
@@ -157,6 +138,8 @@ const Interval = () => {
     if (error === "") {
       setWillMakeInterval(true);
       setWillPlayInterval(true);
+      stopwatchReset();
+      setExerciseState(ExerciseState.exercise);
       // setDoPlayInterval(true);
       // playInterval();
       // maker.makeInterval();
@@ -166,18 +149,6 @@ const Interval = () => {
       // setExerciseState(ExerciseState.exercise);
     }
   };
-
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   // Prevent the browser from reloading the page
-  //   e.preventDefault();
-
-  //   // Read the form data
-  //   const form = e.target;
-  //   const formData = new FormData(form as HTMLFormElement);
-
-  //   const formJson = Object.fromEntries(formData.entries());
-  //   console.log(formJson);
-  // };
 
   let render: JSX.Element;
   switch (exerciseState) {
@@ -194,22 +165,29 @@ const Interval = () => {
     case ExerciseState.exercise:
       render = (
         <Exercise
-          maker={maker}
-          onClickBack={backToSetUp}
-          onClickEnd={endExercise}
-          onAnswer={onAnswer}
-          onNext={onNext}
+          answerIsCorrect={currAnswerIsCorrect}
+          currInterval={currInterval}
+          handleBack={handleBack}
+          handleEnd={handleEnd}
+          handleAnswer={verifyAnswer}
+          handleReplay={handleReplay}
+          handleNext={handleNext}
           totalSeconds={totalSeconds}
           pause={stopwatchPause}
+          formattedCurrNotes={formattedCurrNotes}
+          numQuestions={numQuestions}
+          numAnswered={numAnswered}
+          infiniteMode={infiniteMode}
+          possibleIntervals={possibleIntervals}
         ></Exercise>
       );
       break;
     case ExerciseState.result:
       render = (
         <ExerciseResult
-          totalCorrect={totalCorrect}
-          totalWrong={totalWrong}
-          totalQuestionsAnswered={totalQuestionsAnswered}
+          totalCorrect={numCorrect}
+          totalWrong={numWrong}
+          totalQuestionsAnswered={numAnswered}
           totalSeconds={totalSeconds}
           reset={stopwatchReset}
         ></ExerciseResult>
@@ -229,75 +207,6 @@ enum UserActionType {
 type UserAction =
   | { type: UserActionType.CHECKBOX; id: string; v: boolean }
   | { type: UserActionType.NUMINPUT; id: string; v: number };
-// | { type: UserActionType.SUBMIT };
-
-// const optionsReducer = (
-//   options: ExerciseOptions,
-//   action: UserAction
-// ): ExerciseOptions => {
-//   switch (action.type) {
-//     case UserActionType.CHECKBOX:
-//       for (var option of options) {
-//       }
-//       return options.map((o) => {
-//         if (o.id === action.id) {
-//           return { id: action.id, v: action.v };
-//         } else {
-//           return o;
-//         }
-//       });
-//     case UserActionType.NUMINPUT:
-//       return options.map((o) => {
-//         if (o.id === action.id) {
-//           return { id: action.id, v: action.v };
-//         } else {
-//           return o;
-//         }
-//       });
-//     // case UserActionType.SUBMIT:
-//     //   return options;
-//     default:
-//       throw new Error();
-//   }
-// };
-
-// const toMaker = (options: Option[]): ExerciseMaker => {
-//   const maker = new ExerciseMaker();
-//   for (var option of options) {
-//     switch (option.id) {
-//       case "scale-name":
-//         maker.scaleName = String(action.v);
-//         break;
-//       case "smaller-than-octave":
-//         maker.intervalsSmallerThanOctave = Boolean(action.v);
-//         break;
-//       case "larger-than-octave":
-//         maker.intervalsLargerThanOctave = Boolean(action.v);
-//         break;
-//       case "play-arp":
-//         maker.playArp = Boolean(action.v);
-//         break;
-//       case "play-sim":
-//         maker.playSim = Boolean(action.v);
-//         break;
-//       case "min-freq":
-//         maker.minFreq = Number(action.v);
-//         break;
-//       case "max-freq":
-//         maker.maxFreq = Number(action.v);
-//         break;
-//       case "num-questions":
-//         maker.numQuestions = Number(action.v);
-//         break;
-//       case "infinite":
-//         maker.infiniteMode = Boolean(action.v);
-//         break;
-//       default:
-//         throw new Error();
-//     }
-//   }
-//   return maker;
-// };
 
 const initOptions: ExerciseOptions = {
   scaleName: { type: OptionType.SCALENAME, v: "24edo" },
@@ -310,17 +219,5 @@ const initOptions: ExerciseOptions = {
   numQuestions: { type: OptionType.NUMQUESTIONS, v: 5 },
   infiniteMode: { type: OptionType.INFINITEMODE, v: true },
 };
-
-const initialOptions = [
-  { id: "scale-name", v: "24edo" },
-  { id: "smaller-than-octave", v: true },
-  { id: "larger-than-octave", v: false },
-  { id: "play-arp", v: true },
-  { id: "play-sim", v: true },
-  { id: "min-freq", v: 220 },
-  { id: "max-freq", v: 659.3 },
-  { id: "num-questions", v: 5 },
-  { id: "infinite", v: true },
-];
 
 export default Interval;

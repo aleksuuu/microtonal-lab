@@ -1,8 +1,3 @@
-export type Option = { type: string; v: string | boolean | number };
-
-// type ScaleName = { type: "scale-name"; v: string };
-// type
-
 export enum OptionType {
   SCALENAME = "scale-name",
   SMALLERTHANOCTAVE = "smaller-than-octave",
@@ -26,3 +21,17 @@ export type ExerciseOptions = {
   numQuestions: { type: OptionType.NUMQUESTIONS; v: number };
   infiniteMode: { type: OptionType.INFINITEMODE; v: boolean };
 };
+
+export type IntervalWithNotes = {
+  name: string;
+  firstNote: Note;
+  secondNote: Note;
+  playArpForThisInterval: boolean;
+};
+
+export type Note = {
+  name: string;
+  cents: number;
+};
+
+export type Interval = { name: string; cents: number };

@@ -1,35 +1,21 @@
-import { useCallback, useEffect, useState } from "react";
-import { Option, ExerciseOptions } from "./types";
+import { useEffect, useState } from "react";
+import { ExerciseOptions } from "./types";
 import { Synth, PolySynth, now } from "tone";
 import scales from "./scales.json";
 import { freqToMidi, centsToFreq } from "./UtilityFuncs";
 
-type Interval = { name: string; cents: number };
-type IntervalWithNotes = {
-  name: string;
-  firstNote: Note;
-  secondNote: Note;
-  playArpForThisInterval: boolean;
-};
-type Note = {
-  name: string;
-  cents: number;
-};
+import { IntervalWithNotes, Note, Interval } from "./types";
+
 type DegreeAndCents = {
   degree: number;
   cents: number;
 };
 
 const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
-  //   const [scaleName, setScaleName] = useState("24edo");
-  //   const [smallerThanOctave, setSmallerThanOctave] = useState(true);
-  //   const [largerThanOctave, setLargerThanOctave] = useState(false);
-  //   const [playArp, setPlayArp] = useState(true);
-  //   const [playSim, setPlaySim] = useState(true);
   const [minFreq, setMinFreq] = useState(220);
   const [maxFreq, setMaxFreq] = useState(659.3);
-  //   const [numQuestions, setNumQuestions] = useState(5);
-  //   const [infiniteMode, setInfiniteMode] = useState(true);
+  const [numQuestions, setNumQuestions] = useState(5);
+  const [infiniteMode, setInfiniteMode] = useState(true);
   const [possibleIntervals, setPossibleIntervals] = useState<Interval[]>([]);
   const [notesInScale, setNotesInScale] = useState<Note[]>([]);
   const [currInterval, setCurrInterval] = useState<IntervalWithNotes | null>(
@@ -37,13 +23,16 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   );
   const [playArp, setPlayArp] = useState(true);
   const [playSim, setPlaySim] = useState(true);
-  const [questionIndex, setQuestionIndex] = useState(0);
-  const [numOfCorrectAnswers, setNumOfCorrectAnswers] = useState(0);
+  const [numAnswered, setNumAnswered] = useState(0);
+  const [numCorrect, setNumCorrect] = useState(0);
+  const [numWrong, setNumWrong] = useState(0);
 
   const [willMakeInterval, setWillMakeInterval] = useState(false);
   const [didSetUp, setDidSetUp] = useState(false);
   const [didMakeInterval, setDidMakeInterval] = useState(false);
   const [willPlayInterval, setWillPlayInterval] = useState(false);
+  const [currAnswerIsCorrect, setCurrAnswerIsCorrect] = useState(false);
+  const [formattedCurrNotes, setFormattedCurrNotes] = useState("");
 
   useEffect(() => {
     if (willMakeInterval && didSetUp) {
@@ -61,11 +50,6 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     }
   }, [willPlayInterval, didMakeInterval]);
 
-  //   useEffect(() => {
-  //     console.log(possibleIntervals);
-  //   }, [possibleIntervals]);
-
-  // const validate = useCallback(() => )
   const setUp = (): string => {
     setDidSetUp(false);
     console.log(exerciseOptions);
@@ -91,6 +75,8 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     setPlaySim(exerciseOptions.playSim.v);
     setMinFreq(exerciseOptions.minFreq.v);
     setMaxFreq(exerciseOptions.maxFreq.v);
+    setNumQuestions(exerciseOptions.numQuestions.v);
+    setInfiniteMode(exerciseOptions.infiniteMode.v);
 
     const scale = scales.scales.find(
       (scale) => scale.name === exerciseOptions.scaleName.v
@@ -312,7 +298,9 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       secondNote: intervalAndSecondNote.secondNote,
       playArpForThisInterval: playArpForThisInterval,
     });
-    setQuestionIndex(questionIndex + 1);
+    setNumAnswered(numAnswered + 1);
+    setCurrAnswerIsCorrect(false);
+    setFormattedCurrNotes(getFormattedCurrNotes());
     setDidMakeInterval(true);
   };
 
@@ -336,16 +324,17 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     return Math.floor(cents / getCentsPerEquave());
   };
 
-  const verifyAnswer = (answer: string): boolean | null => {
+  const verifyAnswer = (answer: string) => {
     if (!currInterval) {
       console.error("Error accessing current interval.");
-      return null;
+      setCurrAnswerIsCorrect(false);
+    } else if (answer == currInterval.name) {
+      setCurrAnswerIsCorrect(true);
+      setNumCorrect(numCorrect + 1);
+    } else {
+      setCurrAnswerIsCorrect(false);
+      setNumWrong(numWrong + 1);
     }
-    if (answer == currInterval.name) {
-      setNumOfCorrectAnswers(numOfCorrectAnswers + 1);
-      return true;
-    }
-    return false;
   };
 
   const getFormattedCurrNotes = (): string => {
@@ -366,12 +355,19 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   };
 
   return {
+    currInterval,
+    possibleIntervals,
     setWillMakeInterval,
     setWillPlayInterval,
     setUp,
-    playInterval,
-    getFormattedCurrNotes,
     verifyAnswer,
+    formattedCurrNotes,
+    currAnswerIsCorrect,
+    numAnswered,
+    numCorrect,
+    numWrong,
+    numQuestions,
+    infiniteMode,
   };
 };
 
