@@ -38,19 +38,19 @@ const ExerciseSetUp = ({
       <div>
         <h2>include intervals…</h2>
         <Checkbox
-          // id="smaller-than-octave"
-          id={OptionType.SMALLERTHANOCTAVE}
+          // id="smaller-than-equave"
+          id={OptionType.smallerThanEquave}
           initValue={true}
           onChange={handleCheckboxChange}
         >
-          smaller than an octave
+          smaller than an equave
         </Checkbox>
         <Checkbox
-          id={OptionType.LARGERTHANOCTAVE}
+          id={OptionType.largerThanEquave}
           initValue={false}
           onChange={handleCheckboxChange}
         >
-          larger than an octave
+          larger than an equave
         </Checkbox>
       </div>
       <div>

@@ -24,11 +24,11 @@ const Interval = () => {
       case OptionType.SCALENAME:
         tmpOptions.scaleName.v = String(action.v);
         break;
-      case OptionType.SMALLERTHANOCTAVE:
-        tmpOptions.smallerThanOctave.v = Boolean(action.v);
+      case OptionType.smallerThanEquave:
+        tmpOptions.smallerThanEquave.v = Boolean(action.v);
         break;
-      case OptionType.LARGERTHANOCTAVE:
-        tmpOptions.largerThanOctave.v = Boolean(action.v);
+      case OptionType.largerThanEquave:
+        tmpOptions.largerThanEquave.v = Boolean(action.v);
         break;
       case OptionType.PLAYARP:
         tmpOptions.playArp.v = Boolean(action.v);
@@ -98,6 +98,7 @@ const Interval = () => {
 
   const handleBack = () => {
     setExerciseState(ExerciseState.setUp);
+    window.location.reload();
   };
 
   const handleEnd = () => {
@@ -127,6 +128,7 @@ const Interval = () => {
     // TODO: data would not update until submit has been clicked twice??
     // setMakerObj(maker);
     // setMaker(toMaker(options));
+    console.log("options");
     console.log(options);
 
     // console.log(maker);
@@ -210,8 +212,8 @@ type UserAction =
 
 const initOptions: ExerciseOptions = {
   scaleName: { type: OptionType.SCALENAME, v: "24edo" },
-  smallerThanOctave: { type: OptionType.SMALLERTHANOCTAVE, v: true },
-  largerThanOctave: { type: OptionType.LARGERTHANOCTAVE, v: false },
+  smallerThanEquave: { type: OptionType.smallerThanEquave, v: true },
+  largerThanEquave: { type: OptionType.largerThanEquave, v: false },
   playArp: { type: OptionType.PLAYARP, v: true },
   playSim: { type: OptionType.PLAYSIM, v: true },
   minFreq: { type: OptionType.MINFREQ, v: 220 },

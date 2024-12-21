@@ -9,8 +9,8 @@ type Note = {
 
 export class ExerciseMaker {
   scaleName: string;
-  intervalsSmallerThanOctave: boolean;
-  intervalsLargerThanOctave: boolean;
+  intervalssmallerThanEquave: boolean;
+  intervalslargerThanEquave: boolean;
   playArp: boolean;
   playSim: boolean;
   minFreq: number;
@@ -23,8 +23,8 @@ export class ExerciseMaker {
 
   constructor(
     scaleName: string,
-    intervalsSmallerThanOctave: boolean,
-    intervalsLargerThanOctave: boolean,
+    intervalssmallerThanEquave: boolean,
+    intervalslargerThanEquave: boolean,
     playArp: boolean,
     playSim: boolean,
     minFreq: number,
@@ -34,8 +34,8 @@ export class ExerciseMaker {
   );
   // ) {
   //   this.scaleName = scaleName;
-  //   this.intervalsSmallerThanOctave = intervalsSmallerThanOctave;
-  //   this.intervalsLargerThanOctave = intervalsLargerThanOctave;
+  //   this.intervalssmallerThanEquave = intervalssmallerThanEquave;
+  //   this.intervalslargerThanEquave = intervalslargerThanEquave;
   //   this.playArp = playArp;
   //   this.playSim = playSim;
   //   this.minFreq = minFreq;
@@ -48,8 +48,8 @@ export class ExerciseMaker {
   constructor(...params: any[]) {
     if (params.length === 9) {
       this.scaleName = params[0];
-      this.intervalsSmallerThanOctave = params[1];
-      this.intervalsLargerThanOctave = params[2];
+      this.intervalssmallerThanEquave = params[1];
+      this.intervalslargerThanEquave = params[2];
       this.playArp = params[3];
       this.playSim = params[4];
       this.minFreq = params[5];
@@ -58,8 +58,8 @@ export class ExerciseMaker {
       this.infiniteMode = params[8];
     } else {
       this.scaleName = "default";
-      this.intervalsSmallerThanOctave = true;
-      this.intervalsLargerThanOctave = false;
+      this.intervalssmallerThanEquave = true;
+      this.intervalslargerThanEquave = false;
       this.playArp = true;
       this.playSim = true;
       this.minFreq = 220;
@@ -81,7 +81,7 @@ export class ExerciseMaker {
 
   // if valid, return an empty string
   validate(): string {
-    if (!this.intervalsSmallerThanOctave && !this.intervalsLargerThanOctave) {
+    if (!this.intervalssmallerThanEquave && !this.intervalslargerThanEquave) {
       return "You must select at least one type of intervals.";
     }
     if (!this.playArp && !this.playSim) {
@@ -101,14 +101,14 @@ export class ExerciseMaker {
     if (scale === undefined) {
       return "Can't find requested scale.";
     }
-    if (this.intervalsSmallerThanOctave && this.intervalsLargerThanOctave) {
-      const smallerThanOctave = scale.intervals;
-      const largerThanOctave = scale.intervals.map((interval) => ({
+    if (this.intervalssmallerThanEquave && this.intervalslargerThanEquave) {
+      const smallerThanEquave = scale.intervals;
+      const largerThanEquave = scale.intervals.map((interval) => ({
         name: interval.name,
         cents: interval.cents + 1200,
       }));
-      this.possibleIntervals = smallerThanOctave.concat(largerThanOctave);
-    } else if (this.intervalsSmallerThanOctave) {
+      this.possibleIntervals = smallerThanEquave.concat(largerThanEquave);
+    } else if (this.intervalssmallerThanEquave) {
       this.possibleIntervals = scale.intervals;
     } else {
       this.possibleIntervals = scale.intervals.map((interval) => ({
@@ -146,13 +146,10 @@ export class ExerciseMaker {
     // Calculate the MIDI note corresponding to the input frequency
     const midiNote = freqToMidi(freq);
 
-    // The cents per octave of the microtonal scale
-    // const centsPerEquave = scale[scale.length - 1];
-
-    // The number of midi notes per octave of the microtonal scale
+    // The number of midi notes per equave of the microtonal scale
     const midiNotesPerEquave = this.centsPerEquave / 100;
 
-    const octaveNum = Math.floor(midiNote / midiNotesPerEquave);
+    const equaveNum = Math.floor(midiNote / midiNotesPerEquave);
 
     const scaleDegreeInMidi = midiNote % midiNotesPerEquave;
 
@@ -183,7 +180,7 @@ export class ExerciseMaker {
 
     closestCents = this.scaleCents[indexOfClosest];
 
-    return { degree: indexOfClosest, cents: closestCents * octaveNum };
+    return { degree: indexOfClosest, cents: closestCents * equaveNum };
   }
 
   get centsPerEquave() {

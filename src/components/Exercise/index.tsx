@@ -6,7 +6,7 @@ import "./index.scss";
 import { useState } from "react";
 import { Interval, IntervalWithNotes } from "../../common/types";
 
-// TODO: figure out hwo to stop stopwatch
+// TODO: figure out how to stop stopwatch
 
 interface Props {
   answerIsCorrect: boolean;

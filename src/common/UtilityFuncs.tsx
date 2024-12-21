@@ -31,9 +31,9 @@ export const freqToNoteName = (freq: number) => {
     "A♯",
     "B",
   ];
-  const noteName = noteNames[rounded % 12];
-  const octave = Math.floor(rounded / 12) - 1;
-  return noteName + octave + arrow;
+  const noteName = noteNames[rounded % noteNames.length];
+  const equave = Math.floor(rounded / noteNames.length) - 1;
+  return noteName + equave + arrow;
 };
 
 export const centsToFreq = (cents: number) => {
