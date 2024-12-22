@@ -82,7 +82,7 @@ const Interval = () => {
 
   const {
     currInterval,
-    possibleIntervals,
+    intervalsInScale,
     setUp: makerSetUp,
     setWillMakeInterval,
     setWillPlayInterval,
@@ -125,16 +125,8 @@ const Interval = () => {
   const [exerciseState, setExerciseState] = useState(ExerciseState.setUp);
 
   const loadExercise = () => {
-    // TODO: data would not update until submit has been clicked twice??
-    // setMakerObj(maker);
-    // setMaker(toMaker(options));
     console.log("options");
     console.log(options);
-
-    // console.log(maker);
-    // console.log(makerObj);
-    // const err = maker.validate();
-
     setError(makerSetUp());
 
     if (error === "") {
@@ -142,13 +134,6 @@ const Interval = () => {
       setWillPlayInterval(true);
       stopwatchReset();
       setExerciseState(ExerciseState.exercise);
-      // setDoPlayInterval(true);
-      // playInterval();
-      // maker.makeInterval();
-      // maker.playInterval();
-      // // setMakerObj(maker);
-      // stopwatchReset();
-      // setExerciseState(ExerciseState.exercise);
     }
   };
 
@@ -180,7 +165,7 @@ const Interval = () => {
           numQuestions={numQuestions}
           numAnswered={numAnswered}
           infiniteMode={infiniteMode}
-          possibleIntervals={possibleIntervals}
+          intervalsInScale={intervalsInScale}
         ></Exercise>
       );
       break;
@@ -191,7 +176,7 @@ const Interval = () => {
           totalWrong={numWrong}
           totalQuestionsAnswered={numAnswered}
           totalSeconds={totalSeconds}
-          reset={stopwatchReset}
+          reset={handleBack}
         ></ExerciseResult>
       );
       break;

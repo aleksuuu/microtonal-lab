@@ -15,7 +15,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     maxFreq: 659.3,
     numQuestions: 5,
     infiniteMode: true,
-    possibleIntervals: [] as Interval[],
+    intervalsInScale: [] as Interval[],
     notesInScale: [] as Note[],
     currInterval: null as IntervalWithNotes | null,
     playArp: true,
@@ -62,6 +62,10 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   useEffect(() => {
     if (exerciseState.willPlayInterval && exerciseState.didMakeInterval) {
       playInterval();
+      setExerciseState((prevState) => ({
+        ...prevState,
+        willPlayInterval: false, // Reset flag
+      }));
     }
   }, [exerciseState.willPlayInterval, exerciseState.didMakeInterval]);
 
@@ -94,21 +98,6 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       return "Can't find requested scale.";
     }
 
-    const intervals =
-      exerciseOptions.smallerThanEquave.v && exerciseOptions.largerThanEquave.v
-        ? scale.intervals.concat(
-            scale.intervals.map((interval) => ({
-              name: interval.cents % 1200 ? interval.name : "P8",
-              cents: interval.cents + 1200,
-            }))
-          )
-        : exerciseOptions.smallerThanEquave.v
-        ? scale.intervals
-        : scale.intervals.map((interval) => ({
-            name: interval.name,
-            cents: interval.cents + 1200,
-          }));
-
     setExerciseState((prevState) => ({
       ...prevState,
       playArp: exerciseOptions.playArp.v,
@@ -117,7 +106,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       maxFreq: exerciseOptions.maxFreq.v,
       numQuestions: exerciseOptions.numQuestions.v,
       infiniteMode: exerciseOptions.infiniteMode.v,
-      possibleIntervals: intervals,
+      intervalsInScale: scale.intervals,
       notesInScale: scale.notes,
       didSetUp: true,
     }));
@@ -212,7 +201,6 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       console.error("getAvailableNotes could not get notes.");
       return null;
     }
-    console.log(notes);
     return notes;
   }, [
     getMinDegreeAndCents,
@@ -234,42 +222,140 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     [synth]
   );
 
-  const getIntervalNameAndSecondNote = useCallback(
-    (firstNote: Note): { intervalName: string; secondNote: Note } | null => {
-      const direction = Math.random() > 0.5 ? 1 : -1;
-      const interval =
-        exerciseState.possibleIntervals[
-          Math.floor(Math.random() * exerciseState.possibleIntervals.length)
-        ];
-      const secondNoteCents = firstNote.cents + direction * interval.cents;
-      const minDegreeAndCents = getMinDegreeAndCents();
-      const maxDegreeAndCents = getMaxDegreeAndCents();
-      if (!minDegreeAndCents || !maxDegreeAndCents) {
-        console.error("Error accessing min degree and cents");
-        return null;
-      }
-      const availableNotes = getAvailableNotes();
-      const secondNote = availableNotes?.find(
-        (note) => note.cents === secondNoteCents
-      );
+  const getIndexOfLargestBelowOrEqual = (
+    arr: number[],
+    value: number
+  ): number => {
+    if (arr.length === 0) return -1; // Handle empty array case
 
-      if (
-        !secondNote ||
-        secondNoteCents > maxDegreeAndCents.cents ||
-        secondNoteCents < minDegreeAndCents.cents
-      ) {
-        return getIntervalNameAndSecondNote(firstNote);
-      } else {
-        return { intervalName: interval.name, secondNote: secondNote };
+    let left = 0;
+    let right = arr.length - 1;
+    let result = -1;
+
+    while (left <= right) {
+      const mid = Math.floor((left + right) / 2);
+      if (arr[mid] == value) {
+        return mid;
       }
-    },
-    [
-      exerciseState.possibleIntervals,
-      getMinDegreeAndCents,
-      getMaxDegreeAndCents,
-      getAvailableNotes,
-    ]
-  );
+      if (arr[mid] < value) {
+        result = mid; // Update result since arr[mid] is below the value
+        left = mid + 1; // Look in the right half
+      } else {
+        right = mid - 1; // Look in the left half
+      }
+    }
+
+    return result;
+  };
+
+  const getSecondNoteCents = (
+    findValueAboveEquave: boolean,
+    firstNoteFromExtreme: number,
+    maxCents: number,
+    minCents: number,
+    direction: number,
+    firstNoteCents: number,
+    intervalCents: number
+  ): number | null => {
+    let secondNoteCents = null;
+    if (findValueAboveEquave) {
+      const maxEquave = Math.ceil(firstNoteFromExtreme / getCentsPerEquave()); // could still exceed max; check again below
+      while (
+        !secondNoteCents ||
+        secondNoteCents > maxCents ||
+        secondNoteCents < minCents
+      ) {
+        let transp = getCentsPerEquave() * Math.ceil(Math.random() * maxEquave); // 1 to maxEquave (inclusive)
+        secondNoteCents = firstNoteCents + direction * (intervalCents + transp);
+      }
+    } else {
+      secondNoteCents = firstNoteCents + direction * intervalCents;
+    }
+    return secondNoteCents;
+  };
+
+  const getNextInterval = useCallback((): {
+    intervalName: string;
+    firstNote: Note;
+    secondNote: Note;
+  } | null => {
+    const availableNotes = getAvailableNotes();
+    if (!availableNotes) return null;
+    const minCents = getMinDegreeAndCents()?.cents;
+    const maxCents = getMaxDegreeAndCents()?.cents;
+    if (!minCents || !maxCents) {
+      console.error("Error accessing min or max cents");
+      return null;
+    }
+
+    const direction = Math.random() > 0.5 ? 1 : -1;
+    let findValueAboveEquave = false;
+    if (exerciseOptions.largerThanEquave.v) {
+      if (exerciseOptions.smallerThanEquave.v) {
+        findValueAboveEquave = Math.random() < 0.5;
+      } else {
+        findValueAboveEquave = true;
+      }
+    }
+    const minDistanceFromExtreme = findValueAboveEquave
+      ? getCentsPerEquave()
+      : 0; // cents; firstNoteFromExtreme needs to be greater than this, not equal
+    let firstNoteFromExtreme = 0; // cents
+    let firstNote = null;
+    while (!firstNote || firstNoteFromExtreme <= minDistanceFromExtreme) {
+      // if only larger than equave intervals are allowed, make sure the first note is at least an equave away from the max if dir===1 or max if dir===-1
+      firstNote =
+        availableNotes[Math.floor(Math.random() * availableNotes.length)];
+      firstNoteFromExtreme =
+        direction === 1
+          ? maxCents - firstNote.cents
+          : firstNote.cents - minCents;
+    }
+
+    const indexOfLargestIntervalPossible = getIndexOfLargestBelowOrEqual(
+      exerciseState.intervalsInScale.map((interval) => interval.cents),
+      firstNoteFromExtreme - minDistanceFromExtreme
+    ); // e.g, if minDistanceFromExtreme is 1200 (when if and only if greater than equave) and firstNoteFromExtreme is 1500, then the largest interval possible should be 1500-1200=300 and not 1500, that way there is enough transposition space
+    let interval = null;
+    while (!interval || interval.cents > firstNoteFromExtreme) {
+      interval = structuredClone(
+        exerciseState.intervalsInScale[
+          Math.floor(Math.random() * (indexOfLargestIntervalPossible + 1))
+        ]
+      ); // deep clone ensures intervalsInScale isn't modified
+    }
+    const secondNoteCents = getSecondNoteCents(
+      findValueAboveEquave,
+      firstNoteFromExtreme,
+      maxCents,
+      minCents,
+      direction,
+      firstNote.cents,
+      interval.cents
+    );
+    if (!secondNoteCents) {
+      console.error("Could not find second note cents.");
+      return null;
+    }
+    const secondNote = availableNotes.find(
+      (note) => note.cents === secondNoteCents
+    );
+
+    if (!secondNote) {
+      console.error("Could not find second note from availableNotes.");
+      return null;
+    }
+    return {
+      intervalName: interval.name,
+      firstNote: firstNote,
+      secondNote: secondNote,
+    };
+  }, [
+    exerciseState.intervalsInScale,
+    getMinDegreeAndCents,
+    getMaxDegreeAndCents,
+    getAvailableNotes,
+  ]);
 
   const getEquaveFromCents = useCallback(
     (cents: number): number => {
@@ -289,13 +375,26 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
   const makeInterval = useCallback(() => {
     setExerciseState((prevState) => ({ ...prevState, didMakeInterval: false }));
-    const availableNotes = getAvailableNotes();
-    if (!availableNotes) return;
 
-    let firstNote =
-      availableNotes[Math.floor(Math.random() * availableNotes.length)];
-    const intervalAndSecondNote = getIntervalNameAndSecondNote(firstNote);
-    if (!intervalAndSecondNote) return;
+    // const availableNotes = getAvailableNotes();
+    // if (!availableNotes) return;
+
+    // let firstNote =
+    //   availableNotes[Math.floor(Math.random() * availableNotes.length)];
+    // const direction = Math.random() > 0.5 ? 1 : -1;
+    // if (
+    //   exerciseOptions.largerThanEquave.v &&
+    //   !exerciseOptions.smallerThanEquave.v
+    // ) {
+    //   // if only larger than equave intervals are allowed, make sure the first note is at least an equave away from the max if dir===1 or max if dir===-1
+    // }
+    // const intervalAndSecondNote = getNextInterval(firstNote, direction);
+    // if (!intervalAndSecondNote) return;
+    const nextInterval = getNextInterval();
+    if (!nextInterval) {
+      console.error("Could not get next interval.");
+      return;
+    }
 
     let playArpForThisInterval = exerciseState.playArp;
     if (exerciseState.playArp && exerciseState.playSim) {
@@ -306,26 +405,26 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
     if (
       !playArpForThisInterval &&
-      firstNote.cents > intervalAndSecondNote.secondNote.cents
+      nextInterval.firstNote.cents > nextInterval.secondNote.cents
     ) {
-      const tmp = firstNote;
-      firstNote = intervalAndSecondNote.secondNote;
-      intervalAndSecondNote.secondNote = tmp;
+      const tmp = nextInterval.firstNote;
+      nextInterval.firstNote = nextInterval.secondNote;
+      nextInterval.secondNote = tmp;
     }
 
     setExerciseState((prevState) => ({
       ...prevState,
       currInterval: {
-        name: intervalAndSecondNote.intervalName,
-        firstNote: firstNote,
-        secondNote: intervalAndSecondNote.secondNote,
+        name: nextInterval.intervalName,
+        firstNote: nextInterval.firstNote,
+        secondNote: nextInterval.secondNote,
         playArpForThisInterval: playArpForThisInterval,
       },
       numAnswered: prevState.numAnswered + 1,
       currAnswerIsCorrect: false,
       formattedCurrNotes: getFormattedCurrNotes(
-        firstNote,
-        intervalAndSecondNote.secondNote
+        nextInterval.firstNote,
+        nextInterval.secondNote
       ),
       didMakeInterval: true,
     }));
@@ -333,7 +432,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     exerciseState.playArp,
     exerciseState.playSim,
     getAvailableNotes,
-    getIntervalNameAndSecondNote,
+    getNextInterval,
     getFormattedCurrNotes,
   ]);
 
@@ -369,6 +468,17 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
           currAnswerIsCorrect: true,
           numCorrect: prevState.numCorrect + 1,
         }));
+      } else if (
+        (answer === "P8" || answer === "P1") &&
+        (exerciseState.currInterval.name === "P8" ||
+          exerciseState.currInterval.name === "P1") &&
+        exerciseOptions.largerThanEquave
+      ) {
+        setExerciseState((prevState) => ({
+          ...prevState,
+          currAnswerIsCorrect: true,
+          numCorrect: prevState.numCorrect + 1,
+        }));
       } else {
         setExerciseState((prevState) => ({
           ...prevState,
@@ -386,6 +496,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       setExerciseState((prevState) => ({
         ...prevState,
         willMakeInterval: value,
+        didMakeInterval: !value,
       })),
     setWillPlayInterval: (value: boolean) =>
       setExerciseState((prevState) => ({

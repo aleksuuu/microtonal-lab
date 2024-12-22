@@ -6,7 +6,7 @@ import "./index.scss";
 import { useState } from "react";
 import { Interval, IntervalWithNotes } from "../../common/types";
 
-// TODO: figure out how to stop stopwatch
+// TODO: figure out how to stop stopwatch (fixed?)
 
 interface Props {
   answerIsCorrect: boolean;
@@ -22,7 +22,7 @@ interface Props {
   numAnswered: number;
   numQuestions: number;
   infiniteMode: boolean;
-  possibleIntervals: Interval[];
+  intervalsInScale: Interval[];
 }
 
 // pass down answerIsCorrect??
@@ -40,21 +40,21 @@ const Exercise = ({
   numAnswered,
   numQuestions,
   infiniteMode,
-  possibleIntervals,
+  intervalsInScale,
 }: Props) => {
   // const [answerIsCorrect, setAnswerIsCorrect] = useState(false);
-  const [answerIsHidden, setAnswerIsHidden] = useState(true);
+  const [answerIsShown, setAnswerIsShown] = useState(false);
   const [highlightButton, setHighlightButton] = useState("");
-  const [doResetBorder, setDoResetBorder] = useState(true);
+  const [defaultBorder, setDefaultBorder] = useState(true);
 
   const nextIsDisabled = !answerIsCorrect && highlightButton === "";
 
   const buttonGroupIsDisabled = !nextIsDisabled;
 
   const tellMe = () => {
-    setDoResetBorder(false);
+    setDefaultBorder(false);
     setHighlightButton(currInterval?.name ?? "");
-    setAnswerIsHidden(false);
+    setAnswerIsShown(true);
   };
 
   const back = () => {
@@ -63,8 +63,8 @@ const Exercise = ({
   };
 
   const next = () => {
-    setDoResetBorder(true);
-    setAnswerIsHidden(true);
+    setDefaultBorder(true);
+    setAnswerIsShown(false);
     handleNext();
     // setAnswerIsCorrect(false);
     setHighlightButton("");
@@ -79,14 +79,13 @@ const Exercise = ({
   const initStates = () => {
     if (
       answerIsCorrect ||
-      !answerIsHidden ||
+      answerIsShown ||
       highlightButton != "" ||
-      !doResetBorder
+      !defaultBorder
     ) {
-      // setAnswerIsCorrect(false);
-      setAnswerIsHidden(true);
+      setAnswerIsShown(false);
       setHighlightButton("");
-      setDoResetBorder(true);
+      setDefaultBorder(true);
     }
   };
 
@@ -122,15 +121,18 @@ const Exercise = ({
             answerIsCorrect={answerIsCorrect}
             disabled={buttonGroupIsDisabled}
             highlightButton={highlightButton}
-            items={possibleIntervals.map((interval) => interval.name)}
-            resetBorder={doResetBorder}
+            items={[
+              ...new Set(intervalsInScale.map((interval) => interval.name)),
+            ]}
+            defaultBorder={defaultBorder}
+            hideSelected={answerIsShown}
             onSelectItem={(item: string) => {
-              setDoResetBorder(false);
+              setDefaultBorder(false);
               handleAnswer(item);
             }}
           ></ButtonGroup>
         </div>
-        <p hidden={answerIsHidden} className="smufl">
+        <p hidden={!answerIsShown} className="smufl">
           {formattedCurrNotes}
         </p>
 

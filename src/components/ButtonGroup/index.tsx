@@ -7,7 +7,8 @@ interface Props {
   disabled?: boolean;
   highlightButton?: string;
   items: string[];
-  resetBorder?: boolean;
+  defaultBorder?: boolean;
+  hideSelected?: boolean;
   onSelectItem: (item: string) => void;
 }
 
@@ -16,20 +17,21 @@ const ButtonGroup = ({
   disabled,
   highlightButton,
   items,
-  resetBorder,
+  defaultBorder,
+  hideSelected,
   onSelectItem,
 }: Props) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [counter, setCounter] = useState(0);
 
   const getBorderType = (item: string, index: number): BorderType => {
-    if (resetBorder) {
+    if (defaultBorder) {
       return BorderType.Normal;
     }
     if (item === highlightButton) {
       return BorderType.Success;
     }
-    if (selectedIndex === index) {
+    if (!hideSelected && selectedIndex === index) {
       if (answerIsCorrect) {
         return BorderType.Success;
       } else {

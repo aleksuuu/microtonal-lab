@@ -69,7 +69,7 @@ export class ExerciseMaker {
     }
   }
 
-  possibleIntervals: { name: string; cents: number }[] = new Array();
+  intervalsInScale: { name: string; cents: number }[] = new Array();
   notesInScale: { name: string; cents: number }[] = new Array();
 
   currInterval?: {
@@ -107,15 +107,15 @@ export class ExerciseMaker {
         name: interval.name,
         cents: interval.cents + 1200,
       }));
-      this.possibleIntervals = smallerThanEquave.concat(largerThanEquave);
+      this.intervalsInScale = smallerThanEquave.concat(largerThanEquave);
     } else if (this.intervalssmallerThanEquave) {
-      this.possibleIntervals = scale.intervals;
+      this.intervalsInScale = scale.intervals;
     } else {
-      this.possibleIntervals = scale.intervals.map((interval) => ({
+      this.intervalsInScale = scale.intervals.map((interval) => ({
         name: interval.name,
         cents: interval.cents + 1200,
       }));
-      console.log(this.possibleIntervals);
+      console.log(this.intervalsInScale);
     }
     this.notesInScale = scale.notes;
     return "";
@@ -235,8 +235,8 @@ export class ExerciseMaker {
   ): { intervalName: string; note2: Note } | null {
     const direction = Math.random() > 0.5 ? 1 : -1;
     const interval =
-      this.possibleIntervals[
-        Math.floor(Math.random() * this.possibleIntervals.length)
+      this.intervalsInScale[
+        Math.floor(Math.random() * this.intervalsInScale.length)
       ];
     const note2Cents = note1.cents + direction * interval.cents;
     if (!this.minDegreeAndCents || !this.maxDegreeAndCents) {
