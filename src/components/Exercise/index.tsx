@@ -17,7 +17,8 @@ interface Props {
   handleReplay: () => void;
   handleNext: () => void;
   totalSeconds: number;
-  pause: () => void;
+  stopwatchPause: () => void;
+  stopwatchUnpause: () => void;
   formattedCurrNotes: string;
   numAnswered: number;
   numQuestions: number;
@@ -35,7 +36,8 @@ const Exercise = ({
   handleReplay,
   handleNext,
   totalSeconds,
-  pause,
+  stopwatchPause,
+  stopwatchUnpause,
   formattedCurrNotes,
   numAnswered,
   numQuestions,
@@ -46,6 +48,7 @@ const Exercise = ({
   const [answerIsShown, setAnswerIsShown] = useState(false);
   const [highlightButton, setHighlightButton] = useState("");
   const [defaultBorder, setDefaultBorder] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
 
   const nextIsDisabled = !answerIsCorrect && highlightButton === "";
 
@@ -70,9 +73,17 @@ const Exercise = ({
     setHighlightButton("");
   };
 
+  const pause = () => {
+    stopwatchPause();
+    setIsPaused(true);
+  };
+  const unpause = () => {
+    stopwatchUnpause();
+    setIsPaused(false);
+  };
+
   const end = () => {
-    pause();
-    // handleNext();
+    stopwatchPause();
     handleEnd();
   };
 
@@ -91,9 +102,15 @@ const Exercise = ({
 
   return (
     <div className="center">
-      <div className="grid-3 border-bottom option-buttons">
+      <div className="grid-4 border-bottom option-buttons">
         <span>
           <Button onClick={back}>back to options</Button>
+        </span>
+        <span hidden={isPaused}>
+          <Button onClick={pause}>pause</Button>
+        </span>
+        <span hidden={!isPaused}>
+          <Button onClick={unpause}>unpause</Button>
         </span>
         <span>
           <Button onClick={handleReplay}>replay</Button>

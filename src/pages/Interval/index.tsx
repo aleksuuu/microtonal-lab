@@ -76,6 +76,7 @@ const Interval = () => {
     totalSeconds,
     reset: stopwatchReset,
     pause: stopwatchPause,
+    start: stopwatchUnpause,
   } = useStopwatch({
     autoStart: true,
   });
@@ -160,7 +161,8 @@ const Interval = () => {
           handleReplay={handleReplay}
           handleNext={handleNext}
           totalSeconds={totalSeconds}
-          pause={stopwatchPause}
+          stopwatchPause={stopwatchPause}
+          stopwatchUnpause={stopwatchUnpause}
           formattedCurrNotes={formattedCurrNotes}
           numQuestions={numQuestions}
           numAnswered={numAnswered}
