@@ -20,4 +20,4 @@ function App() {
 
 export default App;
 
-//https://hygraph.com/blog/routing-in-react
+// https://hygraph.com/blog/routing-in-react

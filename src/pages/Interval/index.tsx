@@ -187,7 +187,12 @@ const Interval = () => {
       render = <p>Nothing to see here!</p>;
   }
 
-  return <>{render}</>;
+  return (
+    <>
+      <title>Microtonal Lab - Interval</title>
+      {render}
+    </>
+  );
 };
 
 enum UserActionType {

@@ -1,5 +1,10 @@
 const Home = () => {
-  return <p>Microtonal Lab</p>;
+  return (
+    <>
+      <title>Microtonal Lab</title>
+      <p>Microtonal Lab</p>
+    </>
+  );
 };
 
 export default Home;
