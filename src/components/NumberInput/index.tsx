@@ -32,7 +32,7 @@ const NumberInput = ({
         value={initValue}
         step={1}
         precision={isFreqValue ? 1 : 0}
-        onChange={(v: number | null, s: string, h: HTMLInputElement) => {
+        onChange={(v: number | null) => {
           if (v) {
             onChange(id, v);
           }

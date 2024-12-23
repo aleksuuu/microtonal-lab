@@ -6,8 +6,6 @@ import "./index.scss";
 import { useState } from "react";
 import { Interval, IntervalWithNotes } from "../../common/types";
 
-// TODO: figure out how to stop stopwatch (fixed?)
-
 interface Props {
   answerIsCorrect: boolean;
   currInterval: IntervalWithNotes | null;

@@ -9,17 +9,9 @@ import useExerciseMaker from "../../common/useExerciseMaker";
 // run with `npm run dev`
 
 const Interval = () => {
-  // const [options, dispatch] = useReducer(optionsReducer, initOptions);
   const [options, setOptions] = useState(initOptions);
-  // const [isSubmitting, setIsSubmitting] = useState(false);
-  // useEffect(() => {
-  //   if (isSubmitting) {
-  //     playInterval();
-  //     setIsSubmitting(false);
-  //   }
-  // }, [isSubmitting]);
   const setNewOptions = (action: UserAction) => {
-    var tmpOptions = options;
+    const tmpOptions = { ...options };
     switch (action.id) {
       case OptionType.SCALENAME:
         tmpOptions.scaleName.v = String(action.v);
@@ -49,7 +41,7 @@ const Interval = () => {
         tmpOptions.infiniteMode.v = Boolean(action.v);
         break;
       default:
-        throw new Error();
+        throw new Error(`Unhandled action id: ${action.id}`);
     }
     setOptions(tmpOptions);
   };
@@ -99,7 +91,7 @@ const Interval = () => {
 
   const handleBack = () => {
     setExerciseState(ExerciseState.setUp);
-    window.location.reload();
+    setOptions(initOptions);
   };
 
   const handleEnd = () => {
@@ -182,6 +174,8 @@ const Interval = () => {
         ></ExerciseResult>
       );
       break;
+    default:
+      render = <p>Nothing to see here!</p>;
   }
 
   return <>{render}</>;

@@ -21,12 +21,6 @@ const ExerciseSetUp = ({
   handleCheckboxChange,
   handleNumInputChange,
 }: Props) => {
-  // const [numQuestionsIsDisabled, setNumQuestionsIsDisabled] = useState(
-  //   maker.infiniteMode
-  // );
-  // const [numQuestionsInitValue, setNumQuestionsInitValue] = useState(
-  //   maker.numQuestions
-  // );
   const [numQuestionsIsDisabled, setNumQuestionsIsDisabled] = useState(true);
 
   const restoreDefault = () => {
@@ -38,7 +32,6 @@ const ExerciseSetUp = ({
       <div>
         <h2>include intervals…</h2>
         <Checkbox
-          // id="smaller-than-equave"
           id={OptionType.smallerThanEquave}
           initValue={true}
           onChange={handleCheckboxChange}

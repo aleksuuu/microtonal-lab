@@ -1,7 +1,5 @@
-import Dropdown from "../../components/FreqInput";
-
 const Home = () => {
-  return <Dropdown />;
+  return <p>Microtonal Lab</p>;
 };
 
 export default Home;
