@@ -38,7 +38,6 @@ const Interval = () => {
         break;
       case OptionType.NUMQUESTIONS:
         tmpOptions.numQuestions.v = Number(action.v);
-        console.log("switch case: " + tmpOptions.numQuestions.v);
         break;
       case OptionType.INFINITEMODE:
         tmpOptions.infiniteMode.v = Boolean(action.v);
@@ -56,7 +55,6 @@ const Interval = () => {
     });
   };
   const handleNumInputChange = (id: string, v: number) => {
-    console.log("id: " + id + v);
     setNewOptions({
       type: UserActionType.NUMINPUT,
       id: id,

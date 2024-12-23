@@ -48,9 +48,9 @@ const Exercise = ({
   const [defaultBorder, setDefaultBorder] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
 
-  const nextIsDisabled = !answerIsCorrect && highlightButton === "";
+  const didAnswerCorrectly = answerIsCorrect || highlightButton != "";
 
-  const buttonGroupIsDisabled = !nextIsDisabled;
+  const didReachNumQuestions = numAnswered >= numQuestions;
 
   const tellMe = () => {
     setDefaultBorder(false);
@@ -67,7 +67,6 @@ const Exercise = ({
     setDefaultBorder(true);
     setAnswerIsShown(false);
     handleNext();
-    // setAnswerIsCorrect(false);
     setHighlightButton("");
   };
 
@@ -85,6 +84,10 @@ const Exercise = ({
     handleEnd();
   };
 
+  // const nextButtonShouldEnd = () => {
+  //   return numAnswered >= numQuestions;
+  // };
+
   const initStates = () => {
     if (
       answerIsCorrect ||
@@ -100,7 +103,7 @@ const Exercise = ({
 
   return (
     <div className="center">
-      <div className="grid-4 border-bottom option-buttons">
+      <div className="grid-3 border-bottom option-buttons">
         <span>
           <Button onClick={back}>back to options</Button>
         </span>
@@ -112,9 +115,6 @@ const Exercise = ({
         </span>
         <span>
           <Button onClick={handleReplay}>replay</Button>
-        </span>
-        <span>
-          <Button onClick={end}>end exercise & view score</Button>
         </span>
       </div>
       <div className="answer-area center">
@@ -134,7 +134,7 @@ const Exercise = ({
         <div className="button-group">
           <ButtonGroup
             answerIsCorrect={answerIsCorrect}
-            disabled={buttonGroupIsDisabled}
+            disabled={didAnswerCorrectly}
             highlightButton={highlightButton}
             items={[
               ...new Set(intervalsInScale.map((interval) => interval.name)),
@@ -150,11 +150,22 @@ const Exercise = ({
         <p hidden={!answerIsShown} className="smufl">
           {formattedCurrNotes}
         </p>
-
-        <Button onClick={tellMe}>tell me</Button>
-        <Button disabled={nextIsDisabled} onClick={next}>
-          next
-        </Button>
+        <div className="grid-3 border-bottom option-buttons">
+          <span>
+            <Button onClick={tellMe}>tell me</Button>
+          </span>
+          <span>
+            <Button onClick={end}>end</Button>
+          </span>
+          <span>
+            <Button
+              disabled={!didAnswerCorrectly || didReachNumQuestions}
+              onClick={next}
+            >
+              next
+            </Button>
+          </span>
+        </div>
         <p className="small-text learn-more">
           Learn more about Ups and Downs Notation at{" "}
           <a

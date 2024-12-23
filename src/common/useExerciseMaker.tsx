@@ -379,20 +379,6 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   const makeInterval = useCallback(() => {
     setExerciseState((prevState) => ({ ...prevState, didMakeInterval: false }));
 
-    // const availableNotes = getAvailableNotes();
-    // if (!availableNotes) return;
-
-    // let firstNote =
-    //   availableNotes[Math.floor(Math.random() * availableNotes.length)];
-    // const direction = Math.random() > 0.5 ? 1 : -1;
-    // if (
-    //   exerciseOptions.largerThanEquave.v &&
-    //   !exerciseOptions.smallerThanEquave.v
-    // ) {
-    //   // if only larger than equave intervals are allowed, make sure the first note is at least an equave away from the max if dir===1 or max if dir===-1
-    // }
-    // const intervalAndSecondNote = getNextInterval(firstNote, direction);
-    // if (!intervalAndSecondNote) return;
     const nextInterval = getNextInterval();
     if (!nextInterval) {
       console.error("Could not get next interval.");
