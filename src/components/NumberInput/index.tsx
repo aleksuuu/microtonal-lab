@@ -1,4 +1,4 @@
-import * as NumericInput from "react-numeric-input";
+import { useState } from "react";
 import "./index.scss";
 
 interface Props {
@@ -20,24 +20,26 @@ const NumberInput = ({
   isFreqValue,
   onChange,
 }: Props) => {
+  const [value, setValue] = useState(initValue);
   return (
     <span className={`number-input ${className}`}>
       <p>{children}</p>
-      <NumericInput
+      <input
+        type="number"
         disabled={disabled}
         id={id}
-        min={isFreqValue ? 20 : 0}
+        min={isFreqValue ? 20 : 1}
         max={isFreqValue ? 10000 : 1000}
-        name={id}
-        value={initValue}
-        step={1}
-        precision={isFreqValue ? 1 : 0}
-        onChange={(v: number | null) => {
+        value={value}
+        step={isFreqValue ? "any" : 1}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          const v = event.target.valueAsNumber;
           if (v) {
+            setValue(v);
             onChange(id, v);
           }
         }}
-      />
+      ></input>
     </span>
   );
 };

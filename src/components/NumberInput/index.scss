@@ -1,11 +1,8 @@
 @import "../../styles/variables";
 
-.react-numeric-input {
+.number-input {
   input {
     width: 150px;
-  }
-  b {
-    box-shadow: none !important;
-    background: $secondary-background-color !important;
+    font-size: large;
   }
 }

@@ -9,7 +9,9 @@ import useExerciseMaker from "../../common/useExerciseMaker";
 // run with `npm run dev`
 
 const Interval = () => {
-  const [options, setOptions] = useState(initOptions);
+  const [options, setOptions] = useState(
+    () => JSON.parse(JSON.stringify(initOptions)) // deep copy
+  );
   const setNewOptions = (action: UserAction) => {
     const tmpOptions = { ...options };
     switch (action.id) {
@@ -36,6 +38,7 @@ const Interval = () => {
         break;
       case OptionType.NUMQUESTIONS:
         tmpOptions.numQuestions.v = Number(action.v);
+        console.log("switch case: " + tmpOptions.numQuestions.v);
         break;
       case OptionType.INFINITEMODE:
         tmpOptions.infiniteMode.v = Boolean(action.v);
@@ -53,6 +56,7 @@ const Interval = () => {
     });
   };
   const handleNumInputChange = (id: string, v: number) => {
+    console.log("id: " + id + v);
     setNewOptions({
       type: UserActionType.NUMINPUT,
       id: id,
@@ -85,6 +89,7 @@ const Interval = () => {
     numAnswered,
     numCorrect,
     numWrong,
+    resetStats,
     numQuestions,
     infiniteMode,
   } = useExerciseMaker(options);
@@ -92,6 +97,11 @@ const Interval = () => {
   const handleBack = () => {
     setExerciseState(ExerciseState.setUp);
     setOptions(initOptions);
+    resetStats();
+  };
+
+  const reset = () => {
+    window.location.reload(); // TODO: not great! but setOptions(initOptions) does not reset the checkboxes for some reason...
   };
 
   const handleEnd = () => {
@@ -139,6 +149,7 @@ const Interval = () => {
           handleSubmit={handleSubmit}
           handleCheckboxChange={handleCheckboxChange}
           handleNumInputChange={handleNumInputChange}
+          reset={reset}
         ></ExerciseSetUp>
       );
       break;
@@ -191,7 +202,7 @@ type UserAction =
   | { type: UserActionType.CHECKBOX; id: string; v: boolean }
   | { type: UserActionType.NUMINPUT; id: string; v: number };
 
-const initOptions: ExerciseOptions = {
+const initOptions: Readonly<ExerciseOptions> = {
   scaleName: { type: OptionType.SCALENAME, v: "24edo" },
   smallerThanEquave: { type: OptionType.smallerThanEquave, v: true },
   largerThanEquave: { type: OptionType.largerThanEquave, v: false },

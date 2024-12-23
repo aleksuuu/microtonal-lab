@@ -20,15 +20,18 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     currInterval: null as IntervalWithNotes | null,
     playArp: true,
     playSim: true,
-    numAnswered: 0,
-    numCorrect: 0,
-    numWrong: 0,
     willMakeInterval: false,
     didSetUp: false,
     didMakeInterval: false,
     willPlayInterval: false,
     currAnswerIsCorrect: false,
     formattedCurrNotes: "",
+  });
+
+  const [stats, setStats] = useState({
+    numAnswered: 0,
+    numCorrect: 0,
+    numWrong: 0,
   });
 
   const synth = useMemo(
@@ -420,13 +423,16 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
         secondNote: nextInterval.secondNote,
         playArpForThisInterval: playArpForThisInterval,
       },
-      numAnswered: prevState.numAnswered + 1,
       currAnswerIsCorrect: false,
       formattedCurrNotes: getFormattedCurrNotes(
         nextInterval.firstNote,
         nextInterval.secondNote
       ),
       didMakeInterval: true,
+    }));
+    setStats((prevStats) => ({
+      ...prevStats,
+      numAnswered: prevStats.numAnswered + 1,
     }));
   }, [
     exerciseState.playArp,
@@ -454,6 +460,35 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     }));
   }, [exerciseState.currInterval, doPlayArpOrSim]);
 
+  const resetStats = () => {
+    setStats(() => ({
+      numAnswered: 0,
+      numCorrect: 0,
+      numWrong: 0,
+    }));
+  };
+
+  const answerIsCorrect = () => {
+    setExerciseState((prevState) => ({
+      ...prevState,
+      currAnswerIsCorrect: true,
+    }));
+    setStats((prevStats) => ({
+      ...prevStats,
+      numCorrect: prevStats.numCorrect + 1,
+    }));
+  };
+  const answerIsWrong = () => {
+    setExerciseState((prevState) => ({
+      ...prevState,
+      currAnswerIsCorrect: false,
+    }));
+    setStats((prevStats) => ({
+      ...prevStats,
+      numWrong: prevStats.numWrong + 1,
+    }));
+  };
+
   const verifyAnswer = useCallback(
     (answer: string) => {
       if (!exerciseState.currInterval) {
@@ -463,28 +498,16 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
           currAnswerIsCorrect: false,
         }));
       } else if (answer === exerciseState.currInterval.name) {
-        setExerciseState((prevState) => ({
-          ...prevState,
-          currAnswerIsCorrect: true,
-          numCorrect: prevState.numCorrect + 1,
-        }));
+        answerIsCorrect();
       } else if (
         (answer === "P8" || answer === "P1") &&
         (exerciseState.currInterval.name === "P8" ||
           exerciseState.currInterval.name === "P1") &&
         exerciseOptions.largerThanEquave
       ) {
-        setExerciseState((prevState) => ({
-          ...prevState,
-          currAnswerIsCorrect: true,
-          numCorrect: prevState.numCorrect + 1,
-        }));
+        answerIsCorrect();
       } else {
-        setExerciseState((prevState) => ({
-          ...prevState,
-          currAnswerIsCorrect: false,
-          numWrong: prevState.numWrong + 1,
-        }));
+        answerIsWrong();
       }
     },
     [exerciseState.currInterval]
@@ -492,6 +515,8 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
   return {
     ...exerciseState,
+    ...stats,
+    resetStats,
     setWillMakeInterval: (value: boolean) =>
       setExerciseState((prevState) => ({
         ...prevState,

@@ -13,6 +13,7 @@ interface Props {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   handleCheckboxChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleNumInputChange: (id: string, v: number) => void;
+  reset: () => void;
 }
 
 const ExerciseSetUp = ({
@@ -20,12 +21,9 @@ const ExerciseSetUp = ({
   handleSubmit,
   handleCheckboxChange,
   handleNumInputChange,
+  reset,
 }: Props) => {
   const [numQuestionsIsDisabled, setNumQuestionsIsDisabled] = useState(true);
-
-  const restoreDefault = () => {
-    window.location.reload();
-  };
 
   return (
     <form className="exercise-set-up" method="post" onSubmit={handleSubmit}>
@@ -104,7 +102,9 @@ const ExerciseSetUp = ({
         </Checkbox>
       </div>
 
-      <Button onClick={restoreDefault}>restore default</Button>
+      <Button type="button" onClick={reset}>
+        restore default
+      </Button>
       <Button type="submit">start</Button>
 
       <p>{error}</p>
