@@ -31,9 +31,6 @@ const NavBar = () => {
         <NavLink to="/interval" onClick={() => setChecked(false)}>
           Interval
         </NavLink>
-        <NavLink to="/about" onClick={() => setChecked(false)}>
-          About
-        </NavLink>
       </p>
     </nav>
   );
