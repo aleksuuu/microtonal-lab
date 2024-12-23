@@ -11,7 +11,7 @@ const NavBar = () => {
       <input type="checkbox" id="nav-check" checked={checked} readOnly></input>
       <header>
         <NavLink to="/" onClick={() => setChecked(false)}>
-          <h1 className="nav-title">microtonal lab</h1>
+          <h1 className="nav-title">Microtonal Lab</h1>
         </NavLink>
       </header>
       <div className="nav-btn">

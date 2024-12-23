@@ -28,7 +28,7 @@ const ExerciseSetUp = ({
   return (
     <form className="exercise-set-up" method="post" onSubmit={handleSubmit}>
       <div>
-        <h2>include intervals…</h2>
+        <h2>Include intervals…</h2>
         <Checkbox
           id={OptionType.smallerThanEquave}
           initValue={true}
@@ -45,7 +45,7 @@ const ExerciseSetUp = ({
         </Checkbox>
       </div>
       <div>
-        <h2>play intervals…</h2>
+        <h2>Play intervals…</h2>
         <Checkbox
           id={OptionType.PLAYARP}
           initValue={true}
@@ -63,7 +63,7 @@ const ExerciseSetUp = ({
       </div>
 
       <div>
-        <h2>range (in Hz)</h2>
+        <h2>Range (in Hz)</h2>
         <div>
           <FreqInput
             id={OptionType.MINFREQ}
@@ -82,7 +82,7 @@ const ExerciseSetUp = ({
         </div>
       </div>
       <div>
-        <h2>number of questions</h2>
+        <h2>How many questions?</h2>
         <NumberInput
           className={OptionType.NUMQUESTIONS}
           disabled={numQuestionsIsDisabled}

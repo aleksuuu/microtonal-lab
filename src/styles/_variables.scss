@@ -1,10 +1,10 @@
 $primary-background-color: #afc97e;
 $secondary-background-color: #d4e6b5;
-$default-background-color: white;
-$navbar-background-color: #f8f9fa;
+$default-background-color: rgba(0, 0, 0, 0.04);
+$navbar-background-color: rgba(0, 0, 0, 0.02);
 
 $highlight-text-color: #afc97e;
-$primary-text-color: black;
+$primary-text-color: rgba(0, 0, 0, 0.7);
 $inverse-primary-text-color: white;
 $secondary-text-color: #7c7c7d;
 
@@ -24,3 +24,5 @@ $font-l: 22px;
 $font-m: 18px;
 $font-s: 15px;
 $font-xs: 10px;
+
+$default-line-height: 1.5rem;

@@ -15,6 +15,7 @@ nav {
   background-color: $navbar-background-color;
   position: relative;
   border-bottom: 1px solid $divider-border-color;
+  margin-bottom: $space-default;
 }
 
 nav > header {

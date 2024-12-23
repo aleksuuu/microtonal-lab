@@ -1,8 +1,16 @@
 @use "./styles/reset";
 @import "./styles/variables";
 
+body {
+  color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.04);
+}
 main {
   padding-left: $space-default * 6;
+}
+
+p {
+  line-height: $default-line-height;
 }
 
 @font-face {
