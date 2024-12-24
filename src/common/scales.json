@@ -1,6 +1,284 @@
 {
   "scales": [
     {
+      "name": "12edo",
+      "intervals": [
+        {
+          "name": "P1",
+          "cents": 0.0
+        },
+        {
+          "name": "m2",
+          "cents": 100.0
+        },
+        {
+          "name": "M2",
+          "cents": 200.0
+        },
+        {
+          "name": "m3",
+          "cents": 300.0
+        },
+        {
+          "name": "M3",
+          "cents": 400.0
+        },
+        {
+          "name": "P4",
+          "cents": 500.0
+        },
+        {
+          "name": "A4/d5",
+          "cents": 600.0
+        },
+        {
+          "name": "P5",
+          "cents": 700.0
+        },
+        {
+          "name": "m6",
+          "cents": 800.0
+        },
+        {
+          "name": "M6",
+          "cents": 900.0
+        },
+        {
+          "name": "m7",
+          "cents": 1000.0
+        },
+        {
+          "name": "M7",
+          "cents": 1100.0
+        },
+        {
+          "name": "P8",
+          "cents": 1200.0
+        }
+      ],
+      "notes": [
+        {
+          "name": "C",
+          "cents": 0.0
+        },
+        {
+          "name": "C\u266f",
+          "cents": 100.0
+        },
+        {
+          "name": "D",
+          "cents": 200.0
+        },
+        {
+          "name": "D\u266f",
+          "cents": 300.0
+        },
+        {
+          "name": "E",
+          "cents": 400.0
+        },
+        {
+          "name": "F",
+          "cents": 500.0
+        },
+        {
+          "name": "F\u266f",
+          "cents": 600.0
+        },
+        {
+          "name": "G",
+          "cents": 700.0
+        },
+        {
+          "name": "G\u266f",
+          "cents": 800.0
+        },
+        {
+          "name": "A",
+          "cents": 900.0
+        },
+        {
+          "name": "A\u266f",
+          "cents": 1000.0
+        },
+        {
+          "name": "B",
+          "cents": 1100.0
+        },
+        {
+          "name": "C",
+          "cents": 1200.0
+        }
+      ]
+    },
+    {
+      "name": "19edo",
+      "intervals": [
+        {
+          "name": "P1",
+          "cents": 0.0
+        },
+        {
+          "name": "d2",
+          "cents": 63.16
+        },
+        {
+          "name": "m2",
+          "cents": 126.32
+        },
+        {
+          "name": "M2",
+          "cents": 189.47
+        },
+        {
+          "name": "d3",
+          "cents": 252.63
+        },
+        {
+          "name": "m3",
+          "cents": 315.79
+        },
+        {
+          "name": "M3",
+          "cents": 378.95
+        },
+        {
+          "name": "A3",
+          "cents": 442.11
+        },
+        {
+          "name": "P4",
+          "cents": 505.26
+        },
+        {
+          "name": "A4",
+          "cents": 568.42
+        },
+        {
+          "name": "d5",
+          "cents": 631.58
+        },
+        {
+          "name": "P5",
+          "cents": 694.74
+        },
+        {
+          "name": "A5",
+          "cents": 757.89
+        },
+        {
+          "name": "m6",
+          "cents": 821.05
+        },
+        {
+          "name": "M6",
+          "cents": 884.21
+        },
+        {
+          "name": "d7",
+          "cents": 947.37
+        },
+        {
+          "name": "m7",
+          "cents": 1010.53
+        },
+        {
+          "name": "M7",
+          "cents": 1073.68
+        },
+        {
+          "name": "A7",
+          "cents": 1136.84
+        },
+        {
+          "name": "P8",
+          "cents": 1200.0
+        }
+      ],
+      "notes": [
+        {
+          "name": "C",
+          "cents": 0.0
+        },
+        {
+          "name": "C\u266f",
+          "cents": 63.16
+        },
+        {
+          "name": "D\u266d",
+          "cents": 126.32
+        },
+        {
+          "name": "D",
+          "cents": 189.47
+        },
+        {
+          "name": "D\u266f",
+          "cents": 252.63
+        },
+        {
+          "name": "E\u266d",
+          "cents": 315.79
+        },
+        {
+          "name": "E",
+          "cents": 378.95
+        },
+        {
+          "name": "E\u266f/F\u266d",
+          "cents": 442.11
+        },
+        {
+          "name": "F",
+          "cents": 505.26
+        },
+        {
+          "name": "F\u266f",
+          "cents": 568.42
+        },
+        {
+          "name": "G\u266d",
+          "cents": 631.58
+        },
+        {
+          "name": "G",
+          "cents": 694.74
+        },
+        {
+          "name": "G\u266f",
+          "cents": 757.89
+        },
+        {
+          "name": "A\u266d",
+          "cents": 821.05
+        },
+        {
+          "name": "A",
+          "cents": 884.21
+        },
+        {
+          "name": "A\u266f",
+          "cents": 947.37
+        },
+        {
+          "name": "B\u266d",
+          "cents": 1010.53
+        },
+        {
+          "name": "B",
+          "cents": 1073.68
+        },
+        {
+          "name": "B\u266f/C\u266d",
+          "cents": 1136.84
+        },
+        {
+          "name": "C",
+          "cents": 1200.0
+        }
+      ]
+    },
+    {
       "name": "24edo",
       "intervals": [
         { "name": "P1", "cents": 0 },
@@ -55,6 +333,265 @@
         { "name": "B", "cents": 1100 },
         { "name": "B\uE282", "cents": 1150 },
         { "name": "C", "cents": 1200 }
+      ]
+    },
+    {
+      "name": "31edo",
+      "intervals": [
+        {
+          "name": "P1",
+          "cents": 0.0
+        },
+        {
+          "name": "^1",
+          "cents": 38.71
+        },
+        {
+          "name": "vm2",
+          "cents": 77.42
+        },
+        {
+          "name": "m2",
+          "cents": 116.13
+        },
+        {
+          "name": "~2",
+          "cents": 154.84
+        },
+        {
+          "name": "M2",
+          "cents": 193.55
+        },
+        {
+          "name": "^M2",
+          "cents": 232.26
+        },
+        {
+          "name": "vm3",
+          "cents": 270.97
+        },
+        {
+          "name": "m3",
+          "cents": 309.68
+        },
+        {
+          "name": "~3",
+          "cents": 348.39
+        },
+        {
+          "name": "M3",
+          "cents": 387.1
+        },
+        {
+          "name": "^M3",
+          "cents": 425.81
+        },
+        {
+          "name": "v4",
+          "cents": 464.52
+        },
+        {
+          "name": "P4",
+          "cents": 503.23
+        },
+        {
+          "name": "^4",
+          "cents": 541.94
+        },
+        {
+          "name": "A4",
+          "cents": 580.65
+        },
+        {
+          "name": "^A4",
+          "cents": 619.35
+        },
+        {
+          "name": "v5",
+          "cents": 658.06
+        },
+        {
+          "name": "P5",
+          "cents": 696.77
+        },
+        {
+          "name": "^5",
+          "cents": 735.48
+        },
+        {
+          "name": "vm6",
+          "cents": 774.19
+        },
+        {
+          "name": "m6",
+          "cents": 812.9
+        },
+        {
+          "name": "~6",
+          "cents": 851.61
+        },
+        {
+          "name": "M6",
+          "cents": 890.32
+        },
+        {
+          "name": "^M6",
+          "cents": 929.03
+        },
+        {
+          "name": "vm7",
+          "cents": 967.74
+        },
+        {
+          "name": "m7",
+          "cents": 1006.45
+        },
+        {
+          "name": "~7",
+          "cents": 1045.16
+        },
+        {
+          "name": "M7",
+          "cents": 1083.87
+        },
+        {
+          "name": "^M7",
+          "cents": 1122.58
+        },
+        {
+          "name": "v8",
+          "cents": 1161.29
+        },
+        {
+          "name": "P8",
+          "cents": 1200.0
+        }
+      ],
+      "notes": [
+        {
+          "name": "C",
+          "cents": 0.0
+        },
+        {
+          "name": "^C",
+          "cents": 38.71
+        },
+        {
+          "name": "C\u266f",
+          "cents": 77.42
+        },
+        {
+          "name": "^C\u266f",
+          "cents": 116.13
+        },
+        {
+          "name": "vD",
+          "cents": 154.84
+        },
+        {
+          "name": "D",
+          "cents": 193.55
+        },
+        {
+          "name": "^D",
+          "cents": 232.26
+        },
+        {
+          "name": "D\u266f",
+          "cents": 270.97
+        },
+        {
+          "name": "E\u266d",
+          "cents": 309.68
+        },
+        {
+          "name": "vE",
+          "cents": 348.39
+        },
+        {
+          "name": "E",
+          "cents": 387.1
+        },
+        {
+          "name": "^E",
+          "cents": 425.81
+        },
+        {
+          "name": "vF",
+          "cents": 464.52
+        },
+        {
+          "name": "F",
+          "cents": 503.23
+        },
+        {
+          "name": "^F",
+          "cents": 541.94
+        },
+        {
+          "name": "F\u266f",
+          "cents": 580.65
+        },
+        {
+          "name": "^F\u266f",
+          "cents": 619.35
+        },
+        {
+          "name": "vG",
+          "cents": 658.06
+        },
+        {
+          "name": "G",
+          "cents": 696.77
+        },
+        {
+          "name": "^G",
+          "cents": 735.48
+        },
+        {
+          "name": "G\u266f",
+          "cents": 774.19
+        },
+        {
+          "name": "^G\u266f",
+          "cents": 812.9
+        },
+        {
+          "name": "vA",
+          "cents": 851.61
+        },
+        {
+          "name": "A",
+          "cents": 890.32
+        },
+        {
+          "name": "^A",
+          "cents": 929.03
+        },
+        {
+          "name": "vB\u266d",
+          "cents": 967.74
+        },
+        {
+          "name": "B\u266d",
+          "cents": 1006.45
+        },
+        {
+          "name": "vB",
+          "cents": 1045.16
+        },
+        {
+          "name": "B",
+          "cents": 1083.87
+        },
+        {
+          "name": "^B",
+          "cents": 1122.58
+        },
+        {
+          "name": "vC",
+          "cents": 1161.29
+        }
       ]
     }
   ]

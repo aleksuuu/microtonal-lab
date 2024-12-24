@@ -3,10 +3,11 @@ import ButtonGroup from "../ButtonGroup";
 import Stopwatch from "../Stopwatch";
 import Button from "../Button";
 import "./index.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Interval, IntervalWithNotes } from "../../common/types";
 
 interface Props {
+  scaleName: string;
   answerIsCorrect: boolean;
   currInterval: IntervalWithNotes | null;
   handleBack: () => void;
@@ -24,8 +25,8 @@ interface Props {
   intervalsInScale: Interval[];
 }
 
-// pass down answerIsCorrect??
 const Exercise = ({
+  scaleName,
   answerIsCorrect,
   currInterval,
   handleBack,
@@ -42,15 +43,16 @@ const Exercise = ({
   infiniteMode,
   intervalsInScale,
 }: Props) => {
-  // const [answerIsCorrect, setAnswerIsCorrect] = useState(false);
   const [answerIsShown, setAnswerIsShown] = useState(false);
   const [highlightButton, setHighlightButton] = useState("");
   const [defaultBorder, setDefaultBorder] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
 
-  const didAnswerCorrectly = answerIsCorrect || highlightButton != "";
+  useEffect(() => {
+    setAnswerIsShown(answerIsCorrect);
+  }, [answerIsCorrect]);
 
-  const didReachNumQuestions = numAnswered >= numQuestions;
+  const didReachNumQuestions = !infiniteMode && numAnswered >= numQuestions;
 
   const tellMe = () => {
     setDefaultBorder(false);
@@ -84,10 +86,6 @@ const Exercise = ({
     handleEnd();
   };
 
-  // const nextButtonShouldEnd = () => {
-  //   return numAnswered >= numQuestions;
-  // };
-
   const initStates = () => {
     if (
       answerIsCorrect ||
@@ -107,14 +105,14 @@ const Exercise = ({
         <span>
           <Button onClick={back}>back to options</Button>
         </span>
+        <span>
+          <Button onClick={handleReplay}>replay</Button>
+        </span>
         <span hidden={isPaused}>
           <Button onClick={pause}>pause</Button>
         </span>
         <span hidden={!isPaused}>
           <Button onClick={unpause}>unpause</Button>
-        </span>
-        <span>
-          <Button onClick={handleReplay}>replay</Button>
         </span>
       </div>
       <div className="answer-area center">
@@ -122,7 +120,7 @@ const Exercise = ({
           <span>
             <Stopwatch totalSeconds={totalSeconds} />
           </span>
-          <span>"test"</span>
+          <span>{scaleName}</span>
           <span>
             <QuestionCount
               count={numAnswered}
@@ -133,16 +131,15 @@ const Exercise = ({
         </div>
         <div className="button-group">
           <ButtonGroup
-            answerIsCorrect={answerIsCorrect}
-            disabled={didAnswerCorrectly}
+            answerIsCorrect={answerIsCorrect || answerIsShown}
             highlightButton={highlightButton}
             items={[
               ...new Set(intervalsInScale.map((interval) => interval.name)),
-            ]}
+            ]} // this returns a sorted array
             defaultBorder={defaultBorder}
-            hideSelected={answerIsShown}
             onSelectItem={(item: string) => {
               setDefaultBorder(false);
+              setHighlightButton(item);
               handleAnswer(item);
             }}
           ></ButtonGroup>
@@ -159,7 +156,7 @@ const Exercise = ({
           </span>
           <span>
             <Button
-              disabled={!didAnswerCorrectly || didReachNumQuestions}
+              disabled={!answerIsShown || didReachNumQuestions}
               onClick={next}
             >
               next

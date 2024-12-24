@@ -1,7 +1,7 @@
 export enum OptionType {
   SCALENAME = "scale-name",
-  smallerThanEquave = "smaller-than-equave",
-  largerThanEquave = "larger-than-equave",
+  SMALLERTHANEQUAVE = "smaller-than-equave",
+  LARGERTHANEQUAVE = "larger-than-equave",
   PLAYARP = "play-arp",
   PLAYSIM = "play-sim",
   MINFREQ = "min-freq",
@@ -10,10 +10,17 @@ export enum OptionType {
   INFINITEMODE = "infinite-mode",
 }
 
+export enum AllowedScales {
+  EDO_12 = "12edo",
+  EDO_19 = "19edo",
+  EDO_24 = "24edo",
+  EDO_31 = "31edo",
+}
+
 export type ExerciseOptions = {
   scaleName: { type: OptionType.SCALENAME; v: string };
-  smallerThanEquave: { type: OptionType.smallerThanEquave; v: boolean };
-  largerThanEquave: { type: OptionType.largerThanEquave; v: boolean };
+  smallerThanEquave: { type: OptionType.SMALLERTHANEQUAVE; v: boolean };
+  largerThanEquave: { type: OptionType.LARGERTHANEQUAVE; v: boolean };
   playArp: { type: OptionType.PLAYARP; v: boolean };
   playSim: { type: OptionType.PLAYSIM; v: boolean };
   minFreq: { type: OptionType.MINFREQ; v: number };

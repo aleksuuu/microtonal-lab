@@ -18,10 +18,10 @@ const Interval = () => {
       case OptionType.SCALENAME:
         tmpOptions.scaleName.v = String(action.v);
         break;
-      case OptionType.smallerThanEquave:
+      case OptionType.SMALLERTHANEQUAVE:
         tmpOptions.smallerThanEquave.v = Boolean(action.v);
         break;
-      case OptionType.largerThanEquave:
+      case OptionType.LARGERTHANEQUAVE:
         tmpOptions.largerThanEquave.v = Boolean(action.v);
         break;
       case OptionType.PLAYARP:
@@ -47,6 +47,7 @@ const Interval = () => {
     }
     setOptions(tmpOptions);
   };
+
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewOptions({
       type: UserActionType.CHECKBOX,
@@ -61,6 +62,14 @@ const Interval = () => {
       v: v,
     });
   };
+  const handleMenuSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setNewOptions({
+      type: UserActionType.MENUSELECT,
+      id: e.target.id,
+      v: e.target.value,
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     loadExercise();
@@ -128,8 +137,8 @@ const Interval = () => {
   const [exerciseState, setExerciseState] = useState(ExerciseState.setUp);
 
   const loadExercise = () => {
-    console.log("options");
-    console.log(options);
+    // console.log("options");
+    // console.log(options);
     setError(makerSetUp());
 
     if (error === "") {
@@ -147,6 +156,7 @@ const Interval = () => {
         <ExerciseSetUp
           error={error}
           handleSubmit={handleSubmit}
+          handleMenuSelectChange={handleMenuSelectChange}
           handleCheckboxChange={handleCheckboxChange}
           handleNumInputChange={handleNumInputChange}
           reset={reset}
@@ -156,6 +166,7 @@ const Interval = () => {
     case ExerciseState.exercise:
       render = (
         <Exercise
+          scaleName={options.scaleName.v}
           answerIsCorrect={currAnswerIsCorrect}
           currInterval={currInterval}
           handleBack={handleBack}
@@ -199,17 +210,19 @@ const Interval = () => {
 enum UserActionType {
   CHECKBOX,
   NUMINPUT,
+  MENUSELECT,
   SUBMIT,
 }
 
 type UserAction =
   | { type: UserActionType.CHECKBOX; id: string; v: boolean }
-  | { type: UserActionType.NUMINPUT; id: string; v: number };
+  | { type: UserActionType.NUMINPUT; id: string; v: number }
+  | { type: UserActionType.MENUSELECT; id: string; v: string };
 
 const initOptions: Readonly<ExerciseOptions> = {
   scaleName: { type: OptionType.SCALENAME, v: "24edo" },
-  smallerThanEquave: { type: OptionType.smallerThanEquave, v: true },
-  largerThanEquave: { type: OptionType.largerThanEquave, v: false },
+  smallerThanEquave: { type: OptionType.SMALLERTHANEQUAVE, v: true },
+  largerThanEquave: { type: OptionType.LARGERTHANEQUAVE, v: false },
   playArp: { type: OptionType.PLAYARP, v: true },
   playSim: { type: OptionType.PLAYSIM, v: true },
   minFreq: { type: OptionType.MINFREQ, v: 220 },

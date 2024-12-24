@@ -29,10 +29,13 @@ const ExerciseResult = ({
     );
   };
 
-  const formatDetail = (detail: StatsPerQuestion): JSX.Element => {
+  const formatDetail = (
+    key: number,
+    detail: StatsPerQuestion
+  ): React.ReactElement => {
     const numAttempts = detail.numCorrect + detail.numWrong;
     return (
-      <tr>
+      <tr key={key}>
         <td>{detail.interval?.name}</td>
         <td>{detail.numCorrect}</td>
         <td>{numAttempts}</td>
@@ -41,10 +44,10 @@ const ExerciseResult = ({
     );
   };
 
-  const formatDetails = (): JSX.Element => {
+  const formatDetails = (): React.ReactElement => {
     const rows = [];
-    for (const detail of details) {
-      rows.push(formatDetail(detail));
+    for (const [index, detail] of details.entries()) {
+      rows.push(formatDetail(index, detail));
     }
     return <tbody>{rows}</tbody>;
   };

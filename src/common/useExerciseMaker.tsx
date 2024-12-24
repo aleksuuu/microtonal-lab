@@ -360,17 +360,17 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       return null;
     }
     const secondNote = availableNotes.find(
-      (note) => note.cents === secondNoteCents
+      (note) => Math.round(note.cents) === Math.round(secondNoteCents)
     );
 
     if (!secondNote) {
-      console.error("Could not find second note from availableNotes.");
-      return null;
+      // getNextInterval();
+      console.error("Could not find second note from available notes");
     }
     return {
       intervalName: interval.name,
       firstNote: firstNote,
-      secondNote: secondNote,
+      secondNote: secondNote ?? firstNote,
     };
   }, [
     exerciseState.intervalsInScale,
@@ -390,7 +390,9 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     (firstNote: Note, secondNote: Note): string => {
       return `${firstNote.name}${getEquaveFromCents(firstNote.cents)}, ${
         secondNote.name
-      }${getEquaveFromCents(secondNote.cents)}`;
+      } ${getEquaveFromCents(secondNote.cents)} (${Math.round(
+        Math.abs(secondNote.cents - firstNote.cents)
+      )}¢)`;
     },
     [getEquaveFromCents]
   );
