@@ -3,7 +3,12 @@ import ExerciseSetUp from "../../components/ExerciseSetUp";
 import ExerciseResult from "../../components/ExerciseResult";
 import { useState } from "react";
 import { useStopwatch } from "react-timer-hook";
-import { ExerciseOptions, OptionType } from "../../common/types";
+import {
+  AllowedScales,
+  ExerciseOptions,
+  OptionType,
+  SynthOscType,
+} from "../../common/types";
 import useExerciseMaker from "../../common/useExerciseMaker";
 
 // run with `npm run dev`
@@ -15,6 +20,9 @@ const Interval = () => {
   const setNewOptions = (action: UserAction) => {
     const tmpOptions = { ...options };
     switch (action.id) {
+      case OptionType.OSCTYPE:
+        tmpOptions.oscType.v = String(action.v);
+        break;
       case OptionType.SCALENAME:
         tmpOptions.scaleName.v = String(action.v);
         break;
@@ -220,7 +228,8 @@ type UserAction =
   | { type: UserActionType.MENUSELECT; id: string; v: string };
 
 const initOptions: Readonly<ExerciseOptions> = {
-  scaleName: { type: OptionType.SCALENAME, v: "24edo" },
+  oscType: { type: OptionType.OSCTYPE, v: SynthOscType.TRIANGLE },
+  scaleName: { type: OptionType.SCALENAME, v: AllowedScales.EDO_24 },
   smallerThanEquave: { type: OptionType.SMALLERTHANEQUAVE, v: true },
   largerThanEquave: { type: OptionType.LARGERTHANEQUAVE, v: false },
   playArp: { type: OptionType.PLAYARP, v: true },

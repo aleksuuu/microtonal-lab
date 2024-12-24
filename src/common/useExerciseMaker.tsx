@@ -5,6 +5,7 @@ import {
   Note,
   Interval,
   StatsPerQuestion,
+  SynthOscType,
 } from "./types";
 import { Synth, PolySynth, now } from "tone";
 import scales from "./scales.json";
@@ -63,6 +64,10 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     []
   );
 
+  const setSynthOsc = (oscType: SynthOscType) => {
+    synth.set({ oscillator: { type: oscType } });
+  };
+
   useEffect(() => {
     setCurrDetail({
       interval: exerciseState.currInterval,
@@ -93,7 +98,12 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
   const setUp = useCallback((): string => {
     setExerciseState((prevState) => ({ ...prevState, didSetUp: false }));
-
+    if (!exerciseOptions.oscType.v) {
+      return "You must select a valid sound.";
+    }
+    if (!exerciseOptions.scaleName.v) {
+      return "You must select a valid scale.";
+    }
     if (
       !exerciseOptions.smallerThanEquave.v &&
       !exerciseOptions.largerThanEquave.v
@@ -119,7 +129,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     if (!scale) {
       return "Can't find requested scale.";
     }
-
+    setSynthOsc(exerciseOptions.oscType.v);
     setExerciseState((prevState) => ({
       ...prevState,
       playArp: exerciseOptions.playArp.v,

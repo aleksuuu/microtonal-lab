@@ -1,4 +1,5 @@
 export enum OptionType {
+  OSCTYPE = "osc-type",
   SCALENAME = "scale-name",
   SMALLERTHANEQUAVE = "smaller-than-equave",
   LARGERTHANEQUAVE = "larger-than-equave",
@@ -17,8 +18,16 @@ export enum AllowedScales {
   EDO_31 = "31edo",
 }
 
+export enum SynthOscType {
+  SINE = "sine",
+  TRIANGLE = "triangle",
+  SQUARE = "square",
+  SAWTOOTH = "sawtooth",
+}
+
 export type ExerciseOptions = {
-  scaleName: { type: OptionType.SCALENAME; v: string };
+  oscType: { type: OptionType.OSCTYPE; v: SynthOscType };
+  scaleName: { type: OptionType.SCALENAME; v: AllowedScales };
   smallerThanEquave: { type: OptionType.SMALLERTHANEQUAVE; v: boolean };
   largerThanEquave: { type: OptionType.LARGERTHANEQUAVE; v: boolean };
   playArp: { type: OptionType.PLAYARP; v: boolean };
