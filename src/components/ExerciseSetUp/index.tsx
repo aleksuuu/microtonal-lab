@@ -2,6 +2,7 @@ import Checkbox from "../Checkbox";
 import FreqInput from "../FreqInput";
 import NumberInput from "../NumberInput";
 import Button from "../Button";
+import MenuOptions from "../MenuOptions";
 import "./index.scss";
 import { useState } from "react";
 import { OptionType, AllowedScales, SynthOscType } from "../../common/types";
@@ -27,59 +28,27 @@ const ExerciseSetUp = ({
 }: Props) => {
   const [numQuestionsIsDisabled, setNumQuestionsIsDisabled] = useState(true);
 
-  const makeScaleOptions = (
-    defaultScale: AllowedScales
-  ): React.ReactElement => {
-    const options = [];
-    const scaleArr = Object.values(AllowedScales); // otherwise the for loop will give me the keys of the enum not the values
-    for (const scale of scaleArr) {
-      if (scale === defaultScale) {
-        options.push(
-          <option value={scale} selected>
-            {scale}
-          </option>
-        );
-      } else {
-        options.push(<option value={scale}>{scale}</option>);
-      }
-    }
-    return (
-      <select id={OptionType.SCALENAME} onChange={handleMenuSelectChange}>
-        {options}
-      </select>
-    );
-  };
-
-  const makeOscOptions = (defaultOsc: SynthOscType): React.ReactElement => {
-    const options = [];
-    const oscArr = Object.values(SynthOscType);
-    for (const osc of oscArr) {
-      if (osc === defaultOsc) {
-        options.push(
-          <option value={osc} selected>
-            {osc}
-          </option>
-        );
-      } else {
-        options.push(<option value={osc}>{osc}</option>);
-      }
-    }
-    return (
-      <select id={OptionType.OSCTYPE} onChange={handleMenuSelectChange}>
-        {options}
-      </select>
-    );
-  };
-
   return (
     <form className="exercise-set-up" method="post" onSubmit={handleSubmit}>
       <div>
         <h2>Select a sound:</h2>
-        {makeOscOptions(SynthOscType.TRIANGLE)}
+        <MenuOptions
+          defaultOption={SynthOscType.TRIANGLE}
+          id={OptionType.OSCTYPE}
+          onChange={handleMenuSelectChange}
+        >
+          {Object.values(SynthOscType)}
+        </MenuOptions>
       </div>
       <div>
         <h2>Select a scale:</h2>
-        {makeScaleOptions(AllowedScales.EDO_24)}
+        <MenuOptions
+          defaultOption={AllowedScales.EDO_24}
+          id={OptionType.SCALENAME}
+          onChange={handleMenuSelectChange}
+        >
+          {Object.values(AllowedScales)}
+        </MenuOptions>
       </div>
       <div>
         <h2>Include intervals…</h2>
