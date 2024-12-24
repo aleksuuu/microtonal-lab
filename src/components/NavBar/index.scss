@@ -3,7 +3,7 @@
 // modified from https://www.codewithfaraz.com/content/20/create-a-responsive-navbar-header-with-pure-css
 
 .active {
-  color: $primary-text-color;
+  color: $default-text-color;
 }
 
 nav {
@@ -24,7 +24,7 @@ nav > header {
 
 nav > header > a > .nav-title {
   display: inline-block;
-  color: $primary-text-color;
+  color: $default-text-color;
   padding: $space-default * 3;
 }
 
@@ -46,7 +46,7 @@ nav > .nav-links > a {
     color: $highlight-text-color;
   }
   &.active {
-    color: $primary-text-color;
+    color: $default-text-color;
   }
 }
 

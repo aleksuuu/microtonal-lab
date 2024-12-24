@@ -26,7 +26,7 @@ const Button = ({
 }: Props) => {
   const classes = [
     isAnswerButton ? "ans-button" : "",
-    border ? border : BorderType.Hidden,
+    border ? border : BorderType.Normal,
   ];
   return (
     <button

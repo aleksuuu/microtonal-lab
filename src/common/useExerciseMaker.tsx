@@ -1,5 +1,11 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { ExerciseOptions, IntervalWithNotes, Note, Interval } from "./types";
+import {
+  ExerciseOptions,
+  IntervalWithNotes,
+  Note,
+  Interval,
+  StatsPerQuestion,
+} from "./types";
 import { Synth, PolySynth, now } from "tone";
 import scales from "./scales.json";
 import { freqToMidi, centsToFreq } from "./UtilityFuncs";
@@ -30,6 +36,11 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
   const [stats, setStats] = useState({
     numAnswered: 0,
+    details: [] as StatsPerQuestion[],
+  });
+
+  const [currDetail, setCurrDetail] = useState<StatsPerQuestion>({
+    interval: exerciseState.currInterval,
     numCorrect: 0,
     numWrong: 0,
   });
@@ -51,6 +62,14 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       }).toDestination(),
     []
   );
+
+  useEffect(() => {
+    setCurrDetail({
+      interval: exerciseState.currInterval,
+      numCorrect: 0,
+      numWrong: 0,
+    });
+  }, [exerciseState.currInterval]);
 
   useEffect(() => {
     if (exerciseState.willMakeInterval && exerciseState.didSetUp) {
@@ -449,8 +468,14 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   const resetStats = () => {
     setStats(() => ({
       numAnswered: 0,
-      numCorrect: 0,
-      numWrong: 0,
+      details: [],
+    }));
+  };
+
+  const doneWithCurrQuestion = () => {
+    setStats((prevState) => ({
+      ...prevState,
+      details: prevState.details.concat(currDetail),
     }));
   };
 
@@ -459,9 +484,9 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       ...prevState,
       currAnswerIsCorrect: true,
     }));
-    setStats((prevStats) => ({
-      ...prevStats,
-      numCorrect: prevStats.numCorrect + 1,
+    setCurrDetail((prevState) => ({
+      ...prevState,
+      numCorrect: 1,
     }));
   };
   const answerIsWrong = () => {
@@ -469,9 +494,9 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       ...prevState,
       currAnswerIsCorrect: false,
     }));
-    setStats((prevStats) => ({
-      ...prevStats,
-      numWrong: prevStats.numWrong + 1,
+    setCurrDetail((prevState) => ({
+      ...prevState,
+      numWrong: prevState.numWrong + 1,
     }));
   };
 
@@ -516,6 +541,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       })),
     setUp,
     verifyAnswer,
+    doneWithCurrQuestion,
   };
 };
 

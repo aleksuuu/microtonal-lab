@@ -2,14 +2,23 @@
 @import "./styles/variables";
 
 body {
-  color: rgba(0, 0, 0, 0.7);
-  background-color: rgba(0, 0, 0, 0.04);
+  color: $default-text-color;
+  background-color: $default-background-color;
 }
 main {
   padding-left: $space-default * 6;
   padding-right: $space-default * 6;
 }
 
+th,
+td {
+  padding: $space-default;
+  border: 1px solid $default-text-color;
+  text-align: center;
+}
+table {
+  margin-top: $space-default;
+}
 p {
   line-height: $default-line-height;
 }

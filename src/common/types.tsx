@@ -35,3 +35,9 @@ export type Note = {
 };
 
 export type Interval = { name: string; cents: number };
+
+export type StatsPerQuestion = {
+  interval: IntervalWithNotes | null;
+  numCorrect: number;
+  numWrong: number;
+};

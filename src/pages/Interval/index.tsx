@@ -85,11 +85,11 @@ const Interval = () => {
     currAnswerIsCorrect,
     formattedCurrNotes,
     numAnswered,
-    numCorrect,
-    numWrong,
+    details,
     resetStats,
     numQuestions,
     infiniteMode,
+    doneWithCurrQuestion,
   } = useExerciseMaker(options);
 
   const handleBack = () => {
@@ -103,10 +103,12 @@ const Interval = () => {
   };
 
   const handleEnd = () => {
+    doneWithCurrQuestion();
     setExerciseState(ExerciseState.result);
   };
 
   const handleNext = () => {
+    doneWithCurrQuestion();
     setWillMakeInterval(true);
     setWillPlayInterval(true);
   };
@@ -175,8 +177,7 @@ const Interval = () => {
     case ExerciseState.result:
       render = (
         <ExerciseResult
-          totalCorrect={numCorrect}
-          totalWrong={numWrong}
+          details={details}
           totalQuestionsAnswered={numAnswered}
           totalSeconds={totalSeconds}
           reset={handleBack}

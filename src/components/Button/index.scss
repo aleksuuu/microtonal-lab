@@ -3,7 +3,7 @@
 
 button {
   display: inline-block;
-  border: solid 1px transparent;
+  border: solid 1px $default-border-color;
   padding: 8px 16px;
   margin: 4px;
   border-radius: 5px;
@@ -14,17 +14,17 @@ button {
   -moz-appearance: none;
 
   background-color: $secondary-background-color;
-  color: $primary-text-color;
+  color: $default-text-color;
 
   &:disabled {
-    color: rgba($primary-text-color, 0.3);
+    color: rgba($default-text-color, 0.3);
     background-color: rgba($secondary-background-color, 0.3);
   }
 
   &:hover:enabled,
   &:focus:enabled {
     background-color: $primary-background-color;
-    color: $inverse-primary-text-color;
+    color: $inverse-default-text-color;
   }
   &:focus {
     outline: 1px solid #fff;
@@ -37,17 +37,17 @@ button {
     background-color: $default-background-color;
     &:hover {
       background-color: $primary-background-color;
-      color: $inverse-primary-text-color;
+      color: $inverse-default-text-color;
     }
     &:focus {
-      color: $primary-text-color;
+      color: $default-text-color;
     }
   }
   &.border-hidden {
     border-color: transparent;
   }
   &.border-normal {
-    border-color: $normal-border-color;
+    border-color: $default-border-color;
   }
   &.border-success {
     border-color: $success-border-color;
