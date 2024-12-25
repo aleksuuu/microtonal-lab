@@ -12,17 +12,38 @@ const FreqToMidi = () => {
     ALLNOTESOFFCURRENTCHANNEL = "all-notes-off-curr-chan",
     ALLNOTESOFFALLCHANNELS = "all-notes-off-all-chans",
   }
+  type MicrotonalNote = {
+    currFreq: number;
+    midiNote: number;
+    pitchbend: number;
+    isOn: boolean;
+    lastNoteOn?: number; // This is for when currFreq has been changed but a noteoff hasn't been sent for the previous frequency. When a noteon is sent for currFreq, a noteoff will be sent for prevFreq. It should be midi note number of the last note on in this channel
+  };
   useEffect(() => {
     WebMidi.enable()
       .then(onWebMidiEnabled)
       .catch((err) => console.error("WebMidi could not be enabled.", err));
+    initMicrotonalNotes();
   }, []);
   const [midiOutputs, setMidiOutputs] = useState<
     { value: string; id: string }[]
   >([]);
   const [output, setOutput] = useState<Output | undefined>();
-  const freqs = [110, 220, 330, 440, 550, 660, 770, 880];
-  const pitchBendRange = 2; // semitones
+  const [microtonalNotes, setMicrotonalNotes] = useState(
+    [] as MicrotonalNote[]
+  );
+  let pitchBendRange = 2; // semitones
+  const initMicrotonalNotes = () => {
+    if (microtonalNotes.length === 0) {
+      const baseFreq = 110;
+      for (let i = 0; i < 8; i++) {
+        const freq = baseFreq * (i + 1);
+        setMicrotonalNotes((prev) => {
+          return prev.concat(freqToMicrotonalNote(freq, false));
+        });
+      }
+    }
+  };
   const onWebMidiEnabled = () => {
     setMidiOutputs(
       WebMidi.outputs.map(({ name, id }) => ({ value: name, id }))
@@ -71,30 +92,66 @@ const FreqToMidi = () => {
   };
 
   const sendMicrotonalNoteOn = (
-    midiNoteFloat: number,
+    microtonalNote: MicrotonalNote,
     outputChannel: OutputChannel
   ) => {
-    const actualMidiNote = Math.floor(midiNoteFloat);
-    const pitchBend = (midiNoteFloat - actualMidiNote) / pitchBendRange;
-    outputChannel.sendPitchBend(pitchBend);
-    outputChannel.sendNoteOn(actualMidiNote);
-  };
-  const sendNoteOnForChannel = (channel: number) => {
-    if (output) {
-      const freq = freqs[channel - 1];
-      const midiNoteFloat = ftom(freq);
-      const outputChannel = output.channels[channel];
-      sendMicrotonalNoteOn(midiNoteFloat, outputChannel);
-    }
+    outputChannel.sendPitchBend(microtonalNote.pitchbend);
+    outputChannel.sendNoteOn(microtonalNote.midiNote);
   };
 
-  const sendNoteOffForChannel = (channel: number) => {
-    if (output) {
-      const freq = freqs[channel - 1];
-      const midiNote = Math.floor(ftom(freq));
-      const outputChannel = output.channels[channel];
-      outputChannel.sendNoteOff(midiNote);
-    }
+  const freqToMicrotonalNote = (
+    freq: number,
+    isOn: boolean,
+    prevMidiNote?: number
+  ): MicrotonalNote => {
+    const midiNoteFloat = ftom(freq);
+    const midiNote = Math.floor(midiNoteFloat);
+    const pitchbend = (midiNoteFloat - midiNote) / pitchBendRange;
+    return {
+      currFreq: freq,
+      midiNote: midiNote,
+      pitchbend: pitchbend,
+      isOn: isOn,
+      lastNoteOn: prevMidiNote,
+    };
+  };
+
+  const setOneMicrotonalNote = (
+    channel: number,
+    frequency?: number,
+    isOn?: boolean
+  ) => {
+    const newMicrotonalNotes = microtonalNotes.map((oldNote, i) => {
+      if (i === channel - 1) {
+        let newFreq = oldNote.currFreq;
+        let newIsOn = oldNote.isOn;
+        let newLastNoteOn = oldNote.lastNoteOn;
+        if (frequency !== undefined) {
+          newFreq = frequency;
+        }
+        if (isOn !== undefined) {
+          newIsOn = isOn;
+          if (output) {
+            const outputChannel = output.channels[i + 1];
+            if (isOn) {
+              if (oldNote.isOn) {
+                if (oldNote.lastNoteOn !== undefined) {
+                  outputChannel.sendNoteOff(oldNote.lastNoteOn);
+                }
+              }
+              newLastNoteOn = oldNote.midiNote;
+              sendMicrotonalNoteOn(oldNote, outputChannel);
+            } else {
+              outputChannel.sendNoteOff(oldNote.midiNote);
+            }
+          }
+        }
+        return freqToMicrotonalNote(newFreq, newIsOn, newLastNoteOn);
+      } else {
+        return oldNote;
+      }
+    });
+    setMicrotonalNotes(newMicrotonalNotes);
   };
 
   const handleFreqInput = (id: string, v: number) => {
@@ -104,8 +161,13 @@ const FreqToMidi = () => {
       return;
     }
     const channel = textAndChannelNumber[1];
-    freqs[channel - 1] = v;
+    setOneMicrotonalNote(channel, v);
   };
+
+  const handlePitchBendInput = (id: string, v: number) => {
+    pitchBendRange = v;
+  };
+
   const ftom = (freq: number): number => {
     return 12 * Math.log2(freq / 440) + 69;
   };
@@ -121,10 +183,10 @@ const FreqToMidi = () => {
     }
     switch (midiAction) {
       case MidiActions.NOTEON:
-        sendNoteOnForChannel(channelNumber);
+        setOneMicrotonalNote(channelNumber, undefined, true);
         break;
       case MidiActions.NOTEOFF:
-        sendNoteOffForChannel(channelNumber);
+        setOneMicrotonalNote(channelNumber, undefined, false);
         break;
       case MidiActions.ALLNOTESOFFCURRENTCHANNEL:
         break;
@@ -141,7 +203,8 @@ const FreqToMidi = () => {
       <li key={channel}>
         <NumberInput
           id={`freq-input-${channel}`}
-          initValue={freqs[channel - 1]}
+          initValue={microtonalNotes[channel - 1].currFreq}
+          isFreqValue={true}
           onChange={handleFreqInput}
         >
           {`Frequency ${channel}`}
@@ -157,6 +220,9 @@ const FreqToMidi = () => {
   };
 
   const makeFreqInputRows = (numberOfFreqs: number): React.ReactElement => {
+    if (microtonalNotes.length === 0) {
+      return <></>;
+    }
     const rows = [];
     for (let chan = 1; chan <= numberOfFreqs; chan++) {
       rows.push(makeFreqInputRow(chan));
@@ -171,7 +237,21 @@ const FreqToMidi = () => {
         <MenuOptions id="midi-outputs" onChange={handleMidiOutputChange}>
           {midiOutputs}
         </MenuOptions>
-        <h2>Enter Frequencies: </h2>
+      </div>
+      <div>
+        <h2>Pitch bend range:</h2>
+        <NumberInput
+          id="pitch-bend-input"
+          initValue={2}
+          isFreqValue={false}
+          onChange={handlePitchBendInput}
+        >
+          (This value should match the upward pitch bend range of your MIDI
+          instrument (DAW/plugin/etc)).
+        </NumberInput>
+      </div>
+      <div>
+        <h2>Enter frequencies: </h2>
         {makeFreqInputRows(8)}
         <br />
         <Button id="all-notes-off-all-chans" onClick={handleButtonOnClick}>
