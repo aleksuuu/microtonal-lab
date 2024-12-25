@@ -81,6 +81,11 @@ li {
   font-size: $font-m;
 }
 
+li {
+  margin-bottom: $space-default * 1.5;
+  margin-top: $space-default * 1.5;
+}
+
 label {
   margin-right: $space-default;
 }

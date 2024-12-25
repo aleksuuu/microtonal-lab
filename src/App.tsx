@@ -2,7 +2,7 @@ import "./App.scss";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Interval from "./pages/Interval";
-import Keyboard from "./pages/Keyboard";
+import FreqToMidi from "./pages/FreqToMidi";
 import NavBar from "./components/NavBar";
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/interval" element={<Interval />} />
-          <Route path="/keyboard" element={<Keyboard />} />
+          <Route path="/freq-to-midi" element={<FreqToMidi />} />
         </Routes>
       </main>
     </>

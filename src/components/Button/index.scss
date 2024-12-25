@@ -21,17 +21,17 @@ button {
     background-color: rgba($secondary-background-color, 0.3);
   }
 
-  &:hover:enabled,
-  &:focus:enabled {
+  &:hover:enabled {
     background-color: $primary-background-color;
     color: $inverse-default-text-color;
   }
-  &:focus {
-    outline: 1px solid #fff;
-    outline-offset: -4px;
-  }
+
+  // &:focus {
+  //   outline: 1px solid #fff;
+  //   outline-offset: -4px;
+  // }
   &:active:enabled {
-    transform: scale(0.98);
+    transform: scale(0.95);
   }
   &.ans-button {
     background-color: $default-background-color;

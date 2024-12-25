@@ -14,7 +14,12 @@ const Home = () => {
       </p>
       <h2>Current available features</h2>
       <ul>
-        <li>- Generate intervals in 24edo</li>
+        <li>- Generate intervals in 12, 19, 24, or 31edo</li>
+        <li>- Select from 4 playback sounds</li>
+        <li>
+          - Enter up to 8 frequencies and convert them to MPE MIDI note messages
+          (with pitchbend messages)
+        </li>
       </ul>
       <h2></h2>
     </>
