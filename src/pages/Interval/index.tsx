@@ -13,6 +13,8 @@ import useExerciseMaker from "../../common/useExerciseMaker";
 
 // run with `npm run dev`
 
+// TODO: use dynamic imports
+
 const Interval = () => {
   const [options, setOptions] = useState(
     () => JSON.parse(JSON.stringify(initOptions)) // deep copy
