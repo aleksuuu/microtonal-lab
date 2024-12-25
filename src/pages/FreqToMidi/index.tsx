@@ -168,7 +168,7 @@ const FreqToMidi = () => {
     setOneMicrotonalNote(channel, v);
   };
 
-  const handlePitchBendInput = (id: string, v: number) => {
+  const handlePitchBendInput = (_id: string, v: number) => {
     pitchBendRange = v;
   };
 
