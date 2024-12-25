@@ -8,6 +8,14 @@ body {
 main {
   padding-left: $space-default * 6;
   padding-right: $space-default * 6;
+  font-weight: $normal-font-weight;
+  br {
+    font-weight: $bold-font-weight;
+  }
+  p,
+  li {
+    line-height: $default-line-height;
+  }
 }
 
 th,
@@ -18,9 +26,6 @@ td {
 }
 table {
   margin-top: $space-default;
-}
-p {
-  line-height: $default-line-height;
 }
 
 @font-face {
@@ -65,19 +70,21 @@ p {
 
 h1 {
   font-size: $font-xl;
+  font-weight: $bold-font-weight;
 }
 
 h2 {
   font-size: $font-l;
-
   margin-bottom: $space-default;
   margin-top: $space-default * 2;
+  font-weight: $bold-font-weight;
 }
 
 p,
 button,
 label,
-li {
+li,
+input {
   font-size: $font-m;
 }
 

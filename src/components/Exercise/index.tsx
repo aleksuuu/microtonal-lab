@@ -129,7 +129,7 @@ const Exercise = ({
             ></QuestionCount>
           </span>
         </div>
-        <div className="button-group">
+        <div>
           <ButtonGroup
             answerIsCorrect={answerIsCorrect || answerIsShown}
             highlightButton={highlightButton}

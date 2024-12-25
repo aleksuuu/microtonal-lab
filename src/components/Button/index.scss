@@ -3,7 +3,7 @@
 
 button {
   display: inline-block;
-  border: solid 1px $default-border-color;
+  border: solid $default-border-width $default-border-color;
   padding: 8px 16px;
   margin: 4px;
   border-radius: 5px;

@@ -1,0 +1,9 @@
+@import "../../styles/variables";
+
+.button-group {
+  padding-top: $space-default;
+  padding-bottom: $space-default;
+  li {
+    margin: 0;
+  }
+}

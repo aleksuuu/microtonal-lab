@@ -3,7 +3,7 @@ $secondary-background-color: #d4e6b5;
 $default-background-color: rgba(0, 0, 0, 0.04);
 $navbar-background-color: rgba(0, 0, 0, 0.02);
 
-$highlight-text-color: #afc97e;
+$highlight-text-color: green;
 $default-text-color: rgba(0, 0, 0, 0.7);
 $inverse-default-text-color: white;
 $secondary-text-color: #7c7c7d;
@@ -13,7 +13,17 @@ $success-border-color: #28e700;
 $failure-border-color: #ff859a;
 $divider-border-color: #d4e6b5;
 
-$sans-font-family: Lato, Helvetica, Arial, sans-serif;
+$default-border-width: 1px;
+
+$default-margin-for-input: 5px;
+
+$sans-font-family: Poppins, Helvetica, Arial, sans-serif;
+
+$normal-font-weight: 300;
+
+$bold-font-weight: 400;
+
+$header-font-weight: 200;
 
 $space-default: 12px;
 
@@ -25,4 +35,4 @@ $font-m: 18px;
 $font-s: 15px;
 $font-xs: 10px;
 
-$default-line-height: 1.5rem;
+$default-line-height: 1.5;

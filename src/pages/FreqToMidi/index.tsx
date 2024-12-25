@@ -20,15 +20,14 @@ const FreqToMidi = () => {
     lastNoteOn?: number; // This is for when currFreq has been changed but a noteoff hasn't been sent for the previous frequency. When a noteon is sent for currFreq, a noteoff will be sent for prevFreq. It should be midi note number of the last note on in this channel
   };
   useEffect(() => {
-    WebMidi.enable()
-      .then(onWebMidiEnabled)
-      .catch((err) => console.error("WebMidi could not be enabled.", err));
+    WebMidi.enable().then(onWebMidiEnabled).catch(onWebMidiError);
     initMicrotonalNotes();
   }, []);
   const [midiOutputs, setMidiOutputs] = useState<
     { value: string; id: string }[]
   >([]);
   const [output, setOutput] = useState<Output | undefined>();
+  const [midiEnabled, setMidiEnabled] = useState(false);
   const [microtonalNotes, setMicrotonalNotes] = useState(
     [] as MicrotonalNote[]
   );
@@ -48,7 +47,12 @@ const FreqToMidi = () => {
     setMidiOutputs(
       WebMidi.outputs.map(({ name, id }) => ({ value: name, id }))
     );
+    setMidiEnabled(true);
     setOutput(WebMidi.outputs[0]);
+  };
+  const onWebMidiError = (err: any) => {
+    console.error("WebMidi could not be enabled.", err);
+    setMidiEnabled(false);
   };
   const handleMidiOutputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const outputId = e.target.selectedOptions.item(0)?.id;
@@ -230,8 +234,33 @@ const FreqToMidi = () => {
     return <ul className="freq-input-rows">{rows}</ul>;
   };
 
+  const errMsg = (): React.ReactElement => {
+    return (
+      <div hidden={midiEnabled}>
+        <h2>If you don't see any MIDI output…</h2>
+        <ul>
+          <li>
+            - Use a supported browser, such as Chrome or Firefox (Safari is not
+            natively supported).
+          </li>
+          <li>- Grant MIDI permissions in your browser.</li>
+          <li>
+            - Make sure you have MIDI devices connected. If you’d like to route
+            MIDI messages to a DAW, you could use a virtual MIDI bus (
+            <a href="https://support.apple.com/guide/audio-midi-setup/transfer-midi-information-between-apps-ams1013/mac">
+              macOS guide
+            </a>
+            ).
+          </li>
+        </ul>
+      </div>
+    );
+  };
+
   return (
     <>
+      <title>Microtonal Lab - Frequency to MIDI</title>
+      {errMsg()}
       <div>
         <h2>Select a MIDI output: </h2>
         <MenuOptions id="midi-outputs" onChange={handleMidiOutputChange}>

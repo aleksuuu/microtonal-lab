@@ -81,16 +81,20 @@ nav,
 output,
 ruby,
 section,
+select,
+input,
 summary,
 time,
 mark,
 audio,
+button,
 video {
   margin: 0;
   border: 0;
   padding: 0;
   font-size: 100%;
   font-family: $sans-font-family;
+  font-weight: $normal-font-weight;
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./index.scss";
 
 interface Props {
   children: string;
@@ -14,6 +15,7 @@ const Checkbox = ({ children, id, initValue, onChange }: Props) => {
       <label>
         <input
           id={id}
+          className="checkbox-input"
           name={id}
           type="checkbox"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

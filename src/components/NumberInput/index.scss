@@ -3,7 +3,8 @@
 .number-input {
   input {
     width: 150px;
-    font-size: $font-m;
     margin-top: 4px;
+    border: $default-border-width solid $default-border-color;
+    padding-left: $default-margin-for-input;
   }
 }

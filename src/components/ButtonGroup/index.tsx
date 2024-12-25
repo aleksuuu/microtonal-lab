@@ -1,5 +1,6 @@
 import Button from "../Button";
 import { BorderType } from "../Button";
+import "./index.scss";
 
 interface Props {
   answerIsCorrect: boolean;
@@ -39,7 +40,7 @@ const ButtonGroup = ({
 
   return (
     <div>
-      <ul className="flex-row justify-center">
+      <ul className="flex-row justify-center button-group">
         {items.map((item) => (
           <li key={item}>
             <Button
