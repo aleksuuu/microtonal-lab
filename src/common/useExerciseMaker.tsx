@@ -400,7 +400,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     (firstNote: Note, secondNote: Note): string => {
       return `${firstNote.name}${getEquaveFromCents(firstNote.cents)}, ${
         secondNote.name
-      } ${getEquaveFromCents(secondNote.cents)} (${Math.round(
+      }${getEquaveFromCents(secondNote.cents)} (${Math.round(
         Math.abs(secondNote.cents - firstNote.cents)
       )}¢)`;
     },

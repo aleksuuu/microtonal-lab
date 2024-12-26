@@ -12,6 +12,7 @@ interface Props {
   id?: string;
   border?: BorderType;
   disabled?: boolean;
+  disabledColor?: boolean;
   isAnswerButton?: boolean;
   onClick?: (() => void) | ((id: string) => void);
   type?: "button" | "submit" | "reset" | undefined;
@@ -22,6 +23,7 @@ const Button = ({
   id,
   border,
   disabled,
+  disabledColor,
   isAnswerButton,
   onClick,
   type,
@@ -29,6 +31,7 @@ const Button = ({
   const classes = [
     isAnswerButton ? "ans-button" : "",
     border ? border : BorderType.Normal,
+    disabledColor ? "disabled-color" : "",
   ];
   const handleOnClick = () => {
     if (!onClick) {

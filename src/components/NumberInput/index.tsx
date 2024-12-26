@@ -4,6 +4,7 @@ import "./index.scss";
 interface Props {
   children?: string;
   className?: string;
+  inputClassName?: string;
   disabled?: boolean;
   id: string;
   initValue: number;
@@ -14,6 +15,7 @@ interface Props {
 const NumberInput = ({
   children,
   className,
+  inputClassName,
   disabled,
   id,
   initValue,
@@ -26,6 +28,7 @@ const NumberInput = ({
       <p>{children}</p>
       <input
         type="number"
+        className={inputClassName}
         disabled={disabled}
         id={id}
         min={isFreqValue ? 20 : 1}

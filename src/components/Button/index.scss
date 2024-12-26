@@ -26,10 +26,6 @@ button {
     color: $inverse-default-text-color;
   }
 
-  // &:focus {
-  //   outline: 1px solid #fff;
-  //   outline-offset: -4px;
-  // }
   &:active:enabled {
     transform: scale(0.95);
   }
@@ -54,5 +50,9 @@ button {
   }
   &.border-failure {
     border-color: $failure-border-color;
+  }
+  &.disabled-color {
+    // not actually disabled
+    color: rgba($default-text-color, 0.3);
   }
 }

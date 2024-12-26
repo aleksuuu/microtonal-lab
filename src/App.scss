@@ -29,12 +29,12 @@ table {
 }
 
 @font-face {
-  font-family: Bravura;
-  src: url(./assets/BravuraText.otf);
+  font-family: "Bravura Text";
+  src: local("Bravura Text"), url(./assets/BravuraText.otf) format("opentype");
 }
 
 .smufl {
-  font-family: "Bravura Text";
+  font-family: "Bravura Text", $sans-font-family;
 }
 
 .center {

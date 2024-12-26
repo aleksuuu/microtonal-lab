@@ -6,5 +6,21 @@
     margin-top: 4px;
     border: $default-border-width solid $default-border-color;
     padding-left: $default-margin-for-input;
+    // &.align-center {
+    //   padding-right: $default-margin-for-input;
+    // }
+  }
+  &.short-input {
+    input {
+      width: 50px;
+    }
+  }
+  &.short-input-no-text {
+    // TODO: this is messy!!
+    width: 75px;
+    text-align: center;
+    input {
+      width: 75%;
+    }
   }
 }

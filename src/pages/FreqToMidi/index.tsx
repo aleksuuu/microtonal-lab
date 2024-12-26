@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Output, OutputChannel, WebMidi } from "webmidi";
+import { Output, WebMidi } from "webmidi";
 import MenuOptions from "../../components/MenuOptions";
-import Button from "../../components/Button";
+import Button, { BorderType } from "../../components/Button";
 import NumberInput from "../../components/NumberInput";
 import "./index.scss";
 
@@ -95,12 +95,23 @@ const FreqToMidi = () => {
     return null;
   };
 
-  const sendMicrotonalNoteOn = (
-    microtonalNote: MicrotonalNote,
-    outputChannel: OutputChannel
+  const sendMicrotonalNoteMsg = (
+    oldNote: MicrotonalNote,
+    newNote: MicrotonalNote,
+    channel: number
   ) => {
-    outputChannel.sendPitchBend(microtonalNote.pitchbend);
-    outputChannel.sendNoteOn(microtonalNote.midiNote);
+    if (output) {
+      const outputChannel = output.channels[channel];
+      if (newNote.isOn) {
+        if (oldNote.isOn && oldNote.lastNoteOn !== undefined) {
+          outputChannel.sendNoteOff(oldNote.lastNoteOn);
+        }
+        outputChannel.sendPitchBend(newNote.pitchbend);
+        outputChannel.sendNoteOn(newNote.midiNote);
+      } else {
+        outputChannel.sendNoteOff(newNote.midiNote);
+      }
+    }
   };
 
   const freqToMicrotonalNote = (
@@ -135,22 +146,13 @@ const FreqToMidi = () => {
         }
         if (isOn !== undefined) {
           newIsOn = isOn;
-          if (output) {
-            const outputChannel = output.channels[i + 1];
-            if (isOn) {
-              if (oldNote.isOn) {
-                if (oldNote.lastNoteOn !== undefined) {
-                  outputChannel.sendNoteOff(oldNote.lastNoteOn);
-                }
-              }
-              newLastNoteOn = oldNote.midiNote;
-              sendMicrotonalNoteOn(oldNote, outputChannel);
-            } else {
-              outputChannel.sendNoteOff(oldNote.midiNote);
-            }
+          if (isOn) {
+            newLastNoteOn = oldNote.midiNote;
           }
         }
-        return freqToMicrotonalNote(newFreq, newIsOn, newLastNoteOn);
+        const newNote = freqToMicrotonalNote(newFreq, newIsOn, newLastNoteOn);
+        sendMicrotonalNoteMsg(oldNote, newNote, i + 1);
+        return newNote;
       } else {
         return oldNote;
       }
@@ -202,23 +204,42 @@ const FreqToMidi = () => {
     }
   };
 
+  const makeNoteOnOrOffButton = (channel: number): React.ReactElement => {
+    const isOn = microtonalNotes[channel - 1].isOn;
+    const buttonId = `note-${isOn ? "off" : "on"}-${channel}`; // this is flipped because the id should indicate the function of the button, which is to turn on when the note is off
+    const buttonBorder = isOn ? BorderType.Success : BorderType.Normal;
+    // const buttonText = isOn ? "⏽" : "⭘";
+    const buttonText = "⏻";
+    return (
+      <Button
+        id={buttonId}
+        border={buttonBorder}
+        disabledColor={!isOn}
+        onClick={handleButtonOnClick}
+      >
+        {buttonText}
+      </Button>
+    );
+  };
+
   const makeFreqInputRow = (channel: number): React.ReactElement => {
     return (
       <li key={channel}>
+        {/* TODO: eventually switch to FreqInput with correct styles */}
+        {/* <FreqInput
+          id={`freq-input-${channel}`}
+          initValue={microtonalNotes[channel - 1].currFreq}
+          onChange={handleFreqInput}
+          numberInputClassName="short-input-no-text"
+        ></FreqInput> */}
         <NumberInput
           id={`freq-input-${channel}`}
           initValue={microtonalNotes[channel - 1].currFreq}
           isFreqValue={true}
           onChange={handleFreqInput}
-        >
-          {`Frequency ${channel}`}
-        </NumberInput>
-        <Button id={`note-on-${channel}`} onClick={handleButtonOnClick}>
-          Note On
-        </Button>
-        <Button id={`note-off-${channel}`} onClick={handleButtonOnClick}>
-          Note Off
-        </Button>
+          className="short-input-no-text"
+        ></NumberInput>
+        {makeNoteOnOrOffButton(channel)}
       </li>
     );
   };
@@ -231,7 +252,7 @@ const FreqToMidi = () => {
     for (let chan = 1; chan <= numberOfFreqs; chan++) {
       rows.push(makeFreqInputRow(chan));
     }
-    return <ul className="freq-input-rows">{rows}</ul>;
+    return <ul className="freq-input-rows flex-row">{rows}</ul>;
   };
 
   const errMsg = (): React.ReactElement => {
@@ -274,6 +295,7 @@ const FreqToMidi = () => {
           initValue={2}
           isFreqValue={false}
           onChange={handlePitchBendInput}
+          className="short-input"
         >
           (This value should match the upward pitch bend range of your MIDI
           instrument (DAW/plugin/etc)).
