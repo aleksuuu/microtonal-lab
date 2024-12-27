@@ -1,7 +1,4 @@
-import Exercise from "../../components/Exercise";
-import ExerciseSetUp from "../../components/ExerciseSetUp";
-import ExerciseResult from "../../components/ExerciseResult";
-import { useState } from "react";
+import { lazy, useState, Suspense } from "react";
 import { useStopwatch } from "react-timer-hook";
 import {
   AllowedScales,
@@ -14,6 +11,10 @@ import useExerciseMaker from "../../common/useExerciseMaker";
 // run with `npm run dev`
 
 // TODO: use dynamic imports
+
+const Exercise = lazy(() => import("../../components/Exercise"));
+const ExerciseSetUp = lazy(() => import("../../components/ExerciseSetUp"));
+const ExerciseResult = lazy(() => import("../../components/ExerciseResult"));
 
 const Interval = () => {
   const [options, setOptions] = useState(
@@ -159,7 +160,7 @@ const Interval = () => {
     }
   };
 
-  let render: JSX.Element;
+  let render: React.ReactElement;
   switch (exerciseState) {
     case ExerciseState.setUp:
       render = (
@@ -213,7 +214,7 @@ const Interval = () => {
   return (
     <>
       <title>Microtonal Lab - Interval</title>
-      {render}
+      <Suspense fallback={<p>Loading...</p>}>{render}</Suspense>
     </>
   );
 };
