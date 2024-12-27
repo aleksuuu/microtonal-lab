@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Output, WebMidi } from "webmidi";
 import MenuOptions from "../../components/MenuOptions";
-import Button, { BorderType } from "../../components/Button";
+import Button from "../../components/Button";
+import { BorderType } from "../../common/types";
 import NumberInput from "../../components/NumberInput";
 import "./index.scss";
+import { freqToMidi } from "../../common/UtilityFuncs";
 
 const FreqToMidi = () => {
   enum MidiActions {
@@ -31,7 +33,15 @@ const FreqToMidi = () => {
   const [microtonalNotes, setMicrotonalNotes] = useState(
     [] as MicrotonalNote[]
   );
-  let pitchBendRange = 2; // semitones
+  const [pitchBendRange, setPitchBendRange] = useState(2);
+  const [freqInputValues, setFreqInputValues] = useState([] as number[]);
+
+  useEffect(() => {
+    if (microtonalNotes) {
+      setFreqInputValues(microtonalNotes.map((note) => note.currFreq));
+    }
+  }, [microtonalNotes]);
+
   const initMicrotonalNotes = () => {
     if (microtonalNotes.length === 0) {
       const baseFreq = 110;
@@ -119,7 +129,7 @@ const FreqToMidi = () => {
     isOn: boolean,
     prevMidiNote?: number
   ): MicrotonalNote => {
-    const midiNoteFloat = ftom(freq);
+    const midiNoteFloat = freqToMidi(freq);
     const midiNote = Math.floor(midiNoteFloat);
     const pitchbend = (midiNoteFloat - midiNote) / pitchBendRange;
     return {
@@ -160,7 +170,7 @@ const FreqToMidi = () => {
     setMicrotonalNotes(newMicrotonalNotes);
   };
 
-  const handleFreqInput = (id: string, v: number) => {
+  const handleFreqInputBlur = (id: string, v: number) => {
     const textAndChannelNumber = extractTextAndChannelNumberFrom(id);
     if (!textAndChannelNumber) {
       console.error("Could not get current channel.");
@@ -170,12 +180,25 @@ const FreqToMidi = () => {
     setOneMicrotonalNote(channel, v);
   };
 
-  const handlePitchBendInput = (_id: string, v: number) => {
-    pitchBendRange = v;
+  const handleFreqInputChange = (id: string, v: number) => {
+    const textAndChannelNumber = extractTextAndChannelNumberFrom(id);
+    if (!textAndChannelNumber) {
+      console.error("Could not get current channel.");
+      return;
+    }
+    const channel = textAndChannelNumber[1];
+    const newValues = freqInputValues.map((oldV, i) => {
+      if (i === channel - 1) {
+        return v;
+      } else {
+        return oldV;
+      }
+    });
+    setFreqInputValues(newValues);
   };
 
-  const ftom = (freq: number): number => {
-    return 12 * Math.log2(freq / 440) + 69;
+  const handlePitchBendInput = (_id: string, v: number) => {
+    setPitchBendRange(v);
   };
 
   const handleButtonOnClick = (id: string) => {
@@ -234,9 +257,10 @@ const FreqToMidi = () => {
         ></FreqInput> */}
         <NumberInput
           id={`freq-input-${channel}`}
-          initValue={microtonalNotes[channel - 1].currFreq}
+          value={freqInputValues[channel - 1]}
           isFreqValue={true}
-          onChange={handleFreqInput}
+          onChange={handleFreqInputChange}
+          onBlur={handleFreqInputBlur}
           className="short-input-no-text"
         ></NumberInput>
         {makeNoteOnOrOffButton(channel)}
@@ -292,7 +316,7 @@ const FreqToMidi = () => {
         <h2>Pitch bend range:</h2>
         <NumberInput
           id="pitch-bend-input"
-          initValue={2}
+          value={pitchBendRange}
           isFreqValue={false}
           onChange={handlePitchBendInput}
           className="short-input"

@@ -1,5 +1,4 @@
-import { useState } from "react";
-import "./index.scss";
+import Input from "../Input";
 
 interface Props {
   children?: string;
@@ -7,10 +6,15 @@ interface Props {
   inputClassName?: string;
   disabled?: boolean;
   id: string;
-  initValue: number;
+  value: number;
+  min?: number;
+  max?: number;
   isFreqValue?: boolean;
   onChange: (id: string, v: number) => void;
+  onBlur?: (id: string, v: number) => void;
 }
+
+// TODO: base this on Input
 
 const NumberInput = ({
   children,
@@ -18,32 +22,31 @@ const NumberInput = ({
   inputClassName,
   disabled,
   id,
-  initValue,
+  value,
+  min,
+  max,
   isFreqValue,
   onChange,
+  onBlur,
 }: Props) => {
-  const [value, setValue] = useState(initValue);
+  const minV = min ? min : isFreqValue ? 20 : 1;
+  const maxV = max ? max : isFreqValue ? 10000 : 1000;
   return (
-    <span className={`number-input ${className}`}>
-      <p>{children}</p>
-      <input
-        type="number"
-        className={inputClassName}
-        disabled={disabled}
-        id={id}
-        min={isFreqValue ? 20 : 1}
-        max={isFreqValue ? 10000 : 1000}
-        value={value}
-        step={isFreqValue ? "any" : 1}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          const v = event.target.valueAsNumber;
-          if (v) {
-            setValue(v);
-            onChange(id, v);
-          }
-        }}
-      ></input>
-    </span>
+    <Input
+      className={className}
+      inputClassName={inputClassName}
+      disabled={disabled}
+      id={id}
+      value={value}
+      type="number"
+      min={minV}
+      max={maxV}
+      step={isFreqValue ? "any" : 1}
+      onChange={onChange}
+      onBlur={onBlur}
+    >
+      {children}
+    </Input>
   );
 };
 

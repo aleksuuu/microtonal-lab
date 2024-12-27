@@ -34,6 +34,9 @@ const NavBar = () => {
         <NavLink to="/freq-to-midi" onClick={() => setChecked(false)}>
           Frequency to MIDI
         </NavLink>
+        <NavLink to="/utility-tools" onClick={() => setChecked(false)}>
+          Utility Tools
+        </NavLink>
       </p>
     </nav>
   );

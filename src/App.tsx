@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Interval from "./pages/Interval";
 import FreqToMidi from "./pages/FreqToMidi";
 import NavBar from "./components/NavBar";
+import UtilityTools from "./pages/UtilityTools";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/interval" element={<Interval />} />
           <Route path="/freq-to-midi" element={<FreqToMidi />} />
+          <Route path="/utility-tools" element={<UtilityTools />} />
         </Routes>
       </main>
     </>

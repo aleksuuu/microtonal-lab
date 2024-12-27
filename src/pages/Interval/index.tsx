@@ -164,6 +164,7 @@ const Interval = () => {
     case ExerciseState.setUp:
       render = (
         <ExerciseSetUp
+          options={options}
           error={error}
           handleSubmit={handleSubmit}
           handleMenuSelectChange={handleMenuSelectChange}

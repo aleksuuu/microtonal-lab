@@ -39,18 +39,7 @@ button {
       color: $default-text-color;
     }
   }
-  &.border-hidden {
-    border-color: transparent;
-  }
-  &.border-normal {
-    border-color: $default-border-color;
-  }
-  &.border-success {
-    border-color: $success-border-color;
-  }
-  &.border-failure {
-    border-color: $failure-border-color;
-  }
+  
   &.disabled-color {
     // not actually disabled
     color: rgba($default-text-color, 0.3);

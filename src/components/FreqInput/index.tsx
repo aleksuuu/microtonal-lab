@@ -1,4 +1,3 @@
-import { useState } from "react";
 import NumberInput from "../NumberInput";
 import { freqToNoteName } from "../../common/UtilityFuncs";
 import "./index.scss";
@@ -9,7 +8,7 @@ interface Props {
   numberInputClassName?: string;
   disabled?: boolean;
   id: string;
-  initValue: number;
+  freq: number;
   onChange: (id: string, v: number) => void;
 }
 
@@ -19,21 +18,19 @@ const FreqInput = ({
   numberInputClassName,
   disabled,
   id,
-  initValue,
+  freq,
   onChange,
 }: Props) => {
-  const [freq, setFreq] = useState(initValue);
-
   return (
     <span className={className}>
       <NumberInput
         className={numberInputClassName}
         disabled={disabled}
         id={id}
-        initValue={freq}
+        value={freq}
         isFreqValue={true}
         onChange={(id: string, v: number) => {
-          setFreq(v);
+          // setFreq(v);
           onChange(id, v);
         }}
       >

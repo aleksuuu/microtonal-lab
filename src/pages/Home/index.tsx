@@ -5,10 +5,11 @@ const Home = () => {
       <h2>What is Microtonal Lab?</h2>
       <p>
         Microtonal Lab is an ongoing project by{" "}
-        <a href="https://aleksuuu.github.io">Alexander Wu</a>. You can use it to
-        generate microtonal ear-training exercises, somewhat similar to{" "}
-        <a href="https://www.teoria.com/en/exercises/">teoría</a>. You can view
-        the source code{" "}
+        <a href="https://aleksuuu.github.io">Alexander Wu</a>. You can use it to{" "}
+        <a href="/interval">generate</a> microtonal ear-training exercises,{" "}
+        <a href="/freq-to-midi">send</a> microtonal MIDI messages, and do some
+        microtonal/partial-related <a href="/utility-tools">math</a>. You can
+        view the source code{" "}
         <a href="https://github.com/aleksuuu/microtonal-lab">here</a>. PRs
         welcome!
       </p>
@@ -20,6 +21,7 @@ const Home = () => {
           - Enter up to 8 frequencies and convert them to MPE MIDI note messages
           (with pitchbend messages)
         </li>
+        <li>- Pitch converter (in Utility Tools)</li>
       </ul>
       <h2></h2>
     </>

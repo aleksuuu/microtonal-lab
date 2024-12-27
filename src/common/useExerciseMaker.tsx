@@ -398,9 +398,9 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
   const getFormattedCurrNotes = useCallback(
     (firstNote: Note, secondNote: Note): string => {
-      return `${firstNote.name}${getEquaveFromCents(firstNote.cents)}, ${
+      return `${firstNote.name}${getEquaveFromCents(firstNote.cents) - 1}, ${
         secondNote.name
-      }${getEquaveFromCents(secondNote.cents)} (${Math.round(
+      }${getEquaveFromCents(secondNote.cents) - 1} (${Math.round(
         Math.abs(secondNote.cents - firstNote.cents)
       )}¢)`;
     },

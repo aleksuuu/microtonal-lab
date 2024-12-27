@@ -1,11 +1,5 @@
 import "./index.scss";
-
-export enum BorderType {
-  Hidden = "border-hidden",
-  Normal = "border-normal",
-  Success = "border-success",
-  Failure = "border-failure",
-}
+import { BorderType } from "../../common/types";
 
 interface Props {
   children: string;
@@ -21,7 +15,7 @@ interface Props {
 const Button = ({
   children,
   id,
-  border,
+  border = BorderType.Normal,
   disabled,
   disabledColor,
   isAnswerButton,
@@ -30,7 +24,7 @@ const Button = ({
 }: Props) => {
   const classes = [
     isAnswerButton ? "ans-button" : "",
-    border ? border : BorderType.Normal,
+    border,
     disabledColor ? "disabled-color" : "",
   ];
   const handleOnClick = () => {

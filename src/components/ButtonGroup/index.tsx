@@ -1,5 +1,5 @@
 import Button from "../Button";
-import { BorderType } from "../Button";
+import { BorderType } from "../../common/types";
 import "./index.scss";
 
 interface Props {

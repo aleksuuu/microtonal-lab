@@ -18,6 +18,19 @@ main {
   }
 }
 
+.border-hidden {
+  border-color: transparent;
+}
+.border-normal {
+  border-color: $default-border-color;
+}
+.border-success {
+  border-color: $success-border-color;
+}
+.border-failure {
+  border-color: $failure-border-color;
+}
+
 th,
 td {
   padding: $space-default;
