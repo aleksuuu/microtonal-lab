@@ -87,8 +87,7 @@ const PitchConverter = () => {
       >
         Note name w/ octave
       </TextInput>
-      <br />
-      <p>{textInputHasErr ? "Invalid text input." : ""}</p>
+      <p>{textInputHasErr ? "Unable to parse note name w/ octave." : ""}</p>
       <NumberInput
         id="pitch-converter-add-cents-input"
         value={freqMidiNoteCents.addCents}

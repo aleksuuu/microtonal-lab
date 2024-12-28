@@ -123,23 +123,45 @@ export const getXPartialOf = (baseFreq: number, partialNum: number) => {
   return fromFreq(baseFreq * partialNum);
 };
 
-export const getImaginaryFundamentals = (
-  freq: number,
+export const getCommonFundamentals = (
+  freqs: number[],
   min: number = 20,
   max: number = 220
-): { partialNum: number; fundamental: FreqMidiNoteCents }[] => {
+): { partialNums: number[]; fundamental: FreqMidiNoteCents }[] => {
   const results = [] as {
-    partialNum: number;
+    partialNums: number[];
     fundamental: FreqMidiNoteCents;
   }[];
-  if (freq < min) {
+  if (freqs.length < 1) {
     return results;
   }
-  freq = Math.round(freq);
-  for (let i = min; i <= max; i++) {
-    if (freq % i === 0) {
-      const partialNum = freq / i;
-      results.push({ partialNum: partialNum, fundamental: fromFreq(i) });
+  const roundedFreqs = freqs.map((freq) => Math.round(freq));
+  if (Math.min(...roundedFreqs) < min) {
+    return results;
+  }
+  let roundedMax = Math.round(max);
+  const roundedMin = Math.round(min);
+  if (roundedMax > Math.max(...roundedFreqs)) {
+    roundedMax = roundedFreqs[roundedFreqs.length - 1];
+  }
+  for (
+    let potentialFund = roundedMin;
+    potentialFund <= roundedMax;
+    potentialFund++
+  ) {
+    let isCommonFactor = true;
+    for (const f of roundedFreqs) {
+      if (f % potentialFund !== 0) {
+        isCommonFactor = false;
+        break;
+      }
+    }
+    if (isCommonFactor) {
+      const partialNums = roundedFreqs.map((f) => f / potentialFund);
+      results.push({
+        partialNums: partialNums,
+        fundamental: fromFreq(potentialFund),
+      });
     }
   }
   return results;
