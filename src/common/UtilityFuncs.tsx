@@ -127,15 +127,19 @@ export const getImaginaryFundamentals = (
   freq: number,
   min: number = 20,
   max: number = 220
-) => {
-  const results = [];
+): { partialNum: number; fundamental: FreqMidiNoteCents }[] => {
+  const results = [] as {
+    partialNum: number;
+    fundamental: FreqMidiNoteCents;
+  }[];
   if (freq < min) {
-    return [];
+    return results;
   }
   freq = Math.round(freq);
   for (let i = min; i <= max; i++) {
     if (freq % i === 0) {
-      results.push(freq);
+      const partialNum = freq / i;
+      results.push({ partialNum: partialNum, fundamental: fromFreq(i) });
     }
   }
   return results;

@@ -29,23 +29,29 @@ const PartialFinder = () => {
       }
     }
     return (
-      <li>
-        {idx + 1}. {partial.freq} ({partial.noteName}
-        {partial.octave}
-        {addCents})
-      </li>
+      <tr key={idx}>
+        <th scope="row">{idx + 1}</th>
+        <td>{partial.freq}</td>
+        <td>
+          {partial.noteName}
+          {partial.octave}
+          {addCents}
+        </td>
+      </tr>
     );
   };
   const getFormattedPartials = (): React.ReactElement => {
     const partials = getFirstXPartialsAsNotes(baseFreq, numPartials);
     return (
-      <ol>{partials.map((partial, idx) => formatPartial(idx, partial))}</ol>
+      <tbody>
+        {partials.map((partial, idx) => formatPartial(idx, partial))}
+      </tbody>
     );
   };
 
   return (
     <div>
-      <h2>Partial Finder</h2>{" "}
+      <h2>Partial Finder</h2>
       <NumberInput
         id="partial-finder-freq-input"
         value={baseFreq}
@@ -56,7 +62,7 @@ const PartialFinder = () => {
         Base frequency
       </NumberInput>
       <NumberInput
-        id="partial-finder-partial-num"
+        id="partial-finder-num-partials"
         value={numPartials}
         isFreqValue={false}
         onChange={handleNumberInput}
@@ -64,7 +70,16 @@ const PartialFinder = () => {
       >
         Number of partials to display
       </NumberInput>
-      {getFormattedPartials()}
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Partial</th>
+            <th scope="col">Frequency</th>
+            <th scope="col">Note</th>
+          </tr>
+        </thead>
+        {getFormattedPartials()}
+      </table>
     </div>
   );
 };

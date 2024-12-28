@@ -31,14 +31,17 @@ main {
   border-color: $failure-border-color;
 }
 
-th,
-td {
-  padding: $space-default;
-  border: 1px solid $default-text-color;
-  text-align: center;
-}
 table {
   margin-top: $space-default;
+  th,
+  td {
+    padding: $space-default;
+    border: 1px solid $default-text-color;
+    text-align: center;
+  }
+  th {
+    font-weight: $bold-font-weight;
+  }
 }
 
 @font-face {

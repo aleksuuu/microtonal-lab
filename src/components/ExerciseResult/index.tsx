@@ -36,7 +36,7 @@ const ExerciseResult = ({
     const numAttempts = detail.numCorrect + detail.numWrong;
     return (
       <tr key={key}>
-        <td>{detail.interval?.name}</td>
+        <th scope="row">{detail.interval?.name}</th>
         <td>{detail.numCorrect}</td>
         <td>{numAttempts}</td>
         <td>{((detail.numCorrect / numAttempts) * 100).toFixed(2)}%</td>
