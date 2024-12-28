@@ -6,10 +6,11 @@ const Home = () => {
       <p>
         Microtonal Lab is an ongoing project by{" "}
         <a href="https://aleksuuu.github.io">Alexander Wu</a>. You can use it to{" "}
-        <a href="/interval">generate</a> microtonal ear-training exercises,{" "}
-        <a href="/freq-to-midi">send</a> microtonal MIDI messages, and do some
-        microtonal/partial-related <a href="/utility-tools">math</a>. You can
-        view the source code{" "}
+        <a href="/microtonal-lab/interval">generate</a> microtonal ear-training
+        exercises, <a href="/microtonal-lab/freq-to-midi">send</a> microtonal
+        MIDI messages, and do some microtonal/partial-related{" "}
+        <a href="/microtonal-lab/utility-tools">math</a>. You can view the
+        source code{" "}
         <a href="https://github.com/aleksuuu/microtonal-lab">here</a>. PRs
         welcome!
       </p>
