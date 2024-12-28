@@ -120,7 +120,7 @@ export const getFirstXPartialsAsNotes = (
 };
 
 export const getXPartialOf = (baseFreq: number, partialNum: number) => {
-  fromFreq(baseFreq * partialNum);
+  return fromFreq(baseFreq * partialNum);
 };
 
 export const getImaginaryFundamentals = (
