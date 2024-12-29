@@ -20,7 +20,7 @@ const Button = ({
   disabledColor,
   isAnswerButton,
   onClick,
-  type,
+  type = "button",
 }: Props) => {
   const classes = [
     isAnswerButton ? "ans-button" : "",

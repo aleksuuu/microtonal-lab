@@ -120,3 +120,14 @@ export type FreqMidiNoteCents = {
   octave: number;
   addCents: number;
 };
+
+export type ScalaNote = {
+  text: string;
+  cents: number;
+};
+
+export type ScalaScale = {
+  name: string;
+  description: string;
+  notes: ScalaNote[];
+};

@@ -37,6 +37,12 @@ const NavBar = () => {
         <NavLink to="/utility-tools" onClick={() => setChecked(false)}>
           Utility Tools
         </NavLink>
+        <NavLink to="/tuner" onClick={() => setChecked(false)}>
+          Tuner
+        </NavLink>
+        <NavLink to="/scala-editor" onClick={() => setChecked(false)}>
+          Scala Editor
+        </NavLink>
       </p>
     </nav>
   );

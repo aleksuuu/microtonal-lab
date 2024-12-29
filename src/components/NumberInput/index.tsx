@@ -10,7 +10,7 @@ interface Props {
   min?: number;
   max?: number;
   isFreqValue?: boolean;
-  onChange: (id: string, v: number) => void;
+  onChange?: (id: string, v: number) => void;
   onBlur?: (id: string, v: number) => void;
 }
 

@@ -5,7 +5,7 @@ import NumberInput from "../NumberInput";
 
 const PartialFinder = () => {
   const [baseFreq, setBaseFreq] = useState(440);
-  const [numPartials, setNumPartials] = useState(20);
+  const [numPartials, setNumPartials] = useState(5);
   const handleNumberInput = (id: string, v: number) => {
     switch (id) {
       case "partial-finder-freq-input":

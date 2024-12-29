@@ -172,7 +172,7 @@ const Interval = () => {
           handleCheckboxChange={handleCheckboxChange}
           handleNumInputChange={handleNumInputChange}
           reset={reset}
-        ></ExerciseSetUp>
+        />
       );
       break;
     case ExerciseState.exercise:
@@ -194,7 +194,7 @@ const Interval = () => {
           numAnswered={numAnswered}
           infiniteMode={infiniteMode}
           intervalsInScale={intervalsInScale}
-        ></Exercise>
+        />
       );
       break;
     case ExerciseState.result:
@@ -204,7 +204,7 @@ const Interval = () => {
           totalQuestionsAnswered={numAnswered}
           totalSeconds={totalSeconds}
           reset={handleBack}
-        ></ExerciseResult>
+        />
       );
       break;
     default:

@@ -6,9 +6,9 @@ const UtilityTools = () => {
   return (
     <>
       <title>Microtonal Lab - Utility Tools</title>
-      {PitchConverter()}
-      {PartialFinder()}
-      {FundamentalFinder()}
+      <PitchConverter />
+      <PartialFinder />
+      <FundamentalFinder />
     </>
   );
 };

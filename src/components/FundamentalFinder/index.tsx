@@ -30,7 +30,7 @@ const FundamentalFinder = () => {
     const freqNums = [];
     for (const freqStr of freqStrs) {
       const freqNumber = Number(freqStr);
-      if (Number.isNaN(freqNumber)) {
+      if (isNaN(freqNumber)) {
         setTextInputHasErr(true);
         return;
       }
@@ -89,7 +89,7 @@ const FundamentalFinder = () => {
         onBlur={handleTextInputOnBlur}
         border={textInputHasErr ? BorderType.Failure : BorderType.Normal}
       >
-        Frequencies (separated by space)
+        Partial frequencies (separated by space)
       </TextInput>
       <p>{textInputHasErr ? "Error parsing frequencies." : ""}</p>
       <NumberInput
@@ -113,7 +113,7 @@ const FundamentalFinder = () => {
       <table hidden={inputFreqs.length === 0}>
         <thead>
           <tr>
-            <th scope="col">Imaginary Fundamentals/Input Frequencies</th>
+            <th scope="col">Imaginary Fundamentals/Partial Frequencies</th>
             {getInputFrequencies()}
           </tr>
         </thead>
