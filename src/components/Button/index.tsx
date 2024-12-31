@@ -15,7 +15,7 @@ interface Props {
 const Button = ({
   children,
   id,
-  border = BorderType.Normal,
+  border = BorderType.NORMAL,
   disabled,
   disabledColor,
   isAnswerButton,

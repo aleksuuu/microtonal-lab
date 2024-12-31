@@ -8,12 +8,18 @@ import ScalaFileUploader from "../../components/ScalaFileUploader";
 import TextInput from "../../components/TextInput";
 import NumberInput from "../../components/NumberInput";
 import Button from "../../components/Button";
+import { ScalaNote, ScalaNoteTypes } from "../../common/types";
 
 const ScalaEditor = () => {
+  type EditorNote = {
+    textInput: string;
+    note: ScalaNote | null;
+    noteInputType: ScalaNoteTypes;
+  };
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [numOfNotes, setNumOfNotes] = useState(0);
-  const [notes, setNotes] = useState([] as string[]);
+  const [notes, setNotes] = useState([] as EditorNote[]);
 
   const [fileName, setFileName] = useState("");
   const [fileContent, setFileContent] = useState("");
@@ -39,11 +45,23 @@ const ScalaEditor = () => {
       setName(scale.name);
       setDescription(scale.description);
       setNumOfNotes(scale.notes.length);
-      setNotes(scale.notes.map((note) => note.text));
+      setNotes(
+        scale.notes.map((note) => ({
+          textInput: note.text,
+          note: note,
+          noteInputType: getNoteInputTypeWhenValid(note.text),
+        }))
+      );
       setErr("");
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Unknown error occurred");
     }
+  };
+
+  const getNoteInputTypeWhenValid = (input: string): ScalaNoteTypes => {
+    // Assuming input is always valid
+    if (input.includes(".")) return ScalaNoteTypes.CENTS;
+    return ScalaNoteTypes.RATIO;
   };
 
   const getScalaNoteIdx = (id: string): number | null => {
@@ -54,37 +72,54 @@ const ScalaEditor = () => {
     return null;
   };
 
-  const handleTextInputOnBlur = (id: string, _v: string) => {
+  const handleTextInputOnBlur = (id: string, v: string) => {
     const noteIdx = getScalaNoteIdx(id);
     if (noteIdx !== null) {
-      const nextNotes = [...notes];
-      nextNotes.sort(notesSort);
-      setNotes(nextNotes);
+      const newNotes = notes.map((oldNote, i) => {
+        if (i === noteIdx) {
+          const parsedNote = parseScalaNoteInput(v);
+          let noteInputType = ScalaNoteTypes.INVALID;
+          if (v === "") {
+            noteInputType = ScalaNoteTypes.EMPTY;
+          } else if (parsedNote !== null) {
+            noteInputType = parsedNote.scalaNoteType;
+          }
+          return {
+            textInput: v,
+            note: parsedNote,
+            noteInputType: noteInputType,
+          };
+        } else {
+          return oldNote;
+        }
+      });
+      newNotes.sort(notesSort);
+      setNotes(newNotes);
     }
   };
 
-  const notesSort = (a: string, b: string): number => {
-    const note1 = parseScalaNoteInput(a);
-    console.log("note1:" + JSON.stringify(note1));
-    if (note1 === null) {
+  const notesSort = (a: EditorNote, b: EditorNote): number => {
+    if (a.note === null) {
       return 1; // ensure empty fields would always be placed at the bottom
     }
-    const note2 = parseScalaNoteInput(b);
-    console.log("note2:" + JSON.stringify(note2));
-    if (note2 === null) {
+    if (b.note === null) {
       return 1; // ensure empty fields would always be placed at the bottom
     }
-    return note1.cents - note2.cents;
+    return a.note.cents - b.note.cents;
   };
 
   const handleTextInputOnChange = (id: string, v: string) => {
     const noteIdx = getScalaNoteIdx(id);
     if (noteIdx !== null) {
-      const newNotes = notes.map((prevV, i) => {
+      const newNotes = notes.map((oldNote, i) => {
         if (i === noteIdx) {
-          return v;
+          return {
+            textInput: v,
+            note: null,
+            noteInputType: ScalaNoteTypes.EMPTY,
+          };
         } else {
-          return prevV;
+          return oldNote;
         }
       });
       setNotes(newNotes);
@@ -106,7 +141,11 @@ const ScalaEditor = () => {
       if (i < notes.length) {
         tmpNotes[i] = notes[i];
       } else {
-        tmpNotes[i] = "";
+        tmpNotes[i] = {
+          textInput: "",
+          note: null,
+          noteInputType: ScalaNoteTypes.EMPTY,
+        };
       }
     }
     setNotes(tmpNotes);
@@ -118,11 +157,11 @@ const ScalaEditor = () => {
       <TextInput
         key={idx}
         id={`scala-note-${idx}`}
-        text={notes[idx]}
+        text={notes[idx].textInput}
         onChange={handleTextInputOnChange}
         onBlur={handleTextInputOnBlur}
       >
-        {`Note ${idx + 1}`}
+        {`Note ${idx + 1} ${notes[idx].noteInputType}`}
       </TextInput>
     );
   };
@@ -138,9 +177,8 @@ const ScalaEditor = () => {
   const handleSave = () => {
     const parsedNotes = [];
     for (const note of notes) {
-      const parsedNote = parseScalaNoteInput(note);
-      if (parsedNote !== null) {
-        parsedNotes.push(parsedNote);
+      if (note.note !== null) {
+        parsedNotes.push(note.note);
       }
     }
     exportSclFile({

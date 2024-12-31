@@ -78,7 +78,7 @@ const PitchConverter = () => {
         Frequency
       </NumberInput>
       <TextInput
-        border={textInputHasErr ? BorderType.Failure : BorderType.Normal}
+        border={textInputHasErr ? BorderType.FAILURE : BorderType.NORMAL}
         id="pitch-converter-note-name-input"
         text={noteName}
         onChange={handleTextInputOnChange}

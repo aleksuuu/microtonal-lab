@@ -22,7 +22,7 @@ interface Props {
 }
 
 const Input = ({
-  border = BorderType.Normal,
+  border = BorderType.NORMAL,
   children,
   className,
   inputClassName,

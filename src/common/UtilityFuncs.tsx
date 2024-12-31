@@ -4,6 +4,7 @@ import {
   FreqMidiNoteCents,
   ScalaScale,
   ScalaNote,
+  ScalaNoteTypes,
 } from "./types";
 
 export const midiToFreq = (midiNote: number) => {
@@ -192,20 +193,23 @@ export const parseScalaNoteInput = (input: string): ScalaNote | null => {
   const sanitizedInput = sanitizeScalaNoteInput(input);
   let cents = undefined;
   const inputAsNum = Number(sanitizedInput);
-  console.log(inputAsNum);
+  let scalaNoteType = ScalaNoteTypes.EMPTY;
   if (isNaN(inputAsNum)) {
     if (/^\d+\/\d+$/.test(sanitizedInput)) {
       const [numerator, denominator] = sanitizedInput.split("/").map(Number);
       cents = ratioToCents(numerator, denominator);
+      scalaNoteType = ScalaNoteTypes.RATIO;
     }
   } else if (sanitizedInput.includes(".")) {
     // A cents value must contain a period
     cents = inputAsNum;
+    scalaNoteType = ScalaNoteTypes.CENTS;
   } else if (inputAsNum != 0) {
     cents = ratioToCents(inputAsNum, 1);
+    scalaNoteType = ScalaNoteTypes.RATIO;
   }
   if (cents !== undefined) {
-    return { text: sanitizedInput, cents: cents };
+    return { text: sanitizedInput, cents: cents, scalaNoteType: scalaNoteType };
   }
   return null;
 };
@@ -234,7 +238,11 @@ export const parseScalaFileContent = (
     throw new Error("Invalid Scala file: Unable to find the number of notes.");
   }
   // const numOfNotes = parseInt(lines[numOfNotesIdx], 10); // no point in verifying this, it just has to exist
-  const notes: { text: string; cents: number }[] = [];
+  const notes: {
+    text: string;
+    cents: number;
+    scalaNoteType: ScalaNoteTypes;
+  }[] = [];
   for (let i = numOfNotesIdx + 1; i < lines.length; i++) {
     const note = lines[i];
     const scalaNote = parseScalaNoteInput(note);

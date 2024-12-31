@@ -14,7 +14,7 @@ interface Props {
 }
 
 const TextInput = ({
-  border = BorderType.Normal,
+  border = BorderType.NORMAL,
   children,
   className,
   inputClassName,

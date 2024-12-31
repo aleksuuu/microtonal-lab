@@ -230,7 +230,7 @@ const FreqToMidi = () => {
   const makeNoteOnOrOffButton = (channel: number): React.ReactElement => {
     const isOn = microtonalNotes[channel - 1].isOn;
     const buttonId = `note-${isOn ? "off" : "on"}-${channel}`; // this is flipped because the id should indicate the function of the button, which is to turn on when the note is off
-    const buttonBorder = isOn ? BorderType.Success : BorderType.Normal;
+    const buttonBorder = isOn ? BorderType.SUCCESS : BorderType.NORMAL;
     // const buttonText = isOn ? "⏽" : "⭘";
     const buttonText = "⏻";
     return (

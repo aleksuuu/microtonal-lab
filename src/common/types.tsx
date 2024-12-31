@@ -1,8 +1,8 @@
 export enum BorderType {
-  Hidden = "border-hidden",
-  Normal = "border-normal",
-  Success = "border-success",
-  Failure = "border-failure",
+  HIDDEN = "border-hidden",
+  NORMAL = "border-normal",
+  SUCCESS = "border-success",
+  FAILURE = "border-failure",
 }
 
 export enum OptionType {
@@ -80,6 +80,13 @@ export const noteDegrees: Record<EDO12NOTENAMES, number> = {
   [EDO12NOTENAMES.B_SHARP]: 0,
 };
 
+export enum ScalaNoteTypes {
+  EMPTY = "",
+  INVALID = "(invalid input)",
+  RATIO = "(ratio)",
+  CENTS = "(cents)",
+}
+
 export type ExerciseOptions = {
   oscType: { type: OptionType.OSCTYPE; v: SynthOscType };
   scaleName: { type: OptionType.SCALENAME; v: AllowedScales };
@@ -124,6 +131,7 @@ export type FreqMidiNoteCents = {
 export type ScalaNote = {
   text: string;
   cents: number;
+  scalaNoteType: ScalaNoteTypes;
 };
 
 export type ScalaScale = {

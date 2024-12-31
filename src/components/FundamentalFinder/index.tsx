@@ -87,7 +87,7 @@ const FundamentalFinder = () => {
         text={freqsTextInput}
         onChange={handleTextInputOnChange}
         onBlur={handleTextInputOnBlur}
-        border={textInputHasErr ? BorderType.Failure : BorderType.Normal}
+        border={textInputHasErr ? BorderType.FAILURE : BorderType.NORMAL}
       >
         Partial frequencies (separated by space)
       </TextInput>

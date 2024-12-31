@@ -19,23 +19,23 @@ const ButtonGroup = ({
 }: Props) => {
   const getBorderType = (item: string): BorderType => {
     if (defaultBorder) {
-      return BorderType.Normal;
+      return BorderType.NORMAL;
     }
     if (item === highlightButton) {
       if (answerIsCorrect) {
-        return BorderType.Success;
+        return BorderType.SUCCESS;
       } else {
-        return BorderType.Failure;
+        return BorderType.FAILURE;
       }
     }
     // if (!hideSelected && selectedIndex === index) {
     //   if (answerIsCorrect) {
-    //     return BorderType.Success;
+    //     return BorderType.SUCCESS;
     //   } else {
-    //     return BorderType.Failure;
+    //     return BorderType.FAILURE;
     //   }
     // }
-    return BorderType.Normal;
+    return BorderType.NORMAL;
   };
 
   return (
