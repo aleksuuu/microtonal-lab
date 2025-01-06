@@ -139,3 +139,8 @@ export type ScalaScale = {
   description: string;
   notes: ScalaNote[];
 };
+
+export type CommonFundamental = {
+  partialNums: number[];
+  fundamental: FreqMidiNoteCents;
+};

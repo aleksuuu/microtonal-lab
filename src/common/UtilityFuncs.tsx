@@ -5,6 +5,7 @@ import {
   ScalaScale,
   ScalaNote,
   ScalaNoteTypes,
+  CommonFundamental,
 } from "./types";
 
 export const midiToFreq = (midiNote: number) => {
@@ -125,53 +126,208 @@ export const getFirstXPartialsAsNotes = (
   return partials;
 };
 
+// export const getCommonPartials = (
+//   baseFreqs: number[],
+//   min: number = 110,
+//   max: number = 880
+// ) => {
+//   const partials = [];
+//   for (let f = min; f <= max; f++) {
+
+//   }
+// };
+
 export const getXPartialOf = (baseFreq: number, partialNum: number) => {
   return fromFreq(baseFreq * partialNum);
 };
 
+// export const getCommonFundamentalsOld2 = (
+//   freqsAsStr: string[],
+//   min: number = 20,
+//   max: number = 220
+// ): CommonFundamentals | null => {
+//   let maxDecimals = 0;
+//   let maxDecimalsAllowed = 2;
+//   const freqsAsNum = [];
+//   for (const freqAsStr of freqsAsStr) {
+//     const freqAsNum = Number(freqAsStr);
+//     if (isNaN(freqAsNum)) return null;
+//     freqsAsNum.push(freqAsNum);
+//     if (maxDecimals < maxDecimalsAllowed) {
+//       const decimalPart = freqAsStr.split(".")[1];
+//       const decimals = decimalPart ? decimalPart.length : 0;
+//       maxDecimals = decimals > maxDecimals ? decimals : maxDecimals;
+//     }
+//   }
+//   const multiple = 10 ** maxDecimals;
+//   const roundedFreqs = freqsAsNum.map((freq) => Math.round(freq * multiple));
+//   let roundedMax = Math.round(max * multiple);
+//   const roundedMin = Math.round(min * multiple);
+//   if (Math.min(...freqsAsNum) < min) {
+//     return null;
+//   }
+//   const results = {
+//     inputFreqs: roundedFreqs.map((f) => f / multiple),
+//     commonFundamentals: [] as {
+//       partialNums: number[];
+//       fundamental: FreqMidiNoteCents;
+//     }[],
+//   };
+//   if (roundedMax > Math.max(...freqsAsNum)) {
+//     roundedMax = Math.max(...freqsAsNum);
+//   }
+//   for (
+//     let potentialFund = roundedMin;
+//     potentialFund <= roundedMax;
+//     potentialFund++
+//   ) {
+//     let isCommonFactor = true;
+//     for (const f of roundedFreqs) {
+//       if (f % potentialFund !== 0) {
+//         isCommonFactor = false;
+//         break;
+//       }
+//     }
+//     if (isCommonFactor) {
+//       const partialNums = roundedFreqs.map((f) => f / potentialFund);
+//       results.commonFundamentals.push({
+//         partialNums: partialNums,
+//         fundamental: fromFreq(potentialFund / multiple),
+//       });
+//     }
+//   }
+//   return results;
+// };
+
 export const getCommonFundamentals = (
   freqs: number[],
   min: number = 20,
-  max: number = 220
-): { partialNums: number[]; fundamental: FreqMidiNoteCents }[] => {
+  max: number = 220,
+  tolerance: number = 0.1 // Hz
+): CommonFundamental[] => {
   const results = [] as {
     partialNums: number[];
     fundamental: FreqMidiNoteCents;
   }[];
-  if (freqs.length < 1) {
+  if (freqs.length < 1 || Math.min(...freqs) < min || min >= max) {
     return results;
   }
-  const roundedFreqs = freqs.map((freq) => Math.round(freq));
-  if (Math.min(...roundedFreqs) < min) {
-    return results;
-  }
-  let roundedMax = Math.round(max);
-  const roundedMin = Math.round(min);
-  if (roundedMax > Math.max(...roundedFreqs)) {
-    roundedMax = roundedFreqs[roundedFreqs.length - 1];
-  }
-  for (
-    let potentialFund = roundedMin;
-    potentialFund <= roundedMax;
-    potentialFund++
-  ) {
-    let isCommonFactor = true;
-    for (const f of roundedFreqs) {
-      if (f % potentialFund !== 0) {
-        isCommonFactor = false;
-        break;
+  // helper functions
+  const findFundamentalInArr = (
+    fundamental: number,
+    array: { partialNum: number; fundamental: number }[],
+    tolerance: number
+  ) => {
+    return array.find(
+      (e) => Math.abs(e.fundamental - fundamental) <= tolerance
+    );
+  };
+  const getAllPotentialFundamentals = (
+    freqs: number[],
+    min: number,
+    max: number
+  ) => {
+    const allPotentialFundamentals: {
+      partialNum: number;
+      fundamental: number;
+    }[][] = [];
+    for (const freq of freqs) {
+      const resultsForFreq = [];
+      let fund = freq;
+      let partial = 1;
+      while (fund > max) {
+        partial++;
+        fund = freq / partial;
       }
+      while (fund >= min) {
+        fund = freq / partial;
+        resultsForFreq.push({ partialNum: partial, fundamental: fund });
+        partial++;
+      }
+      allPotentialFundamentals.push(resultsForFreq);
     }
-    if (isCommonFactor) {
-      const partialNums = roundedFreqs.map((f) => f / potentialFund);
-      results.push({
-        partialNums: partialNums,
-        fundamental: fromFreq(potentialFund),
-      });
+    return allPotentialFundamentals;
+  };
+  // end of helper functions
+
+  const actualMax = max > Math.max(...freqs) ? Math.max(...freqs) : max;
+  const allPotentialFundamentals = getAllPotentialFundamentals(
+    freqs,
+    min,
+    actualMax
+  );
+  if (allPotentialFundamentals.length < 1) return results;
+  const fundamentalsForFirstFreq = allPotentialFundamentals[0];
+  if (allPotentialFundamentals.length === 1)
+    return fundamentalsForFirstFreq.map((f) => ({
+      partialNums: [f.partialNum],
+      fundamental: fromFreq(f.fundamental),
+    }));
+  for (const f of fundamentalsForFirstFreq) {
+    const fundamentals = [f.fundamental];
+    const partials = [f.partialNum];
+    for (const fundamentalsForFreq of allPotentialFundamentals.slice(1)) {
+      const potentialFund = findFundamentalInArr(
+        f.fundamental,
+        fundamentalsForFreq,
+        tolerance
+      );
+      if (potentialFund === undefined) break;
+      fundamentals.push(potentialFund.fundamental);
+      partials.push(potentialFund.partialNum);
     }
+    if (fundamentals.length !== allPotentialFundamentals.length) continue; // allPotentialFundamentals.length should be the number of input frequencies
+    const averageFundamental =
+      fundamentals.reduce((a, b) => a + b) / fundamentals.length;
+    const formattedFund = fromFreq(averageFundamental);
+    results.push({ partialNums: partials, fundamental: formattedFund });
   }
   return results;
 };
+
+// export const getCommonFundamentalsOld = (
+//   freqs: number[],
+//   min: number = 20,
+//   max: number = 220
+// ): { partialNums: number[]; fundamental: FreqMidiNoteCents }[] => {
+//   const results = [] as {
+//     partialNums: number[];
+//     fundamental: FreqMidiNoteCents;
+//   }[];
+//   if (freqs.length < 1) {
+//     return results;
+//   }
+//   const numbers = freqs.map((freq) => Math.round(freq));
+//   if (Math.min(...numbers) < min) {
+//     return results;
+//   }
+//   let roundedMax = Math.round(max);
+//   const roundedMin = Math.round(min);
+//   if (roundedMax > Math.max(...numbers)) {
+//     roundedMax = numbers[numbers.length - 1];
+//   }
+//   for (
+//     let potentialFund = roundedMin;
+//     potentialFund <= roundedMax;
+//     potentialFund++
+//   ) {
+//     let isCommonFactor = true;
+//     for (const f of numbers) {
+//       if (f % potentialFund !== 0) {
+//         isCommonFactor = false;
+//         break;
+//       }
+//     }
+//     if (isCommonFactor) {
+//       const partialNums = numbers.map((f) => f / potentialFund);
+//       results.push({
+//         partialNums: partialNums,
+//         fundamental: fromFreq(potentialFund),
+//       });
+//     }
+//   }
+//   return results;
+// };
 
 export const centsToFreq = (cents: number) => {
   return midiToFreq(cents * 0.01);
