@@ -144,3 +144,8 @@ export type CommonFundamental = {
   partialNums: number[];
   fundamental: FreqMidiNoteCents;
 };
+
+export type CommonPartial = {
+  partialNums: number[];
+  partial: FreqMidiNoteCents;
+};

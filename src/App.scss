@@ -104,6 +104,10 @@ input {
   font-size: $font-m;
 }
 
+input {
+  margin-bottom: $space-default * 0.5;
+}
+
 li {
   margin-bottom: $space-default * 1.5;
   margin-top: $space-default * 1.5;

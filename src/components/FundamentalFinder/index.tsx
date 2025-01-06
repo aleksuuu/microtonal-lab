@@ -4,7 +4,11 @@ import {
   FreqMidiNoteCents,
 } from "../../common/types";
 import { useState } from "react";
-import { getCommonFundamentals } from "../../common/UtilityFuncs";
+import {
+  formatFreqMidiNoteCentsIntoASingleString,
+  getCommonFundamentals,
+  getNumbersFromTextInput,
+} from "../../common/UtilityFuncs";
 import NumberInput from "../NumberInput";
 import TextInput from "../TextInput";
 
@@ -16,7 +20,7 @@ const FundamentalFinder = () => {
   >([]);
   const [minFreq, setMinFreq] = useState(20);
   const [maxFreq, setMaxFreq] = useState(220);
-  const [tolerance, setTolerance] = useState(0.1);
+  const [tolerance, setTolerance] = useState(10);
   const [textInputHasErr, setTextInputHasErr] = useState(false);
 
   const handleNumberInputOnChange = (id: string, v: number) => {
@@ -44,17 +48,14 @@ const FundamentalFinder = () => {
   };
 
   const handleTextInputOnBlur = (_id: string, v: string) => {
-    const freqsAsStr = v.trim().split(/\s+/); // separate numbers by one or more spaces
-    const newFreqNums: number[] = [];
-    for (const f of freqsAsStr) {
-      const freqAsNum = Number(f);
-      if (isNaN(freqAsNum)) {
-        setTextInputHasErr(true);
-        setFreqNums([]);
-        return;
-      }
-      newFreqNums.push(freqAsNum);
+    const newFreqNums = getNumbersFromTextInput(v);
+    if (newFreqNums.length === 0) {
+      setTextInputHasErr(true);
+      setFreqNums([]);
+      return;
     }
+    setTextInputHasErr(false);
+    setFreqNums(newFreqNums);
     setTextInputHasErr(false);
     setFreqNums(newFreqNums);
     const commonFunds = getCommonFundamentals(
@@ -70,19 +71,10 @@ const FundamentalFinder = () => {
     partials: number[],
     fundamental: FreqMidiNoteCents
   ): React.ReactElement => {
-    let addCents = "";
-    if (fundamental.addCents !== 0) {
-      addCents = Math.round(fundamental.addCents) + "¢";
-      if (fundamental.addCents > 0) {
-        addCents = "+" + addCents;
-      }
-    }
     return (
       <tr key={fundamental.freq}>
         <th scope="row">
-          {fundamental.freq.toFixed(2)} Hz ({fundamental.noteName}
-          {fundamental.octave}
-          {addCents})
+          {formatFreqMidiNoteCentsIntoASingleString(fundamental)}
         </th>
         {partials.map((p) => (
           <td>{p}</td>
@@ -122,7 +114,7 @@ const FundamentalFinder = () => {
       >
         Partial frequencies (separated by space)
       </TextInput>
-      <p>{textInputHasErr ? "Error parsing frequencies." : ""}</p>
+      {textInputHasErr && <p>"Error parsing frequencies."</p>}
       <NumberInput
         id="fundamental-finder-min-freq"
         value={minFreq}
@@ -150,18 +142,20 @@ const FundamentalFinder = () => {
         onBlur={handleNumberInputOnBlur}
         className="medium-input"
       >
-        Allowed difference in Hz (imaginary fundamentals would be considered
-        equal if they are within this difference)
+        Acceptable margin of error in cents (imaginary fundamentals within this
+        difference would be considered equal)
       </NumberInput>
-      <table hidden={commonFundamentals.length === 0}>
-        <thead>
-          <tr>
-            <th scope="col">Imaginary Fundamentals/Partial Frequencies</th>
-            {getInputFrequencies()}
-          </tr>
-        </thead>
-        {formattedFundamentals}
-      </table>
+      {commonFundamentals.length > 0 && (
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Imaginary Fundamentals/Partials</th>
+              {getInputFrequencies()}
+            </tr>
+          </thead>
+          {formattedFundamentals}
+        </table>
+      )}
     </div>
   );
 };
