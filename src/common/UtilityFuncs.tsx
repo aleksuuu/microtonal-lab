@@ -1,3 +1,6 @@
+// import {besselj} from "bessel";
+// import bessel from "bessel";
+import { besselj } from "bessel";
 import {
   noteDegrees,
   EDO12NOTENAMES,
@@ -7,7 +10,73 @@ import {
   ScalaNoteTypes,
   CommonFundamental,
   CommonPartial,
+  FMPredictionParams,
+  NoteWithAmp,
 } from "./types";
+
+// FM
+
+export const predictFM = (params: FMPredictionParams): NoteWithAmp[] => {
+  const {
+    carrierFreq,
+    modulatorFreq,
+    modulationIdx,
+    minFreq,
+    maxFreq,
+    minAmp,
+  } = params;
+  const notesWithAmp: NoteWithAmp[] = [];
+  if (modulationIdx < 0 || minFreq >= maxFreq || minFreq < 0 || minAmp < 0)
+    return notesWithAmp;
+  // HELPER FUNCTIONS
+  const getSideband = (n: number) => {
+    const freq = carrierFreq + n * modulatorFreq;
+    const amp = Math.abs(besselj(modulationIdx, n)); // The amplitude of each sideband is proportional to the Bessel function of the first kind of order n
+    return { freq: freq, amp: amp };
+  };
+  const addSidebandToResult = (sideband: { freq: number; amp: number }) => {
+    let { freq, amp } = sideband;
+    if (freq < 0) freq = Math.abs(freq);
+    const sameNoteIdx = notesWithAmp.findIndex((n) => n.note.freq === freq);
+    if (sameNoteIdx !== -1) {
+      // if the frequency already exists, it would be 180 degrees out of phase)
+      notesWithAmp[sameNoteIdx].amp = Math.abs(
+        notesWithAmp[sameNoteIdx].amp - amp
+      );
+      if (notesWithAmp[sameNoteIdx].amp < minAmp)
+        notesWithAmp.splice(sameNoteIdx, 1);
+      return;
+    }
+    if (amp < minAmp) {
+      // filter out amps lower than minAmp
+      return;
+    }
+    const note = fromFreq(freq);
+    notesWithAmp.push({ note, amp });
+  };
+  const getN = (sidebandFreq: number) => {
+    return Math.floor((sidebandFreq - carrierFreq) / modulatorFreq);
+  };
+  // END OF HELPER FUNCTIONS
+
+  let n = getN(maxFreq);
+  let sideband = getSideband(n);
+  while (sideband.freq > minFreq) {
+    addSidebandToResult(sideband);
+    n--;
+    sideband = getSideband(n);
+  }
+  n = getN(-minFreq);
+  while (sideband.freq > -maxFreq) {
+    addSidebandToResult(sideband);
+    n--;
+    sideband = getSideband(n);
+  }
+  notesWithAmp.sort((a, b) => a.note.freq - b.note.freq);
+  return notesWithAmp;
+};
+
+// END OF FM
 
 export const midiToFreq = (midiNote: number) => {
   return Math.pow(2, (midiNote - 69) / 12) * 440;

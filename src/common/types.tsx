@@ -149,3 +149,14 @@ export type CommonPartial = {
   partialNums: number[];
   partial: FreqMidiNoteCents;
 };
+
+export type FMPredictionParams = {
+  carrierFreq: number;
+  modulatorFreq: number;
+  modulationIdx: number;
+  minFreq: number;
+  maxFreq: number;
+  minAmp: number;
+};
+
+export type NoteWithAmp = { note: FreqMidiNoteCents; amp: number };
