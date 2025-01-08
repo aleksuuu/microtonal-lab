@@ -212,7 +212,7 @@ const Interval = () => {
   return (
     <>
       <title>Microtonal Lab - Interval</title>
-      <Suspense fallback={<p>Loading...</p>}>{render}</Suspense>
+      <Suspense fallback={<p>Loading…</p>}>{render}</Suspense>
     </>
   );
 };
