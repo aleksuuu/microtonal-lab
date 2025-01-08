@@ -26,6 +26,7 @@ export enum AllowedScales {
 }
 
 export enum SynthOscType {
+  PIANO = "piano",
   SINE = "sine",
   TRIANGLE = "triangle",
   SQUARE = "square",

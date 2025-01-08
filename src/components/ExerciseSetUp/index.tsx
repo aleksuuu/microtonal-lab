@@ -40,7 +40,7 @@ const ExerciseSetUp = ({
       <div>
         <h2>Select a sound:</h2>
         <MenuOptions
-          defaultOption={SynthOscType.TRIANGLE}
+          defaultOption={SynthOscType.PIANO}
           id={OptionType.OSCTYPE}
           onChange={handleMenuSelectChange}
         >

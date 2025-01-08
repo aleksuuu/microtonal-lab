@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   ExerciseOptions,
   IntervalWithNotes,
@@ -7,9 +7,10 @@ import {
   StatsPerQuestion,
   SynthOscType,
 } from "./types";
-import { Synth, PolySynth, now } from "tone";
+import { Synth, PolySynth, now, Sampler } from "tone";
 import scales from "./scales.json";
 import { freqToMidi, centsToFreq } from "./UtilityFuncs";
+import piano from "../assets/piano-F4.wav";
 
 type DegreeAndCents = {
   degree: number;
@@ -17,6 +18,72 @@ type DegreeAndCents = {
 };
 
 const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
+  const [instrument, setInstrument] = useState<PolySynth | Sampler | null>(
+    null
+  );
+  useEffect(() => {
+    initSampler();
+    return () => {
+      if (instrument) instrument.dispose();
+    };
+  }, []);
+  const initSampler = () => {
+    if (instrument instanceof Sampler)
+      setExerciseState((prevState) => ({
+        ...prevState,
+        didSetUpInstrument: true,
+      }));
+    else {
+      setExerciseState((prevState) => ({
+        ...prevState,
+        didSetUpInstrument: false,
+      }));
+      if (instrument) instrument.dispose();
+      const sampler = new Sampler(
+        {
+          F4: piano,
+        },
+        () =>
+          setExerciseState((prevState) => ({
+            ...prevState,
+            didSetUpInstrument: true,
+          }))
+      ).toDestination();
+      sampler.release = 1;
+      setInstrument(sampler);
+    }
+  };
+
+  const initPolySynth = (oscType: SynthOscType = SynthOscType.TRIANGLE) => {
+    if (oscType === SynthOscType.PIANO) {
+      console.error("Unsupported oscillator type.");
+      return;
+    }
+    if (instrument instanceof PolySynth)
+      instrument.set({ oscillator: { type: oscType } });
+    else {
+      if (instrument) instrument.dispose();
+      const polySynth = new PolySynth(Synth, {
+        volume: -15,
+        oscillator: {
+          type: oscType,
+        },
+        envelope: {
+          attackCurve: "exponential",
+          attack: 0.1,
+          decay: 0.4,
+          sustain: 0.8,
+          release: 1.5,
+        },
+      }).toDestination();
+      setInstrument(polySynth);
+      setExerciseState((prevState) => ({
+        ...prevState,
+        didSetUpInstrument: true,
+      }));
+    }
+  };
+
   const [exerciseState, setExerciseState] = useState({
     minFreq: 220,
     maxFreq: 659.3,
@@ -29,6 +96,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     playSim: true,
     willMakeInterval: false,
     didSetUp: false,
+    didSetUpInstrument: false,
     didMakeInterval: false,
     willPlayInterval: false,
     currAnswerIsCorrect: false,
@@ -46,26 +114,12 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     numWrong: 0,
   });
 
-  const synth = useMemo(
-    () =>
-      new PolySynth(Synth, {
-        volume: -15,
-        oscillator: {
-          type: "triangle",
-        },
-        envelope: {
-          attackCurve: "exponential",
-          attack: 0.1,
-          decay: 0.4,
-          sustain: 0.8,
-          release: 1.5,
-        },
-      }).toDestination(),
-    []
-  );
-
   const setSynthOsc = (oscType: SynthOscType) => {
-    synth.set({ oscillator: { type: oscType } });
+    if (oscType === SynthOscType.PIANO) {
+      initSampler();
+    } else {
+      initPolySynth(oscType);
+    }
   };
 
   useEffect(() => {
@@ -87,14 +141,22 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   }, [exerciseState.willMakeInterval, exerciseState.didSetUp]);
 
   useEffect(() => {
-    if (exerciseState.willPlayInterval && exerciseState.didMakeInterval) {
+    if (
+      exerciseState.willPlayInterval &&
+      exerciseState.didMakeInterval &&
+      exerciseState.didSetUpInstrument
+    ) {
       playInterval();
       setExerciseState((prevState) => ({
         ...prevState,
         willPlayInterval: false, // Reset flag
       }));
     }
-  }, [exerciseState.willPlayInterval, exerciseState.didMakeInterval]);
+  }, [
+    exerciseState.willPlayInterval,
+    exerciseState.didMakeInterval,
+    exerciseState.didSetUpInstrument,
+  ]);
 
   const setUp = useCallback((): string => {
     setExerciseState((prevState) => ({ ...prevState, didSetUp: false }));
@@ -122,7 +184,6 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     if (exerciseOptions.numQuestions.v < 1) {
       return "The number of questions must be at least 1.";
     }
-
     const scale = scales.scales.find(
       (scale) => scale.name === exerciseOptions.scaleName.v
     );
@@ -243,15 +304,19 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
   const doPlayArpOrSim = useCallback(
     (freq1: number, freq2: number, playArp: boolean) => {
+      if (!instrument) {
+        console.error("No available instrument.");
+        return;
+      }
       const currTime = now();
       if (playArp) {
-        synth.triggerAttackRelease(freq1, 0.7, currTime);
-        synth.triggerAttackRelease(freq2, 1, currTime + 0.7);
+        instrument.triggerAttackRelease(freq1, 0.7, currTime);
+        instrument.triggerAttackRelease(freq2, 1, currTime + 0.7);
       } else {
-        synth.triggerAttackRelease([freq1, freq2], 1);
+        instrument.triggerAttackRelease([freq1, freq2], 1);
       }
     },
-    [synth]
+    [instrument]
   );
 
   const getIndexOfLargestBelowOrEqual = (

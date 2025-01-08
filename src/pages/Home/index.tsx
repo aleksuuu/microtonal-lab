@@ -14,18 +14,19 @@ const Home = () => {
       <ul>
         <li>
           - <a href="/microtonal-lab/interval">Interval</a>: Generate intervals
-          in 12, 19, 24, or 31edo, select from 4 playback sounds (TODO: JI
-          intervals).
+          in 12, 19, 24, or 31edo, select from 5 playback sounds (piano sampler
+          and 4 waveforms) (TODO: JI intervals).
         </li>
         <li>
           - <a href="/microtonal-lab/freq-to-midi">Frequency to MIDI</a>: Enter
           up to 8 frequencies and convert them to MPE MIDI note messages (with
-          pitchbend messages)
+          pitchbend messages).
         </li>
         <li>
           - <a href="/microtonal-lab/utility-tools">Utility Tools</a>: Convert
           between different pitch units, find partials and imaginary
-          fundamentals.
+          fundamentals, predict frequency-modulation results (TODO: render to
+          score via Verovio).
         </li>
         <li>
           - <a href="/microtonal-lab/tuner">Tuner</a>: Frequency tuner (TODO:

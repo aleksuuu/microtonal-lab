@@ -146,10 +146,7 @@ const Interval = () => {
   const [exerciseState, setExerciseState] = useState(ExerciseState.setUp);
 
   const loadExercise = () => {
-    // console.log("options");
-    // console.log(options);
     setError(makerSetUp());
-
     if (error === "") {
       setWillMakeInterval(true);
       setWillPlayInterval(true);
@@ -230,7 +227,7 @@ type UserAction =
   | { type: UserActionType.MENUSELECT; id: string; v: string };
 
 const initOptions: Readonly<ExerciseOptions> = {
-  oscType: { type: OptionType.OSCTYPE, v: SynthOscType.TRIANGLE },
+  oscType: { type: OptionType.OSCTYPE, v: SynthOscType.PIANO },
   scaleName: { type: OptionType.SCALENAME, v: AllowedScales.EDO_24 },
   smallerThanEquave: { type: OptionType.SMALLERTHANEQUAVE, v: true },
   largerThanEquave: { type: OptionType.LARGERTHANEQUAVE, v: false },

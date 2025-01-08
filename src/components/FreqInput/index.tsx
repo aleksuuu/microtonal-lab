@@ -1,6 +1,6 @@
 import NumberInput from "../NumberInput";
 import {
-  formatFreqMidiNoteCentsIntoASingleString,
+  formatFreqMidiNoteCentsIntoANote,
   fromFreq,
 } from "../../common/UtilityFuncs";
 import "./index.scss";
@@ -39,7 +39,7 @@ const FreqInput = ({
         {children}
       </NumberInput>
       <span className="note-name unimportant">
-        {formatFreqMidiNoteCentsIntoASingleString(fromFreq(freq))}
+        {formatFreqMidiNoteCentsIntoANote(fromFreq(freq))}
       </span>
     </span>
   );

@@ -362,9 +362,22 @@ export const formatFreqMidiNoteCentsIntoASingleString = (
       addCents = "+" + addCents;
     }
   }
-  return `${input.freq.toFixed(2)} Hz (${input.noteName}${
-    input.octave
-  }${addCents})`;
+  return `${input.freq.toFixed(2)} Hz (${formatFreqMidiNoteCentsIntoANote(
+    input
+  )})`;
+};
+
+export const formatFreqMidiNoteCentsIntoANote = (
+  input: FreqMidiNoteCents
+): string => {
+  let addCents = "";
+  if (input.addCents > 1 || input.addCents < -1) {
+    addCents = Math.round(input.addCents) + "¢";
+    if (input.addCents > 0) {
+      addCents = "+" + addCents;
+    }
+  }
+  return `${input.noteName}${input.octave}${addCents}`;
 };
 
 export const centsToFreq = (cents: number) => {
