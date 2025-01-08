@@ -1,5 +1,3 @@
-// import {besselj} from "bessel";
-// import bessel from "bessel";
 import { besselj } from "bessel";
 import {
   noteDegrees,
@@ -358,7 +356,7 @@ export const formatFreqMidiNoteCentsIntoASingleString = (
   input: FreqMidiNoteCents
 ): string => {
   let addCents = "";
-  if (input.addCents !== 0) {
+  if (input.addCents > 1 || input.addCents < -1) {
     addCents = Math.round(input.addCents) + "¢";
     if (input.addCents > 0) {
       addCents = "+" + addCents;

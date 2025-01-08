@@ -8,8 +8,6 @@ import {
 } from "../../common/types";
 import useExerciseMaker from "../../common/useExerciseMaker";
 
-// run with `npm run dev`
-
 // TODO: use dynamic imports
 
 const Exercise = lazy(() => import("../../components/Exercise"));

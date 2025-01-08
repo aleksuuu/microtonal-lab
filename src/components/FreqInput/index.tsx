@@ -1,5 +1,8 @@
 import NumberInput from "../NumberInput";
-import { freqToNoteName } from "../../common/UtilityFuncs";
+import {
+  formatFreqMidiNoteCentsIntoASingleString,
+  fromFreq,
+} from "../../common/UtilityFuncs";
 import "./index.scss";
 
 interface Props {
@@ -14,29 +17,30 @@ interface Props {
 
 const FreqInput = ({
   children,
-  className = "freq-input",
-  numberInputClassName,
+  className = "",
+  numberInputClassName = "",
   disabled,
   id,
   freq,
   onChange,
 }: Props) => {
+  const fullClassNames = `freq-input ${className}`;
+  const fullNumberInputClassNames = `medium-input ${numberInputClassName}`;
   return (
-    <span className={className}>
+    <span className={fullClassNames}>
       <NumberInput
-        className={numberInputClassName}
+        className={fullNumberInputClassNames}
         disabled={disabled}
         id={id}
         value={freq}
         isFreqValue={true}
-        onChange={(id: string, v: number) => {
-          // setFreq(v);
-          onChange(id, v);
-        }}
+        onChange={onChange}
       >
         {children}
       </NumberInput>
-      <span className="note-name unimportant">{freqToNoteName(freq)}</span>
+      <span className="note-name unimportant">
+        {formatFreqMidiNoteCentsIntoASingleString(fromFreq(freq))}
+      </span>
     </span>
   );
 };
