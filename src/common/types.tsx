@@ -1,3 +1,9 @@
+export enum TextInputErrorType {
+  PARSING = "Error parsing the text input.",
+  ZERO = "The number zero is not a valid input.",
+  NO_ERROR = "",
+}
+
 export enum BorderType {
   HIDDEN = "border-hidden",
   NORMAL = "border-normal",
