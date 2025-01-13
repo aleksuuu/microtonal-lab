@@ -2,6 +2,7 @@ import {
   BorderType,
   CommonFundamental,
   FreqMidiNoteCents,
+  TextInputErrorType,
 } from "../../common/types";
 import { useState } from "react";
 import {
@@ -21,7 +22,7 @@ const FundamentalFinder = () => {
   const [minFreq, setMinFreq] = useState(20);
   const [maxFreq, setMaxFreq] = useState(220);
   const [tolerance, setTolerance] = useState(10);
-  const [textInputHasErr, setTextInputHasErr] = useState(false);
+  const [textInputErr, setTextInputErr] = useState(TextInputErrorType.NO_ERROR);
 
   const handleNumberInputOnChange = (id: string, v: number) => {
     switch (id) {
@@ -48,15 +49,22 @@ const FundamentalFinder = () => {
   };
 
   const handleTextInputOnBlur = (_id: string, v: string) => {
-    const newFreqNums = getNumbersFromTextInput(v);
-    if (newFreqNums.length === 0) {
-      setTextInputHasErr(true);
+    if (v === "") {
+      setTextInputErr(TextInputErrorType.NO_ERROR);
       setFreqNums([]);
+      setCommonFundamentals([]);
       return;
     }
-    setTextInputHasErr(false);
-    setFreqNums(newFreqNums);
-    setTextInputHasErr(false);
+    const newFreqNums = getNumbersFromTextInput(v);
+    if (newFreqNums.length === 0) {
+      setTextInputErr(TextInputErrorType.PARSING);
+      return;
+    }
+    if (newFreqNums.includes(0)) {
+      setTextInputErr(TextInputErrorType.ZERO);
+      return;
+    }
+    setTextInputErr(TextInputErrorType.NO_ERROR);
     setFreqNums(newFreqNums);
     const commonFunds = getCommonFundamentals(
       newFreqNums,
@@ -110,11 +118,15 @@ const FundamentalFinder = () => {
         text={freqsTextInput}
         onChange={handleTextInputOnChange}
         onBlur={handleTextInputOnBlur}
-        border={textInputHasErr ? BorderType.FAILURE : BorderType.NORMAL}
+        border={
+          textInputErr === TextInputErrorType.NO_ERROR
+            ? BorderType.NORMAL
+            : BorderType.FAILURE
+        }
       >
         Partial frequencies (separated by space)
       </TextInput>
-      {textInputHasErr && <p>"Error parsing frequencies."</p>}
+      {textInputErr !== TextInputErrorType.NO_ERROR && <p>{textInputErr}</p>}
       <NumberInput
         id="fundamental-finder-min-freq"
         value={minFreq}

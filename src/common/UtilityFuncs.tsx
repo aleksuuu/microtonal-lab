@@ -339,9 +339,10 @@ export const getCommonFundamentals = (
   return results;
 };
 
-export const getNumbersFromTextInput = (text: string) => {
-  const arr = text.trim().split(/\s+/);
+export const getNumbersFromTextInput = (text: string): number[] => {
   const nums: number[] = [];
+  if (text === "") return nums;
+  const arr = text.trim().split(/\s+/);
   for (const s of arr) {
     const num = Number(s);
     if (isNaN(num)) {

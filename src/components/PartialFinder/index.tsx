@@ -1,4 +1,8 @@
-import { BorderType, CommonPartial } from "../../common/types";
+import {
+  BorderType,
+  CommonPartial,
+  TextInputErrorType,
+} from "../../common/types";
 import { useState } from "react";
 import {
   formatFreqMidiNoteCentsIntoASingleString,
@@ -15,7 +19,7 @@ const PartialFinder = () => {
   const [minFreq, setMinFreq] = useState(110);
   const [maxFreq, setMaxFreq] = useState(880);
   const [tolerance, setTolerance] = useState(10); // cents
-  const [textInputHasErr, setTextInputHasErr] = useState(false);
+  const [textInputErr, setTextInputErr] = useState(TextInputErrorType.NO_ERROR);
   const handleNumberInputOnChange = (id: string, v: number) => {
     switch (id) {
       case "partial-finder-min-freq":
@@ -39,13 +43,22 @@ const PartialFinder = () => {
   };
 
   const handleTextInputOnBlur = (_id: string, v: string) => {
-    const newFreqNums = getNumbersFromTextInput(v);
-    if (newFreqNums.length === 0) {
-      setTextInputHasErr(true);
+    if (v === "") {
+      setTextInputErr(TextInputErrorType.NO_ERROR);
       setBaseFreqNums([]);
+      setCommonPartials([]);
       return;
     }
-    setTextInputHasErr(false);
+    const newFreqNums = getNumbersFromTextInput(v);
+    if (newFreqNums.length === 0) {
+      setTextInputErr(TextInputErrorType.PARSING);
+      return;
+    }
+    if (newFreqNums.includes(0)) {
+      setTextInputErr(TextInputErrorType.ZERO);
+      return;
+    }
+    setTextInputErr(TextInputErrorType.NO_ERROR);
     setBaseFreqNums(newFreqNums);
     const newCommonPartials = getCommonPartials(
       newFreqNums,
@@ -95,11 +108,15 @@ const PartialFinder = () => {
         text={freqsTextInput}
         onChange={handleTextInputOnChange}
         onBlur={handleTextInputOnBlur}
-        border={textInputHasErr ? BorderType.FAILURE : BorderType.NORMAL}
+        border={
+          textInputErr === TextInputErrorType.NO_ERROR
+            ? BorderType.NORMAL
+            : BorderType.FAILURE
+        }
       >
         Fundamental frequencies (separated by space)
       </TextInput>
-      {textInputHasErr && <p>"Error parsing frequencies."</p>}
+      {textInputErr !== TextInputErrorType.NO_ERROR && <p>{textInputErr}</p>}
       <NumberInput
         id="partial-finder-min-freq"
         value={minFreq}
