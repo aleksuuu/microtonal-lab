@@ -10,7 +10,7 @@ const Home = () => {
         <a href="https://github.com/aleksuuu/microtonal-lab">here</a>. PRs
         welcome!
       </p>
-      <h2>Current available features</h2>
+      <h2>Available features</h2>
       <ul>
         <li>
           - <a href="/microtonal-lab/interval">Interval</a>: Generate intervals
