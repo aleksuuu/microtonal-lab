@@ -30,7 +30,7 @@ const Home = () => {
         </li>
         <li>
           - <a href="/microtonal-lab/tuner">Tuner</a>: Frequency tuner (TODO:
-          Tune to a .scl scale).
+          Tune to a .scl scale; improve UI).
         </li>
         <li>
           - <a href="/microtonal-lab/scala-editor">Scala Editor</a>: Edit or

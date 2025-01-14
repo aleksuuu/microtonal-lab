@@ -1,5 +1,9 @@
 import { useState } from "react";
 import Button from "../../components/Button";
+import {
+  formatFreqMidiNoteCentsIntoASingleString,
+  fromFreq,
+} from "../../common/UtilityFuncs";
 
 const Tuner = () => {
   const [frequency, setFrequency] = useState<number | null>(null);
@@ -99,7 +103,11 @@ const Tuner = () => {
         <Button onClick={startTuner}>Start Tuner</Button>
       ) : (
         <p>
-          {frequency ? `Frequency: ${frequency.toFixed(2)} Hz` : "Detecting..."}
+          {frequency
+            ? `Frequency: ${formatFreqMidiNoteCentsIntoASingleString(
+                fromFreq(frequency)
+              )}`
+            : "Detecting..."}
         </p>
       )}
     </>
