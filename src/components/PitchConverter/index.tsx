@@ -1,8 +1,4 @@
-import {
-  BorderType,
-  EDO12NOTENAMES,
-  FreqMidiNoteCents,
-} from "../../common/types";
+import { BorderType, FreqMidiNoteCents } from "../../common/types";
 import { useState, useEffect } from "react";
 import {
   fromFreq,
@@ -12,16 +8,11 @@ import {
 } from "../../common/UtilityFuncs";
 import NumberInput from "../NumberInput";
 import TextInput from "../TextInput";
+import VerovioRenderer from "../VerovioRenderer";
 
 const PitchConverter = () => {
   const [freqMidiNoteCents, setFreqMidiNoteCents] = useState<FreqMidiNoteCents>(
-    {
-      freq: 440,
-      midiNote: 69,
-      noteName: EDO12NOTENAMES.A,
-      octave: 4,
-      addCents: 0,
-    }
+    fromFreq(440, true)
   );
   const [noteName, setNoteName] = useState(
     freqMidiNoteCents.noteName + freqMidiNoteCents.octave
@@ -35,7 +26,9 @@ const PitchConverter = () => {
   const handleNumberInput = (id: string, v: number) => {
     switch (id) {
       case "pitch-converter-freq-input":
-        setFreqMidiNoteCents(fromFreq(v));
+        if (v) {
+          setFreqMidiNoteCents(fromFreq(v, true));
+        }
         break;
       case "pitch-converter-add-cents-input":
         setFreqMidiNoteCents(
@@ -56,7 +49,6 @@ const PitchConverter = () => {
     if (output) {
       setFreqMidiNoteCents(output);
       setTextInputHasErr(false);
-      // setTextInputErr("");
     } else {
       setTextInputHasErr(true);
     }
@@ -109,6 +101,9 @@ const PitchConverter = () => {
             MIDI note
           </NumberInput>
         </div>
+        {freqMidiNoteCents.freq > 0 && (
+          <VerovioRenderer notes={[freqMidiNoteCents]}></VerovioRenderer>
+        )}
       </div>
     </div>
   );

@@ -26,6 +26,7 @@ const VerovioRenderer = ({ notes, width = 150, height = 110 }: Props) => {
         pageMarginLeft: 0,
         pageMarginRight: 0,
         pageMarginBottom: 0,
+        pageMarginTop: 0,
         scaleToPageSize: true,
       });
       vrvToolkit.loadData(meiData.meiData);
@@ -63,9 +64,9 @@ const VerovioRenderer = ({ notes, width = 150, height = 110 }: Props) => {
 
   const handleHover = (note: FreqMidiNoteCents) => {
     setNoteInfo(
-      `${formatFreqMidiNoteCentsIntoASingleString(note)} [${
-        note.amp?.toFixed(2) ?? ""
-      }]`
+      `${formatFreqMidiNoteCentsIntoASingleString(note)} ${
+        note.amp ? `[${note.amp.toFixed(2)}]` : ""
+      }`
     );
   };
   return (

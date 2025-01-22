@@ -1,6 +1,15 @@
 import { FreqMidiNoteCents } from "./types";
 
 const formatNote = (note: FreqMidiNoteCents) => {
+  if (
+    note === undefined ||
+    note === null ||
+    isNaN(note.freq) ||
+    note.freq <= 0 ||
+    note.noteName === undefined ||
+    note.noteName === null
+  )
+    return null;
   let accidental = "";
   let microtonalInflection = "";
   if (note.addCents > 10) microtonalInflection = "u";
@@ -32,8 +41,12 @@ const formatChordInStaff = (
   dur: number = 1,
   staff: number = 1
 ) => {
-  const xmlNotes = notes.map((n) => formatNote(n));
-  const xmlNotesStr = xmlNotes.join("");
+  let xmlNotesStr = "";
+  for (const n of notes) {
+    const formatted = formatNote(n);
+    if (formatted === null) return "";
+    xmlNotesStr = xmlNotesStr.concat(formatted);
+  }
   return `<staff n="${staff}"><layer n="1"><chord dur="${dur}">${xmlNotesStr}</chord></layer></staff>`;
 };
 

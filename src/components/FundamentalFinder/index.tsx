@@ -12,6 +12,7 @@ import {
 } from "../../common/UtilityFuncs";
 import NumberInput from "../NumberInput";
 import TextInput from "../TextInput";
+import VerovioRenderer from "../VerovioRenderer";
 
 const FundamentalFinder = () => {
   const [freqsTextInput, setFreqsTextInput] = useState("");
@@ -163,15 +164,23 @@ const FundamentalFinder = () => {
           </NumberInput>
         </div>
         {commonFundamentals.length > 0 && (
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Imaginary Fundamentals/Partials</th>
-                {getInputFrequencies()}
-              </tr>
-            </thead>
-            {formattedFundamentals}
-          </table>
+          <>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">
+                    Imaginary Fundamentals /<br />
+                    Partials
+                  </th>
+                  {getInputFrequencies()}
+                </tr>
+              </thead>
+              {formattedFundamentals}
+            </table>
+            <VerovioRenderer
+              notes={commonFundamentals.map((f) => f.fundamental)}
+            ></VerovioRenderer>
+          </>
         )}
       </div>
     </div>

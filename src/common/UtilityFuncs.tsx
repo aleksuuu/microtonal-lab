@@ -45,9 +45,8 @@ export const predictFM = (params: FMPredictionParams): FreqMidiNoteCents[] => {
       // filter out amps lower than minAmp
       return;
     }
-    const note = fromFreq(freq);
+    const note = fromFreq(freq, true);
     note.amp = amp;
-    note.id = `n${crypto.randomUUID()}`;
     notes.push(note);
   };
   const getN = (sidebandFreq: number) => {
@@ -112,12 +111,25 @@ export const freqToNoteName = (freq: number) => {
   return noteName + equave + arrow;
 };
 
-export const fromFreq = (freq: number): FreqMidiNoteCents => {
+export const fromFreq = (
+  freq: number,
+  generateId: boolean = false
+): FreqMidiNoteCents => {
   const midiNote = freqToMidi(freq);
   const rounded = Math.round(midiNote);
   const addCents = (midiNote - rounded) * 100;
-  const noteName = noteNames[rounded % noteNames.length];
+  const noteName = noteNames[Math.abs(rounded % noteNames.length)];
   const octave = Math.floor(rounded / noteNames.length) - 1;
+  if (generateId) {
+    return {
+      freq: freq,
+      midiNote: midiNote,
+      noteName: noteName as EDO12NOTENAMES,
+      octave: octave,
+      addCents: addCents,
+      id: `n${crypto.randomUUID()}`,
+    };
+  }
   return {
     freq: freq,
     midiNote: midiNote,
@@ -226,7 +238,7 @@ export const getCommonPartials = (
   if (allPartials.length === 1) {
     return partialsForFirstFreq.map((v) => ({
       partialNums: [v.partialNum],
-      partial: fromFreq(v.partial),
+      partial: fromFreq(v.partial, true),
     }));
   }
   const toleranceMidi = tolerance / 100; // cents to MIDI
@@ -246,7 +258,7 @@ export const getCommonPartials = (
     }
     if (partials.length !== allPartials.length) continue;
     const averagePartial = partials.reduce((a, b) => a + b) / partials.length;
-    const formattedPartial = fromFreq(averagePartial);
+    const formattedPartial = fromFreq(averagePartial, true);
     results.push({ partialNums: partialNums, partial: formattedPartial });
   }
   return results;
@@ -312,7 +324,7 @@ export const getCommonFundamentals = (
   if (allPotentialFundamentals.length === 1)
     return fundamentalsForFirstFreq.map((f) => ({
       partialNums: [f.partialNum],
-      fundamental: fromFreq(f.fundamental),
+      fundamental: fromFreq(f.fundamental, true),
     }));
   const toleranceMidi = tolerance / 100; // cents to MIDI
   for (const f of fundamentalsForFirstFreq) {
@@ -332,7 +344,7 @@ export const getCommonFundamentals = (
     if (fundamentals.length !== allPotentialFundamentals.length) continue; // allPotentialFundamentals.length should be the number of input frequencies
     const averageFundamental =
       fundamentals.reduce((a, b) => a + b) / fundamentals.length;
-    const formattedFund = fromFreq(averageFundamental);
+    const formattedFund = fromFreq(averageFundamental, true);
     results.push({ partialNums: partialNums, fundamental: formattedFund });
   }
   return results;

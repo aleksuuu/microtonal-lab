@@ -11,6 +11,7 @@ import {
 } from "../../common/UtilityFuncs";
 import NumberInput from "../NumberInput";
 import TextInput from "../TextInput";
+import VerovioRenderer from "../VerovioRenderer";
 
 const PartialFinder = () => {
   const [freqsTextInput, setFreqsTextInput] = useState("");
@@ -153,15 +154,23 @@ const PartialFinder = () => {
           </NumberInput>
         </div>
         {commonPartials.length > 0 && (
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Common Partials / Fundamentals</th>
-                {getInputFrequencies()}
-              </tr>
-            </thead>
-            {formattedPartials}
-          </table>
+          <>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">
+                    Common Partials /<br />
+                    Fundamentals
+                  </th>
+                  {getInputFrequencies()}
+                </tr>
+              </thead>
+              {formattedPartials}
+            </table>
+            <VerovioRenderer
+              notes={commonPartials.map((p) => p.partial)}
+            ></VerovioRenderer>
+          </>
         )}
       </div>
     </div>
