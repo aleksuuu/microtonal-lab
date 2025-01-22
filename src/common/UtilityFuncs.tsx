@@ -38,7 +38,7 @@ export const predictFM = (params: FMPredictionParams): FreqMidiNoteCents[] => {
     if (sameNoteIdx !== -1) {
       // if the frequency already exists, it would be 180 degrees out of phase)
       notes[sameNoteIdx].amp = Math.abs(notes[sameNoteIdx].amp ?? 0 - amp);
-      if (notes[sameNoteIdx].amp ?? 0 < minAmp) notes.splice(sameNoteIdx, 1);
+      if ((notes[sameNoteIdx].amp ?? 0) < minAmp) notes.splice(sameNoteIdx, 1);
       return;
     }
     if (amp < minAmp) {
