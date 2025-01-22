@@ -113,61 +113,67 @@ const FundamentalFinder = () => {
   return (
     <div>
       <h2>Fundamental Finder</h2>
-      <TextInput
-        id="fundamental-finder-freq-input"
-        text={freqsTextInput}
-        onChange={handleTextInputOnChange}
-        onBlur={handleTextInputOnBlur}
-        border={
-          textInputErr === TextInputErrorType.NO_ERROR
-            ? BorderType.NORMAL
-            : BorderType.FAILURE
-        }
-      >
-        Partial frequencies (separated by space)
-      </TextInput>
-      {textInputErr !== TextInputErrorType.NO_ERROR && <p>{textInputErr}</p>}
-      <NumberInput
-        id="fundamental-finder-min-freq"
-        value={minFreq}
-        isFreqValue={true}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Minimum frequency for imaginary fundamentals
-      </NumberInput>
-      <NumberInput
-        id="fundamental-finder-max-freq"
-        value={maxFreq}
-        isFreqValue={true}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Maximum frequency for imaginary fundamentals
-      </NumberInput>
-      <NumberInput
-        id="fundamental-finder-tolerance"
-        value={tolerance}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Acceptable margin of error in cents (imaginary fundamentals within this
-        difference would be considered equal)
-      </NumberInput>
-      {commonFundamentals.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Imaginary Fundamentals/Partials</th>
-              {getInputFrequencies()}
-            </tr>
-          </thead>
-          {formattedFundamentals}
-        </table>
-      )}
+      <div className="default-flexbox">
+        <div className="utility-tools-input-form">
+          <TextInput
+            id="fundamental-finder-freq-input"
+            text={freqsTextInput}
+            onChange={handleTextInputOnChange}
+            onBlur={handleTextInputOnBlur}
+            border={
+              textInputErr === TextInputErrorType.NO_ERROR
+                ? BorderType.NORMAL
+                : BorderType.FAILURE
+            }
+          >
+            Partial frequencies (separated by space)
+          </TextInput>
+          {textInputErr !== TextInputErrorType.NO_ERROR && (
+            <p>{textInputErr}</p>
+          )}
+          <NumberInput
+            id="fundamental-finder-min-freq"
+            value={minFreq}
+            isFreqValue={true}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Minimum frequency for imaginary fundamentals
+          </NumberInput>
+          <NumberInput
+            id="fundamental-finder-max-freq"
+            value={maxFreq}
+            isFreqValue={true}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Maximum frequency for imaginary fundamentals
+          </NumberInput>
+          <NumberInput
+            id="fundamental-finder-tolerance"
+            value={tolerance}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Acceptable margin of error in cents (imaginary fundamentals within
+            this difference would be considered equal)
+          </NumberInput>
+        </div>
+        {commonFundamentals.length > 0 && (
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Imaginary Fundamentals/Partials</th>
+                {getInputFrequencies()}
+              </tr>
+            </thead>
+            {formattedFundamentals}
+          </table>
+        )}
+      </div>
     </div>
   );
 };

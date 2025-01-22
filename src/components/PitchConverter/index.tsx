@@ -68,44 +68,48 @@ const PitchConverter = () => {
   return (
     <div>
       <h2>Pitch Converter</h2>
-      <NumberInput
-        id="pitch-converter-freq-input"
-        value={freqMidiNoteCents.freq}
-        isFreqValue={true}
-        onChange={handleNumberInput}
-        className="medium-input"
-      >
-        Frequency
-      </NumberInput>
-      <TextInput
-        border={textInputHasErr ? BorderType.FAILURE : BorderType.NORMAL}
-        id="pitch-converter-note-name-input"
-        text={noteName}
-        onChange={handleTextInputOnChange}
-        onBlur={handleTextInputOnBlur}
-        className="medium-input"
-      >
-        Note name w/ octave
-      </TextInput>
-      <p>{textInputHasErr ? "Unable to parse note name w/ octave." : ""}</p>
-      <NumberInput
-        id="pitch-converter-add-cents-input"
-        value={freqMidiNoteCents.addCents}
-        isFreqValue={false}
-        onChange={handleNumberInput}
-        className="medium-input"
-      >
-        Detune in cents
-      </NumberInput>
-      <NumberInput
-        id="pitch-converter-midi-note-input"
-        value={freqMidiNoteCents.midiNote}
-        isFreqValue={false}
-        onChange={handleNumberInput}
-        className="medium-input"
-      >
-        MIDI note
-      </NumberInput>
+      <div className="default-flexbox">
+        <div className="utility-tools-input-form">
+          <NumberInput
+            id="pitch-converter-freq-input"
+            value={freqMidiNoteCents.freq}
+            isFreqValue={true}
+            onChange={handleNumberInput}
+            className="medium-input"
+          >
+            Frequency
+          </NumberInput>
+          <TextInput
+            border={textInputHasErr ? BorderType.FAILURE : BorderType.NORMAL}
+            id="pitch-converter-note-name-input"
+            text={noteName}
+            onChange={handleTextInputOnChange}
+            onBlur={handleTextInputOnBlur}
+            className="medium-input"
+          >
+            Note name w/ octave
+          </TextInput>
+          <p>{textInputHasErr ? "Unable to parse note name w/ octave." : ""}</p>
+          <NumberInput
+            id="pitch-converter-add-cents-input"
+            value={freqMidiNoteCents.addCents}
+            isFreqValue={false}
+            onChange={handleNumberInput}
+            className="medium-input"
+          >
+            Detune in cents
+          </NumberInput>
+          <NumberInput
+            id="pitch-converter-midi-note-input"
+            value={freqMidiNoteCents.midiNote}
+            isFreqValue={false}
+            onChange={handleNumberInput}
+            className="medium-input"
+          >
+            MIDI note
+          </NumberInput>
+        </div>
+      </div>
     </div>
   );
 };

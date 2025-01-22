@@ -1,19 +1,22 @@
-import { NoteWithAmp } from "../../common/types";
+import { FreqMidiNoteCents } from "../../common/types";
 import { useEffect, useState } from "react";
 import {
   formatFreqMidiNoteCentsIntoASingleString,
   predictFM,
 } from "../../common/UtilityFuncs";
 import NumberInput from "../NumberInput";
+import VerovioRenderer from "../VerovioRenderer";
 
 const FMCalculator = () => {
   const [carrierFreq, setCarrierFreq] = useState(220);
   const [modulatorFreq, setModulatorFreq] = useState(440);
   const [modulationIdx, setModulationIdx] = useState(5);
-  const [minFreq, setMinFreq] = useState(20);
+  const [minFreq, setMinFreq] = useState(55);
   const [maxFreq, setMaxFreq] = useState(2000);
   const [minAmp, setMinAmp] = useState(0.1);
-  const [predictionResults, setPredictionResults] = useState<NoteWithAmp[]>([]);
+  const [predictionResults, setPredictionResults] = useState<
+    FreqMidiNoteCents[]
+  >([]);
 
   useEffect(() => {
     resetPredictionResults();
@@ -59,11 +62,11 @@ const FMCalculator = () => {
     resetPredictionResults();
   };
 
-  const formatNoteAmp = (noteWithAmp: NoteWithAmp): React.ReactElement => {
+  const formatNoteAmp = (note: FreqMidiNoteCents): React.ReactElement => {
     return (
-      <tr key={noteWithAmp.note.freq}>
-        <td>{formatFreqMidiNoteCentsIntoASingleString(noteWithAmp.note)}</td>
-        <td>{noteWithAmp.amp.toFixed(2)}</td>
+      <tr key={note.freq}>
+        <td>{formatFreqMidiNoteCentsIntoASingleString(note)}</td>
+        <td>{note.amp && note.amp.toFixed(2)}</td>
       </tr>
     );
   };
@@ -71,75 +74,82 @@ const FMCalculator = () => {
   return (
     <div>
       <h2>FM Calculator</h2>
-      <NumberInput
-        id="fm-calculator-carrier"
-        value={carrierFreq}
-        isFreqValue={true}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Carrier frequency
-      </NumberInput>
-      <NumberInput
-        id="fm-calculator-modulator"
-        value={modulatorFreq}
-        isFreqValue={true}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Modulator frequency
-      </NumberInput>
-      <NumberInput
-        id="fm-calculator-idx"
-        value={modulationIdx}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Modulation index
-      </NumberInput>
-      <NumberInput
-        id="fm-calculator-min-freq"
-        value={minFreq}
-        isFreqValue={true}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Minimum output frequency
-      </NumberInput>
-      <NumberInput
-        id="fm-calculator-max-freq"
-        value={maxFreq}
-        isFreqValue={true}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Maximum output frequency
-      </NumberInput>
-      <NumberInput
-        id="fm-calculator-min-amp"
-        value={minAmp}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Minimum amplitude
-      </NumberInput>
-      {predictionResults.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Frequencies</th>
-              <th scope="col">Amplitudes</th>
-            </tr>
-          </thead>
-          <tbody>{predictionResults.map((p) => formatNoteAmp(p))}</tbody>
-        </table>
-      )}
+      <div className="default-flexbox">
+        <div className="utility-tools-input-form">
+          <NumberInput
+            id="fm-calculator-carrier"
+            value={carrierFreq}
+            isFreqValue={true}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Carrier frequency
+          </NumberInput>
+          <NumberInput
+            id="fm-calculator-modulator"
+            value={modulatorFreq}
+            isFreqValue={true}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Modulator frequency
+          </NumberInput>
+          <NumberInput
+            id="fm-calculator-idx"
+            value={modulationIdx}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Modulation index
+          </NumberInput>
+          <NumberInput
+            id="fm-calculator-min-freq"
+            value={minFreq}
+            isFreqValue={true}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Minimum output frequency
+          </NumberInput>
+          <NumberInput
+            id="fm-calculator-max-freq"
+            value={maxFreq}
+            isFreqValue={true}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Maximum output frequency
+          </NumberInput>
+          <NumberInput
+            id="fm-calculator-min-amp"
+            value={minAmp}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Minimum amplitude
+          </NumberInput>
+        </div>
+        {predictionResults.length > 0 && (
+          <>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Frequencies</th>
+                  <th scope="col">Amplitudes</th>
+                </tr>
+              </thead>
+              <tbody>{predictionResults.map((p) => formatNoteAmp(p))}</tbody>
+            </table>
+            <VerovioRenderer notes={predictionResults}></VerovioRenderer>
+          </>
+        )}
+      </div>
     </div>
   );
 };

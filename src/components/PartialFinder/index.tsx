@@ -103,61 +103,67 @@ const PartialFinder = () => {
   return (
     <div>
       <h2>Partial Finder</h2>
-      <TextInput
-        id="partial-finder-freq-input"
-        text={freqsTextInput}
-        onChange={handleTextInputOnChange}
-        onBlur={handleTextInputOnBlur}
-        border={
-          textInputErr === TextInputErrorType.NO_ERROR
-            ? BorderType.NORMAL
-            : BorderType.FAILURE
-        }
-      >
-        Fundamental frequencies (separated by space)
-      </TextInput>
-      {textInputErr !== TextInputErrorType.NO_ERROR && <p>{textInputErr}</p>}
-      <NumberInput
-        id="partial-finder-min-freq"
-        value={minFreq}
-        isFreqValue={true}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Minimum frequency for partials
-      </NumberInput>
-      <NumberInput
-        id="partial-finder-max-freq"
-        value={maxFreq}
-        isFreqValue={true}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Maximum frequency for partials
-      </NumberInput>
-      <NumberInput
-        id="partial-finder-tolerance"
-        value={tolerance}
-        onChange={handleNumberInputOnChange}
-        onBlur={handleNumberInputOnBlur}
-        className="medium-input"
-      >
-        Acceptable margin of error in cents (partials within this difference
-        would be considered equal)
-      </NumberInput>
-      {commonPartials.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Common Partials / Fundamentals</th>
-              {getInputFrequencies()}
-            </tr>
-          </thead>
-          {formattedPartials}
-        </table>
-      )}
+      <div className="default-flexbox">
+        <div className="utility-tools-input-form">
+          <TextInput
+            id="partial-finder-freq-input"
+            text={freqsTextInput}
+            onChange={handleTextInputOnChange}
+            onBlur={handleTextInputOnBlur}
+            border={
+              textInputErr === TextInputErrorType.NO_ERROR
+                ? BorderType.NORMAL
+                : BorderType.FAILURE
+            }
+          >
+            Fundamental frequencies (separated by space)
+          </TextInput>
+          {textInputErr !== TextInputErrorType.NO_ERROR && (
+            <p>{textInputErr}</p>
+          )}
+          <NumberInput
+            id="partial-finder-min-freq"
+            value={minFreq}
+            isFreqValue={true}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Minimum frequency for partials
+          </NumberInput>
+          <NumberInput
+            id="partial-finder-max-freq"
+            value={maxFreq}
+            isFreqValue={true}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Maximum frequency for partials
+          </NumberInput>
+          <NumberInput
+            id="partial-finder-tolerance"
+            value={tolerance}
+            onChange={handleNumberInputOnChange}
+            onBlur={handleNumberInputOnBlur}
+            className="medium-input"
+          >
+            Acceptable margin of error in cents (partials within this difference
+            would be considered equal)
+          </NumberInput>
+        </div>
+        {commonPartials.length > 0 && (
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Common Partials / Fundamentals</th>
+                {getInputFrequencies()}
+              </tr>
+            </thead>
+            {formattedPartials}
+          </table>
+        )}
+      </div>
     </div>
   );
 };

@@ -128,11 +128,13 @@ export type StatsPerQuestion = {
 };
 
 export type FreqMidiNoteCents = {
+  id?: string;
   freq: number;
   midiNote: number;
   noteName: EDO12NOTENAMES;
   octave: number;
   addCents: number;
+  amp?: number;
 };
 
 export type ScalaNote = {
@@ -165,5 +167,3 @@ export type FMPredictionParams = {
   maxFreq: number;
   minAmp: number;
 };
-
-export type NoteWithAmp = { note: FreqMidiNoteCents; amp: number };

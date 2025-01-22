@@ -9,12 +9,11 @@ import {
   CommonFundamental,
   CommonPartial,
   FMPredictionParams,
-  NoteWithAmp,
 } from "./types";
 
 // FM
 
-export const predictFM = (params: FMPredictionParams): NoteWithAmp[] => {
+export const predictFM = (params: FMPredictionParams): FreqMidiNoteCents[] => {
   const {
     carrierFreq,
     modulatorFreq,
@@ -23,9 +22,9 @@ export const predictFM = (params: FMPredictionParams): NoteWithAmp[] => {
     maxFreq,
     minAmp,
   } = params;
-  const notesWithAmp: NoteWithAmp[] = [];
+  const notes: FreqMidiNoteCents[] = [];
   if (modulationIdx < 0 || minFreq >= maxFreq || minFreq < 0 || minAmp < 0)
-    return notesWithAmp;
+    return notes;
   // HELPER FUNCTIONS
   const getSideband = (n: number) => {
     const freq = carrierFreq + n * modulatorFreq;
@@ -35,14 +34,11 @@ export const predictFM = (params: FMPredictionParams): NoteWithAmp[] => {
   const addSidebandToResult = (sideband: { freq: number; amp: number }) => {
     let { freq, amp } = sideband;
     if (freq < 0) freq = Math.abs(freq);
-    const sameNoteIdx = notesWithAmp.findIndex((n) => n.note.freq === freq);
+    const sameNoteIdx = notes.findIndex((n) => n.freq === freq);
     if (sameNoteIdx !== -1) {
       // if the frequency already exists, it would be 180 degrees out of phase)
-      notesWithAmp[sameNoteIdx].amp = Math.abs(
-        notesWithAmp[sameNoteIdx].amp - amp
-      );
-      if (notesWithAmp[sameNoteIdx].amp < minAmp)
-        notesWithAmp.splice(sameNoteIdx, 1);
+      notes[sameNoteIdx].amp = Math.abs(notes[sameNoteIdx].amp ?? 0 - amp);
+      if (notes[sameNoteIdx].amp ?? 0 < minAmp) notes.splice(sameNoteIdx, 1);
       return;
     }
     if (amp < minAmp) {
@@ -50,7 +46,9 @@ export const predictFM = (params: FMPredictionParams): NoteWithAmp[] => {
       return;
     }
     const note = fromFreq(freq);
-    notesWithAmp.push({ note, amp });
+    note.amp = amp;
+    note.id = `n${crypto.randomUUID()}`;
+    notes.push(note);
   };
   const getN = (sidebandFreq: number) => {
     return Math.floor((sidebandFreq - carrierFreq) / modulatorFreq);
@@ -65,13 +63,14 @@ export const predictFM = (params: FMPredictionParams): NoteWithAmp[] => {
     sideband = getSideband(n);
   }
   n = getN(-minFreq);
+  sideband = getSideband(n);
   while (sideband.freq > -maxFreq) {
     addSidebandToResult(sideband);
     n--;
     sideband = getSideband(n);
   }
-  notesWithAmp.sort((a, b) => a.note.freq - b.note.freq);
-  return notesWithAmp;
+  notes.sort((a, b) => a.freq - b.freq);
+  return notes;
 };
 
 // END OF FM

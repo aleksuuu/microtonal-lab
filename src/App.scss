@@ -165,3 +165,9 @@ label {
 .border-bottom {
   border-bottom: 0.5px solid $divider-border-color;
 }
+
+.default-flexbox {
+  display: flex;
+  gap: $space-default;
+  flex-wrap: wrap;
+}
