@@ -18,6 +18,8 @@
     "sass": "^1.64.2",
     "tone": "^14.7.77",
     "verovio": "^4.5.1",
+    "vite-plugin-top-level-await": "^1.4.4",
+    "vite-plugin-wasm": "^3.4.1",
     "webmidi": "^3.1.12"
   },
   "devDependencies": {

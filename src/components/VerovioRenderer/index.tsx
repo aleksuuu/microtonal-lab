@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { toolkit } from "verovio";
+import { toolkit, VerovioModule } from "verovio";
 import { formatNotesAsMeiData } from "../../common/MeiUtilities";
 import { FreqMidiNoteCents } from "../../common/types";
 import { formatFreqMidiNoteCentsIntoASingleString } from "../../common/UtilityFuncs";
 import "./index.scss";
+import createVerovioModule from "verovio/wasm";
+import { VerovioToolkit } from "verovio/esm";
+import { loadWasmModule } from "../../common/WasmLoader";
 
 interface Props {
   notes: FreqMidiNoteCents[];
@@ -14,11 +17,28 @@ interface Props {
 const VerovioRenderer = ({ notes, width = 150, height = 110 }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [noteInfo, setNoteInfo] = useState("");
+  const [vrvToolkit, setVrvToolkit] = useState<undefined | toolkit>(undefined);
 
   useEffect(() => {
-    if (containerRef.current) {
+    // const initWasm = async () => {
+    //   // const wasmExports: any = await loadWasmModule("verovio/wasm");
+    //   // console.log("hi");
+    //   // wasmExports().then((VerovioModule: VerovioModule | undefined) => {
+    //   //   setVrvToolkit(new VerovioToolkit(VerovioModule));
+    //   // });
+    //   const verovioModule = await createVerovioModule();
+    //   setVrvToolkit(new VerovioToolkit(verovioModule));
+    // };
+    // initWasm();
+    createVerovioModule().then((VerovioModule) => {
+      console.log("Hello");
+      setVrvToolkit(new VerovioToolkit(VerovioModule));
+    });
+  }, []);
+
+  useEffect(() => {
+    if (vrvToolkit !== undefined && containerRef.current) {
       const meiData = formatNotesAsMeiData(notes);
-      const vrvToolkit = new toolkit();
       vrvToolkit.setOptions({
         pageWidth: width,
         pageHeight: meiData.height * height,
@@ -56,9 +76,10 @@ const VerovioRenderer = ({ notes, width = 150, height = 110 }: Props) => {
         });
         parentElement.insertBefore(hitArea, pathElement);
       }
-
       containerRef.current.innerHTML = "";
       containerRef.current.appendChild(svgElement);
+    } else {
+      console.log("Nope");
     }
   }, [notes, width, height]);
 
