@@ -182,13 +182,13 @@ const getValidNoteNameAndOctave = (
   if (!match) {
     return null;
   }
-  const validName = match[1]
+  const capitalized = match[1].charAt(0).toUpperCase() + match[1].slice(1);
+  const validName = capitalized
     .replace("#", "♯")
-    .replace("b", "♭")
-    .toUpperCase() as EDO12NOTENAMES;
-  const octave = parseInt(match[2], 10);
+    .replace("b", "♭") as EDO12NOTENAMES;
 
   if (Object.values(EDO12NOTENAMES).includes(validName)) {
+    const octave = parseInt(match[2], 10);
     return [validName, octave];
   }
   return null;
