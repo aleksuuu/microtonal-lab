@@ -5,4 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   base: '/microtonal-lab/',
   plugins: [react()],
+  optimizeDeps: {
+    exclude: ["verovio"], // Exclude verovio from optimization if needed
+  },
 })
