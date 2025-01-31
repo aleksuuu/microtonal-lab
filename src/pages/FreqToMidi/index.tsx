@@ -57,6 +57,10 @@ const FreqToMidi = () => {
     setMidiOutputs(
       WebMidi.outputs.map(({ name, id }) => ({ value: name, id }))
     );
+    if (WebMidi.outputs.length < 1) {
+      setMidiEnabled(false);
+      return;
+    }
     setMidiEnabled(true);
     setOutput(WebMidi.outputs[0]);
   };
@@ -279,33 +283,35 @@ const FreqToMidi = () => {
     return <ul className="freq-input-rows flex-row">{rows}</ul>;
   };
 
-  const errMsg = (): React.ReactElement => {
-    return (
-      <div hidden={midiEnabled}>
-        <h2>If you don't see any MIDI output…</h2>
-        <ul>
-          <li>
-            - Use a supported browser, such as Chrome or Firefox (Safari is not
-            natively supported).
-          </li>
-          <li>- Grant MIDI permissions in your browser.</li>
-          <li>
-            - Make sure you have MIDI devices connected. If you’d like to route
-            MIDI messages to a DAW, you could use a virtual MIDI bus (
-            <a href="https://support.apple.com/guide/audio-midi-setup/transfer-midi-information-between-apps-ams1013/mac">
-              macOS guide
-            </a>
-            ).
-          </li>
-        </ul>
-      </div>
-    );
-  };
+  const errMsg = (
+    <>
+      {!midiEnabled && (
+        <div>
+          <h2>If you don't see any MIDI output…</h2>
+          <ul>
+            <li>
+              - Use a supported browser, such as Chrome or Firefox (Safari is
+              not natively supported).
+            </li>
+            <li>- Grant MIDI permissions in your browser.</li>
+            <li>
+              - Make sure you have MIDI devices connected. If you’d like to
+              route MIDI messages to a DAW, you could use a virtual MIDI bus (
+              <a href="https://support.apple.com/guide/audio-midi-setup/transfer-midi-information-between-apps-ams1013/mac">
+                macOS guide
+              </a>
+              ).
+            </li>
+          </ul>
+        </div>
+      )}
+    </>
+  );
 
   return (
     <>
       <title>Microtonal Lab - Frequency to MIDI</title>
-      {errMsg()}
+      {errMsg}
       <div>
         <h2>Select a MIDI output: </h2>
         <MenuOptions id="midi-outputs" onChange={handleMidiOutputChange}>
@@ -333,7 +339,7 @@ const FreqToMidi = () => {
           All Notes Off
         </Button>
         <p>
-          (All Notes Off might not work with certain environments, such as{" "}
+          (All Notes Off might not work in certain environments, such as{" "}
           <a href="https://www.logicprohelp.com/forums/topic/38157-cc123-all-notes-off-behavior/">
             Logic Pro
           </a>

@@ -221,24 +221,6 @@ const ScalaEditor = () => {
         as 200/1, a ratio.
       </p>
       <Button onClick={handleSave}>Save</Button>
-
-      {/* {parsedScale && (
-        <div>
-          <h2>Parsed Scale</h2>
-          <p>
-            <strong>Name:</strong> {parsedScale.name}
-          </p>
-          <p>
-            <strong>Description:</strong> {parsedScale.description}
-          </p>
-          <h3>Notes:</h3>
-          <ul>
-            {parsedScale.notes.map((note, index) => (
-              <li key={index}>{note.toFixed(2)} cents</li>
-            ))}
-          </ul>
-        </div>
-      )} */}
     </>
   );
 };
