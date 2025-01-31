@@ -15,8 +15,6 @@ interface Props {
   onEnter?: (id: string) => void;
 }
 
-// TODO: base this on Input
-
 const NumberInput = ({
   children,
   className,
