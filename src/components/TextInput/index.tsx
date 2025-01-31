@@ -11,6 +11,7 @@ interface Props {
   text: string;
   onChange?: (id: string, v: string) => void;
   onBlur?: (id: string, v: string) => void;
+  onEnter?: (id: string) => void;
 }
 
 const TextInput = ({
@@ -23,6 +24,7 @@ const TextInput = ({
   text,
   onChange,
   onBlur,
+  onEnter,
 }: Props) => {
   return (
     <Input
@@ -42,6 +44,7 @@ const TextInput = ({
           onBlur(id, v);
         }
       }}
+      onEnter={onEnter}
     >
       {children}
     </Input>

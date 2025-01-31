@@ -39,24 +39,32 @@ const FundamentalFinder = () => {
     }
   };
 
-  const handleNumberInputOnBlur = (_id: string, _v: number) => {
+  const validateNumberInput = () => {
     setCommonFundamentals(
       getCommonFundamentals(freqNums, minFreq, maxFreq, tolerance)
     );
+  };
+
+  const handleNumberInputOnBlur = (_id: string, _v: number) => {
+    validateNumberInput();
+  };
+
+  const handleNumberInputOnEnter = (_id: string) => {
+    validateNumberInput();
   };
 
   const handleTextInputOnChange = (_id: string, v: string) => {
     setFreqsTextInput(v);
   };
 
-  const handleTextInputOnBlur = (_id: string, v: string) => {
-    if (v === "") {
+  const validateTextInput = () => {
+    if (freqsTextInput === "") {
       setTextInputErr(TextInputErrorType.NO_ERROR);
       setFreqNums([]);
       setCommonFundamentals([]);
       return;
     }
-    const newFreqNums = getNumbersFromTextInput(v);
+    const newFreqNums = getNumbersFromTextInput(freqsTextInput);
     if (newFreqNums.length === 0) {
       setTextInputErr(TextInputErrorType.PARSING);
       return;
@@ -74,6 +82,14 @@ const FundamentalFinder = () => {
       tolerance
     );
     setCommonFundamentals(commonFunds);
+  };
+
+  const handleTextInputOnBlur = (_id: string, _v: string) => {
+    validateTextInput();
+  };
+
+  const handleTextInputOnEnter = (_id: string) => {
+    validateTextInput();
   };
 
   const formatFundamental = (
@@ -121,6 +137,7 @@ const FundamentalFinder = () => {
             text={freqsTextInput}
             onChange={handleTextInputOnChange}
             onBlur={handleTextInputOnBlur}
+            onEnter={handleTextInputOnEnter}
             border={
               textInputErr === TextInputErrorType.NO_ERROR
                 ? BorderType.NORMAL
@@ -138,6 +155,7 @@ const FundamentalFinder = () => {
             isFreqValue={true}
             onChange={handleNumberInputOnChange}
             onBlur={handleNumberInputOnBlur}
+            onEnter={handleNumberInputOnEnter}
             className="medium-input"
           >
             Minimum frequency for imaginary fundamentals
@@ -148,6 +166,7 @@ const FundamentalFinder = () => {
             isFreqValue={true}
             onChange={handleNumberInputOnChange}
             onBlur={handleNumberInputOnBlur}
+            onEnter={handleNumberInputOnEnter}
             className="medium-input"
           >
             Maximum frequency for imaginary fundamentals
@@ -157,6 +176,7 @@ const FundamentalFinder = () => {
             value={tolerance}
             onChange={handleNumberInputOnChange}
             onBlur={handleNumberInputOnBlur}
+            onEnter={handleNumberInputOnEnter}
             className="medium-input"
           >
             Acceptable margin of error in cents (imaginary fundamentals within

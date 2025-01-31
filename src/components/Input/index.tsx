@@ -19,6 +19,7 @@ interface Props {
   onBlur?:
     | ((id: string, v: string) => void)
     | ((id: string, v: number) => void);
+  onEnter?: (id: string) => void;
 }
 
 const Input = ({
@@ -35,6 +36,7 @@ const Input = ({
   step = "any",
   onChange,
   onBlur,
+  onEnter,
 }: Props) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
@@ -60,6 +62,14 @@ const Input = ({
       }
     }
   };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (onEnter) {
+      if (event.key === "Enter") {
+        onEnter(id);
+      }
+    }
+  };
   return (
     <span className={`custom-input ${className}`}>
       <p>{children}</p>
@@ -74,6 +84,7 @@ const Input = ({
         step={step}
         onChange={handleChange}
         onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
       ></input>
     </span>
   );

@@ -112,11 +112,7 @@ const VerovioRenderer = ({ notes, width = 150, height = 110 }: Props) => {
           setNoteInfo("");
         }}
       ></div>
-      <p style={{ whiteSpace: "pre" }}>
-        {noteInfo === ""
-          ? "                                                        "
-          : noteInfo}
-      </p>
+      <p style={{ minWidth: "280px" }}>{noteInfo}</p>
     </div>
   );
 };

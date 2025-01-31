@@ -332,6 +332,13 @@ const FreqToMidi = () => {
         <Button id="all-notes-off-all-chans" onClick={handleButtonOnClick}>
           All Notes Off
         </Button>
+        <p>
+          (All Notes Off might not work with certain environments, such as{" "}
+          <a href="https://www.logicprohelp.com/forums/topic/38157-cc123-all-notes-off-behavior/">
+            Logic Pro
+          </a>
+          .)
+        </p>
       </div>
     </>
   );

@@ -12,6 +12,7 @@ interface Props {
   isFreqValue?: boolean;
   onChange?: (id: string, v: number) => void;
   onBlur?: (id: string, v: number) => void;
+  onEnter?: (id: string) => void;
 }
 
 // TODO: base this on Input
@@ -28,6 +29,7 @@ const NumberInput = ({
   isFreqValue,
   onChange,
   onBlur,
+  onEnter,
 }: Props) => {
   const minV = min ? min : isFreqValue ? 20 : 1;
   const maxV = max ? max : isFreqValue ? 10000 : 1000;
@@ -44,6 +46,7 @@ const NumberInput = ({
       step={isFreqValue ? "any" : 1}
       onChange={onChange}
       onBlur={onBlur}
+      onEnter={onEnter}
     >
       {children}
     </Input>
