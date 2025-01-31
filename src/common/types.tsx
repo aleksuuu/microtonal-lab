@@ -95,16 +95,16 @@ export enum ScalaNoteTypes {
 }
 
 export type ExerciseOptions = {
-  oscType: { type: OptionType.OSCTYPE; v: SynthOscType };
-  scaleName: { type: OptionType.SCALENAME; v: AllowedScales };
-  smallerThanEquave: { type: OptionType.SMALLERTHANEQUAVE; v: boolean };
-  largerThanEquave: { type: OptionType.LARGERTHANEQUAVE; v: boolean };
-  playArp: { type: OptionType.PLAYARP; v: boolean };
-  playSim: { type: OptionType.PLAYSIM; v: boolean };
-  minFreq: { type: OptionType.MINFREQ; v: number };
-  maxFreq: { type: OptionType.MAXFREQ; v: number };
-  numQuestions: { type: OptionType.NUMQUESTIONS; v: number };
-  infiniteMode: { type: OptionType.INFINITEMODE; v: boolean };
+  oscType: SynthOscType;
+  scaleName: AllowedScales;
+  smallerThanEquave: boolean;
+  largerThanEquave: boolean;
+  playArp: boolean;
+  playSim: boolean;
+  minFreq: number;
+  maxFreq: number;
+  numQuestions: number;
+  infiniteMode: boolean;
 };
 
 export type IntervalWithNotes = {

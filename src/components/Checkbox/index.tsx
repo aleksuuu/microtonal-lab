@@ -1,15 +1,13 @@
-import { useState } from "react";
 import "./index.scss";
 
 interface Props {
   children: string;
   id: string;
-  initValue: boolean;
+  checked: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Checkbox = ({ children, id, initValue, onChange }: Props) => {
-  const [checked, setChecked] = useState(initValue);
+const Checkbox = ({ children, id, checked, onChange }: Props) => {
   return (
     <>
       <label>
@@ -18,10 +16,7 @@ const Checkbox = ({ children, id, initValue, onChange }: Props) => {
           className="checkbox-input"
           name={id}
           type="checkbox"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            onChange(e);
-            setChecked(!checked);
-          }}
+          onChange={onChange}
           checked={checked}
         />
         {children}

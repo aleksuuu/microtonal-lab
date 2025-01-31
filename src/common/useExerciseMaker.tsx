@@ -160,45 +160,45 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
   const setUp = useCallback((): string => {
     setExerciseState((prevState) => ({ ...prevState, didSetUp: false }));
-    if (!exerciseOptions.oscType.v) {
+    if (!exerciseOptions.oscType) {
       return "You must select a valid sound.";
     }
-    if (!exerciseOptions.scaleName.v) {
+    if (!exerciseOptions.scaleName) {
       return "You must select a valid scale.";
     }
     if (
-      !exerciseOptions.smallerThanEquave.v &&
-      !exerciseOptions.largerThanEquave.v
+      !exerciseOptions.smallerThanEquave &&
+      !exerciseOptions.largerThanEquave
     ) {
       return "You must select at least one type of intervals.";
     }
-    if (!exerciseOptions.playArp.v && !exerciseOptions.playSim.v) {
+    if (!exerciseOptions.playArp && !exerciseOptions.playSim) {
       return "You must select at least one playing modes.";
     }
-    if (exerciseOptions.minFreq.v < 20) {
+    if (exerciseOptions.minFreq < 20) {
       return "The minimum frequency is too low.";
     }
-    if (exerciseOptions.maxFreq.v > 15000) {
+    if (exerciseOptions.maxFreq > 15000) {
       return "The maximum frequency is too high.";
     }
-    if (exerciseOptions.numQuestions.v < 1) {
+    if (exerciseOptions.numQuestions < 1) {
       return "The number of questions must be at least 1.";
     }
     const scale = scales.scales.find(
-      (scale) => scale.name === exerciseOptions.scaleName.v
+      (scale) => scale.name === exerciseOptions.scaleName
     );
     if (!scale) {
       return "Can't find requested scale.";
     }
-    setSynthOsc(exerciseOptions.oscType.v);
+    setSynthOsc(exerciseOptions.oscType);
     setExerciseState((prevState) => ({
       ...prevState,
-      playArp: exerciseOptions.playArp.v,
-      playSim: exerciseOptions.playSim.v,
-      minFreq: exerciseOptions.minFreq.v,
-      maxFreq: exerciseOptions.maxFreq.v,
-      numQuestions: exerciseOptions.numQuestions.v,
-      infiniteMode: exerciseOptions.infiniteMode.v,
+      playArp: exerciseOptions.playArp,
+      playSim: exerciseOptions.playSim,
+      minFreq: exerciseOptions.minFreq,
+      maxFreq: exerciseOptions.maxFreq,
+      numQuestions: exerciseOptions.numQuestions,
+      infiniteMode: exerciseOptions.infiniteMode,
       intervalsInScale: scale.intervals,
       notesInScale: scale.notes,
       didSetUp: true,
@@ -387,8 +387,8 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
     const direction = Math.random() > 0.5 ? 1 : -1;
     let findValueAboveEquave = false;
-    if (exerciseOptions.largerThanEquave.v) {
-      if (exerciseOptions.smallerThanEquave.v) {
+    if (exerciseOptions.largerThanEquave) {
+      if (exerciseOptions.smallerThanEquave) {
         findValueAboveEquave = Math.random() < 0.5;
       } else {
         findValueAboveEquave = true;

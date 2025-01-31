@@ -8,75 +8,52 @@ import {
 } from "../../common/types";
 import useExerciseMaker from "../../common/useExerciseMaker";
 
-// TODO: use dynamic imports
-
 const Exercise = lazy(() => import("../../components/Exercise"));
 const ExerciseSetUp = lazy(() => import("../../components/ExerciseSetUp"));
 const ExerciseResult = lazy(() => import("../../components/ExerciseResult"));
 
 const Interval = () => {
-  const [options, setOptions] = useState(
+  const [options, setOptions] = useState<ExerciseOptions>(
     () => JSON.parse(JSON.stringify(initOptions)) // deep copy
   );
-  const setNewOptions = (action: UserAction) => {
+
+  const handleChange = (id: OptionType, v: number | string | boolean) => {
     const tmpOptions = { ...options };
-    switch (action.id) {
+    switch (id) {
       case OptionType.OSCTYPE:
-        tmpOptions.oscType.v = String(action.v);
+        tmpOptions.oscType = v as SynthOscType;
         break;
       case OptionType.SCALENAME:
-        tmpOptions.scaleName.v = String(action.v);
+        tmpOptions.scaleName = v as AllowedScales;
         break;
       case OptionType.SMALLERTHANEQUAVE:
-        tmpOptions.smallerThanEquave.v = Boolean(action.v);
+        tmpOptions.smallerThanEquave = Boolean(v);
         break;
       case OptionType.LARGERTHANEQUAVE:
-        tmpOptions.largerThanEquave.v = Boolean(action.v);
+        tmpOptions.largerThanEquave = Boolean(v);
         break;
       case OptionType.PLAYARP:
-        tmpOptions.playArp.v = Boolean(action.v);
+        tmpOptions.playArp = Boolean(v);
         break;
       case OptionType.PLAYSIM:
-        tmpOptions.playSim.v = Boolean(action.v);
+        tmpOptions.playSim = Boolean(v);
         break;
       case OptionType.MINFREQ:
-        tmpOptions.minFreq.v = Number(action.v);
+        tmpOptions.minFreq = Number(v);
         break;
       case OptionType.MAXFREQ:
-        tmpOptions.maxFreq.v = Number(action.v);
+        tmpOptions.maxFreq = Number(v);
         break;
       case OptionType.NUMQUESTIONS:
-        tmpOptions.numQuestions.v = Number(action.v);
+        tmpOptions.numQuestions = Number(v);
         break;
       case OptionType.INFINITEMODE:
-        tmpOptions.infiniteMode.v = Boolean(action.v);
+        tmpOptions.infiniteMode = Boolean(v);
         break;
       default:
-        throw new Error(`Unhandled action id: ${action.id}`);
+        throw new Error(`Unhandled action id: ${id}`);
     }
     setOptions(tmpOptions);
-  };
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewOptions({
-      type: UserActionType.CHECKBOX,
-      id: e.target.id,
-      v: e.target.checked,
-    });
-  };
-  const handleNumInputChange = (id: string, v: number) => {
-    setNewOptions({
-      type: UserActionType.NUMINPUT,
-      id: id,
-      v: v,
-    });
-  };
-  const handleMenuSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setNewOptions({
-      type: UserActionType.MENUSELECT,
-      id: e.target.id,
-      v: e.target.value,
-    });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -112,12 +89,11 @@ const Interval = () => {
 
   const handleBack = () => {
     setExerciseState(ExerciseState.setUp);
-    setOptions(initOptions);
     resetStats();
   };
 
   const reset = () => {
-    window.location.reload(); // TODO: not great! but setOptions(initOptions) does not reset the checkboxes for some reason...
+    setOptions(initOptions);
   };
 
   const handleEnd = () => {
@@ -162,10 +138,8 @@ const Interval = () => {
         <ExerciseSetUp
           options={options}
           error={error}
+          handleChange={handleChange}
           handleSubmit={handleSubmit}
-          handleMenuSelectChange={handleMenuSelectChange}
-          handleCheckboxChange={handleCheckboxChange}
-          handleNumInputChange={handleNumInputChange}
           reset={reset}
         />
       );
@@ -173,7 +147,7 @@ const Interval = () => {
     case ExerciseState.exercise:
       render = (
         <Exercise
-          scaleName={options.scaleName.v}
+          scaleName={options.scaleName}
           answerIsCorrect={currAnswerIsCorrect}
           currInterval={currInterval}
           handleBack={handleBack}
@@ -214,29 +188,17 @@ const Interval = () => {
   );
 };
 
-enum UserActionType {
-  CHECKBOX,
-  NUMINPUT,
-  MENUSELECT,
-  SUBMIT,
-}
-
-type UserAction =
-  | { type: UserActionType.CHECKBOX; id: string; v: boolean }
-  | { type: UserActionType.NUMINPUT; id: string; v: number }
-  | { type: UserActionType.MENUSELECT; id: string; v: string };
-
 const initOptions: Readonly<ExerciseOptions> = {
-  oscType: { type: OptionType.OSCTYPE, v: SynthOscType.PIANO },
-  scaleName: { type: OptionType.SCALENAME, v: AllowedScales.EDO_24 },
-  smallerThanEquave: { type: OptionType.SMALLERTHANEQUAVE, v: true },
-  largerThanEquave: { type: OptionType.LARGERTHANEQUAVE, v: false },
-  playArp: { type: OptionType.PLAYARP, v: true },
-  playSim: { type: OptionType.PLAYSIM, v: true },
-  minFreq: { type: OptionType.MINFREQ, v: 220 },
-  maxFreq: { type: OptionType.MAXFREQ, v: 659.3 },
-  numQuestions: { type: OptionType.NUMQUESTIONS, v: 5 },
-  infiniteMode: { type: OptionType.INFINITEMODE, v: true },
+  oscType: SynthOscType.PIANO,
+  scaleName: AllowedScales.EDO_24,
+  smallerThanEquave: true,
+  largerThanEquave: false,
+  playArp: true,
+  playSim: true,
+  minFreq: 220,
+  maxFreq: 659.3,
+  numQuestions: 5,
+  infiniteMode: true,
 };
 
 export default Interval;
