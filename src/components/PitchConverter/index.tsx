@@ -1,14 +1,20 @@
-import { BorderType, FreqMidiNoteCents } from "../../common/types";
+import {
+  BorderType,
+  FreqMidiNoteCents,
+  TextInputErrorType,
+} from "../../common/types";
 import { useState, useEffect } from "react";
 import {
   fromFreq,
   fromValidNoteNameAndCents,
   fromMidiNote,
   fromNoteNameStringAndCents,
+  fromDetuneCentsToSibeliusPitchBend,
 } from "../../common/UtilityFuncs";
 import NumberInput from "../NumberInput";
 import TextInput from "../TextInput";
 import VerovioRenderer from "../VerovioRenderer";
+import Button from "../Button";
 
 const PitchConverter = () => {
   const [freqMidiNoteCents, setFreqMidiNoteCents] = useState<FreqMidiNoteCents>(
@@ -17,7 +23,14 @@ const PitchConverter = () => {
   const [noteName, setNoteName] = useState(
     freqMidiNoteCents.noteName + freqMidiNoteCents.octave
   );
-  const [textInputHasErr, setTextInputHasErr] = useState(false);
+  const [textInputErr, setTextInputErr] = useState(TextInputErrorType.NO_ERROR);
+  const [sibeliusPitchBend, setSibeliusPitchBend] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
+  useEffect(() => {
+    setSibeliusPitchBend(
+      fromDetuneCentsToSibeliusPitchBend(freqMidiNoteCents.addCents)
+    );
+  }, [freqMidiNoteCents.addCents]);
 
   useEffect(() => {
     setNoteName(freqMidiNoteCents.noteName + freqMidiNoteCents.octave);
@@ -48,13 +61,25 @@ const PitchConverter = () => {
     const output = fromNoteNameStringAndCents(v, freqMidiNoteCents.addCents);
     if (output) {
       setFreqMidiNoteCents(output);
-      setTextInputHasErr(false);
+      setTextInputErr(TextInputErrorType.NO_ERROR);
     } else {
-      setTextInputHasErr(true);
+      setTextInputErr(TextInputErrorType.PARSING);
     }
   };
   const handleTextInputOnChange = (_id: string, v: string) => {
     setNoteName(v);
+  };
+  // const handleCopyOnClick = () => {
+  //   navigator.clipboard.writeText(sibeliusPitchBend);
+  // };
+  const handleCopyOnClick = async () => {
+    try {
+      await navigator.clipboard.writeText(sibeliusPitchBend);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000); // Reset state after 2 seconds
+    } catch (error) {
+      console.error("Failed to copy text: ", error);
+    }
   };
 
   return (
@@ -72,7 +97,11 @@ const PitchConverter = () => {
             Frequency
           </NumberInput>
           <TextInput
-            border={textInputHasErr ? BorderType.FAILURE : BorderType.NORMAL}
+            border={
+              textInputErr === TextInputErrorType.NO_ERROR
+                ? BorderType.NORMAL
+                : BorderType.FAILURE
+            }
             id="pitch-converter-note-name-input"
             text={noteName}
             onChange={handleTextInputOnChange}
@@ -81,7 +110,9 @@ const PitchConverter = () => {
           >
             Note name w/ octave
           </TextInput>
-          <p>{textInputHasErr ? "Unable to parse note name w/ octave." : ""}</p>
+          {textInputErr !== TextInputErrorType.NO_ERROR && (
+            <p>{textInputErr}</p>
+          )}
           <NumberInput
             id="pitch-converter-add-cents-input"
             value={freqMidiNoteCents.addCents}
@@ -100,6 +131,14 @@ const PitchConverter = () => {
           >
             MIDI note
           </NumberInput>
+          {sibeliusPitchBend !== "" && (
+            <>
+              <p>Pitch bend message for Sibelius: {sibeliusPitchBend}</p>
+              <Button onClick={handleCopyOnClick}>
+                {isCopied ? "Copied" : "Copy Pitch Bend Message"}
+              </Button>
+            </>
+          )}
         </div>
         {freqMidiNoteCents.freq > 0 && (
           <VerovioRenderer notes={[freqMidiNoteCents]}></VerovioRenderer>

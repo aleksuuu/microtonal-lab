@@ -194,6 +194,13 @@ const getValidNoteNameAndOctave = (
   return null;
 };
 
+export const fromDetuneCentsToSibeliusPitchBend = (detune: number): string => {
+  const scaled = detune * 32 * 0.01 + 64;
+  const msb = Math.floor(scaled);
+  const lsb = Math.round((scaled - msb) * 127);
+  return `~B${lsb},${msb}`;
+};
+
 export const getCommonPartials = (
   baseFreqs: number[],
   min: number = 110,
