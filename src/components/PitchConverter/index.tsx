@@ -69,9 +69,6 @@ const PitchConverter = () => {
   const handleTextInputOnChange = (_id: string, v: string) => {
     setNoteName(v);
   };
-  // const handleCopyOnClick = () => {
-  //   navigator.clipboard.writeText(sibeliusPitchBend);
-  // };
   const handleCopyOnClick = async () => {
     try {
       await navigator.clipboard.writeText(sibeliusPitchBend);
