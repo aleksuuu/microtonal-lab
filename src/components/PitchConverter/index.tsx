@@ -29,8 +29,6 @@ const PitchConverter = () => {
   const [sibeliusPitchBend, setSibeliusPitchBend] = useState("");
   const [isCopied, setIsCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [menuIsVisible, setMenuIsVisible] = useState(false);
 
   useEffect(() => {
     setSibeliusPitchBend(
@@ -94,11 +92,6 @@ const PitchConverter = () => {
     if (isCopied) return "Copied";
     if (isHovered) return "Copy?";
     return sibeliusPitchBend;
-  };
-  const handleContextMenu = (event: React.MouseEvent) => {
-    event.preventDefault();
-    setMousePos({ x: event.clientX, y: event.clientY });
-    setMenuIsVisible(true);
   };
 
   return (
