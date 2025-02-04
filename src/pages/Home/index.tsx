@@ -14,7 +14,7 @@ const Home = () => {
       <ul>
         <li>
           - <a href="/microtonal-lab/interval">Interval</a>: Generate intervals
-          in 12, 19, 24, or 31edo, select from 5 playback sounds (piano sampler
+          in 12, 19, 24, or 31edo; select from 5 playback sounds (piano sampler
           and 4 waveforms) (TODO: JI intervals).
         </li>
         <li>
@@ -24,9 +24,8 @@ const Home = () => {
         </li>
         <li>
           - <a href="/microtonal-lab/utility-tools">Utility Tools</a>: Convert
-          between different pitch units, find partials and imaginary
-          fundamentals, predict frequency-modulation results (TODO: render to
-          score via Verovio).
+          between different pitch units; find partials and imaginary
+          fundamentals; predict frequency-modulation results
         </li>
         <li>
           - <a href="/microtonal-lab/tuner">Tuner</a>: Frequency tuner (TODO:
@@ -39,6 +38,10 @@ const Home = () => {
             Scala
           </a>{" "}
           files.
+        </li>
+        <li>
+          - Right-click a pitch/frequency/note to convert between formats or
+          play it back (currently available in Utility Tools)
         </li>
       </ul>
       <h2></h2>
