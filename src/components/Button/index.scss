@@ -4,25 +4,41 @@
 button {
   display: inline-block;
   border: solid $default-border-width $default-border-color;
-  padding: 8px 16px;
+  // border: solid 1px $default-text-color;
+  padding: 6px 12px;
   margin: 4px;
-  border-radius: 5px;
+  // border-radius: 5px;
+  // border-radius: 1px;
   cursor: pointer;
   text-align: center;
   transition: background 250ms ease-in-out, transform 150ms ease;
   -webkit-appearance: none;
   -moz-appearance: none;
+  font-weight: $bold-font-weight;
 
-  background-color: $secondary-background-color;
+  // background-color: $secondary-background-color;
+  background-color: transparent;
   color: $default-text-color;
+  &.border-normal {
+    border-color: $default-button-border-color;
+  }
 
-  &:disabled {
+  &:disabled,
+  &.disabled-color {
     color: rgba($default-text-color, 0.3);
-    background-color: rgba($secondary-background-color, 0.3);
+    &.border-normal {
+      border-color: rgba($default-button-border-color, 0.3);
+    }
+    &.border-success {
+      border-color: rgba($success-border-color, 0.3);
+    }
+    &.border-failure {
+      border-color: rgba($failure-border-color, 0.3);
+    }
   }
 
   &:hover:enabled {
-    background-color: $primary-background-color;
+    background-color: $highlight-text-color;
     color: $inverse-default-text-color;
   }
 
@@ -30,18 +46,6 @@ button {
     transform: scale(0.95);
   }
   &.ans-button {
-    background-color: $default-background-color;
-    &:hover {
-      background-color: $primary-background-color;
-      color: $inverse-default-text-color;
-    }
-    &:focus {
-      color: $default-text-color;
-    }
-  }
-  
-  &.disabled-color {
-    // not actually disabled
-    color: rgba($default-text-color, 0.3);
+    font-weight: $normal-font-weight;
   }
 }

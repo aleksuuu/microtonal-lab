@@ -1,0 +1,15 @@
+// modified from Andy Bell's basic button styles https://codepen.io/andy-set-studio/pen/Vxpjvo
+@import "../../styles/variables";
+
+.context-menu-ul {
+  > li {
+    border: solid $default-border-width $default-border-color;
+    padding: 6px 12px;
+    margin: 0;
+    cursor: pointer;
+    &:hover {
+      background-color: $highlight-text-color;
+      color: $inverse-default-text-color;
+    }
+  }
+}

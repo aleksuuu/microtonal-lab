@@ -1,5 +1,5 @@
 import Input from "../Input";
-import { BorderType } from "../../common/types";
+import { BorderType, PitchType } from "../../common/types";
 
 interface Props {
   border?: BorderType;
@@ -9,6 +9,8 @@ interface Props {
   disabled?: boolean;
   id: string;
   text: string;
+  useContextMenu?: boolean;
+  valueType?: PitchType;
   onChange?: (id: string, v: string) => void;
   onBlur?: (id: string, v: string) => void;
   onEnter?: (id: string) => void;
@@ -22,6 +24,8 @@ const TextInput = ({
   disabled,
   id,
   text,
+  useContextMenu = false,
+  valueType,
   onChange,
   onBlur,
   onEnter,
@@ -34,6 +38,8 @@ const TextInput = ({
       id={id}
       value={text}
       disabled={disabled}
+      useContextMenu={useContextMenu}
+      valueType={valueType}
       onChange={(id: string, v: string) => {
         if (onChange) {
           onChange(id, v);

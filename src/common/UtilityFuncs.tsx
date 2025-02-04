@@ -117,7 +117,7 @@ export const fromFreq = (
 ): FreqMidiNoteCents => {
   const midiNote = freqToMidi(freq);
   const rounded = Math.round(midiNote);
-  const addCents = (midiNote - rounded) * 100;
+  const detune = (midiNote - rounded) * 100;
   const noteName = noteNames[Math.abs(rounded % noteNames.length)];
   const octave = Math.floor(rounded / noteNames.length) - 1;
   if (generateId) {
@@ -126,7 +126,7 @@ export const fromFreq = (
       midiNote: midiNote,
       noteName: noteName as EDO12NOTENAMES,
       octave: octave,
-      addCents: addCents,
+      detune: detune,
       id: `n${crypto.randomUUID()}`,
     };
   }
@@ -135,13 +135,13 @@ export const fromFreq = (
     midiNote: midiNote,
     noteName: noteName as EDO12NOTENAMES,
     octave: octave,
-    addCents: addCents,
+    detune: detune,
   };
 };
 
 export const fromNoteNameStringAndCents = (
   noteName: string,
-  addCents: number = 0
+  detune: number = 0
 ): FreqMidiNoteCents | null => {
   const validNoteNameAndOctave = getValidNoteNameAndOctave(noteName);
   if (!validNoteNameAndOctave) {
@@ -150,24 +150,24 @@ export const fromNoteNameStringAndCents = (
   return fromValidNoteNameAndCents(
     validNoteNameAndOctave[0],
     validNoteNameAndOctave[1],
-    addCents
+    detune
   );
 };
 
 export const fromValidNoteNameAndCents = (
   noteName: EDO12NOTENAMES,
   octave: number,
-  addCents: number = 0
+  detune: number = 0
 ): FreqMidiNoteCents => {
   const noteDegree = noteDegrees[noteName];
-  const midiNote = noteDegree + 12 * (octave + 1) + addCents * 0.01; // if C4=60
+  const midiNote = noteDegree + 12 * (octave + 1) + detune * 0.01; // if C4=60
   const freq = midiToFreq(midiNote);
   return {
     freq: freq,
     midiNote: midiNote,
     noteName: noteName,
     octave: octave,
-    addCents: addCents,
+    detune: detune,
   };
 };
 export const fromMidiNote = (midiNote: number) => {
@@ -374,11 +374,11 @@ export const getNumbersFromTextInput = (text: string): number[] => {
 export const formatFreqMidiNoteCentsIntoASingleString = (
   input: FreqMidiNoteCents
 ): string => {
-  let addCents = "";
-  if (input.addCents > 1 || input.addCents < -1) {
-    addCents = Math.round(input.addCents) + "¢";
-    if (input.addCents > 0) {
-      addCents = "+" + addCents;
+  let detune = "";
+  if (input.detune > 1 || input.detune < -1) {
+    detune = Math.round(input.detune) + "¢";
+    if (input.detune > 0) {
+      detune = "+" + detune;
     }
   }
   return `${input.freq.toFixed(2)} Hz (${formatFreqMidiNoteCentsIntoANote(
@@ -389,14 +389,27 @@ export const formatFreqMidiNoteCentsIntoASingleString = (
 export const formatFreqMidiNoteCentsIntoANote = (
   input: FreqMidiNoteCents
 ): string => {
-  let addCents = "";
-  if (input.addCents > 1 || input.addCents < -1) {
-    addCents = Math.round(input.addCents) + "¢";
-    if (input.addCents > 0) {
-      addCents = "+" + addCents;
+  let detune = "";
+  if (input.detune > 1 || input.detune < -1) {
+    detune = Math.round(input.detune) + "¢";
+    if (input.detune > 0) {
+      detune = "+" + detune;
     }
   }
-  return `${input.noteName}${input.octave}${addCents}`;
+  return `${input.noteName}${input.octave}${detune}`;
+};
+
+export const fromFormattedNoteOctaveAndCents = (
+  input: string
+): FreqMidiNoteCents | null => {
+  const regex = /^([A-Za-z]+)([+-]?\d*)¢?$/;
+  const match = input.match(regex);
+
+  if (!match) return null;
+  return fromNoteNameStringAndCents(
+    match[1],
+    match[2] ? parseInt(match[2], 10) : 0
+  );
 };
 
 export const centsToFreq = (cents: number) => {

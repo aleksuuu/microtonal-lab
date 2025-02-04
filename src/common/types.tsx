@@ -1,3 +1,11 @@
+export enum PitchType {
+  FREQUENCY,
+  MIDINOTE,
+  NOTENAME,
+  CENTS,
+  NOTENAMEANDCENTS,
+}
+
 export enum TextInputErrorType {
   PARSING = "Error parsing the text input.",
   ZERO = "The number zero is not a valid input.",
@@ -133,7 +141,7 @@ export type FreqMidiNoteCents = {
   midiNote: number;
   noteName: EDO12NOTENAMES;
   octave: number;
-  addCents: number;
+  detune: number;
   amp?: number;
 };
 

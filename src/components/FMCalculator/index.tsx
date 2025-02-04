@@ -1,4 +1,4 @@
-import { FreqMidiNoteCents } from "../../common/types";
+import { FreqMidiNoteCents, PitchType } from "../../common/types";
 import { useEffect, useState } from "react";
 import {
   formatFreqMidiNoteCentsIntoASingleString,
@@ -6,8 +6,25 @@ import {
 } from "../../common/UtilityFuncs";
 import NumberInput from "../NumberInput";
 import VerovioRenderer from "../VerovioRenderer";
+import ContextMenu from "../ContextMenu";
 
 const FMCalculator = () => {
+  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(
+    null
+  );
+  const [noteFreqForMenu, setNoteFreqForMenu] = useState(0);
+  const handleContextMenu = (
+    event: React.MouseEvent,
+    currentNoteFreq: number
+  ) => {
+    event.preventDefault();
+    setMousePos({ x: event.clientX, y: event.clientY });
+    setNoteFreqForMenu(currentNoteFreq);
+  };
+  const handleMenuClose = () => {
+    setMousePos(null);
+  };
+
   const [carrierFreq, setCarrierFreq] = useState(220);
   const [modulatorFreq, setModulatorFreq] = useState(440);
   const [modulationIdx, setModulationIdx] = useState(5);
@@ -65,7 +82,13 @@ const FMCalculator = () => {
   const formatNoteAmp = (note: FreqMidiNoteCents): React.ReactElement => {
     return (
       <tr key={note.freq}>
-        <td>{formatFreqMidiNoteCentsIntoASingleString(note)}</td>
+        <td
+          onContextMenu={(event: React.MouseEvent) => {
+            handleContextMenu(event, note.freq);
+          }}
+        >
+          {formatFreqMidiNoteCentsIntoASingleString(note)}
+        </td>
         <td>{note.amp && note.amp.toFixed(2)}</td>
       </tr>
     );
@@ -146,6 +169,14 @@ const FMCalculator = () => {
               </thead>
               <tbody>{predictionResults.map((p) => formatNoteAmp(p))}</tbody>
             </table>
+            {mousePos !== null && (
+              <ContextMenu
+                mousePos={mousePos}
+                value={noteFreqForMenu}
+                valueType={PitchType.FREQUENCY}
+                onClose={handleMenuClose}
+              />
+            )}
             <VerovioRenderer notes={predictionResults}></VerovioRenderer>
           </>
         )}

@@ -12,8 +12,8 @@ const formatNote = (note: FreqMidiNoteCents) => {
     return null;
   let accidental = "";
   let microtonalInflection = "";
-  if (note.addCents > 10) microtonalInflection = "u";
-  else if (note.addCents < -10) microtonalInflection = "d";
+  if (note.detune > 10) microtonalInflection = "u";
+  else if (note.detune < -10) microtonalInflection = "d";
 
   if (note.noteName.includes("♯"))
     accidental = `<accid accid="s${microtonalInflection}" />`;

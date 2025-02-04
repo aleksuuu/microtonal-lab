@@ -1,6 +1,7 @@
 import {
   BorderType,
   FreqMidiNoteCents,
+  PitchType,
   TextInputErrorType,
 } from "../../common/types";
 import { useState, useEffect } from "react";
@@ -15,6 +16,7 @@ import NumberInput from "../NumberInput";
 import TextInput from "../TextInput";
 import VerovioRenderer from "../VerovioRenderer";
 import Button from "../Button";
+import "./index.scss";
 
 const PitchConverter = () => {
   const [freqMidiNoteCents, setFreqMidiNoteCents] = useState<FreqMidiNoteCents>(
@@ -26,11 +28,15 @@ const PitchConverter = () => {
   const [textInputErr, setTextInputErr] = useState(TextInputErrorType.NO_ERROR);
   const [sibeliusPitchBend, setSibeliusPitchBend] = useState("");
   const [isCopied, setIsCopied] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [menuIsVisible, setMenuIsVisible] = useState(false);
+
   useEffect(() => {
     setSibeliusPitchBend(
-      fromDetuneCentsToSibeliusPitchBend(freqMidiNoteCents.addCents)
+      fromDetuneCentsToSibeliusPitchBend(freqMidiNoteCents.detune)
     );
-  }, [freqMidiNoteCents.addCents]);
+  }, [freqMidiNoteCents.detune]);
 
   useEffect(() => {
     setNoteName(freqMidiNoteCents.noteName + freqMidiNoteCents.octave);
@@ -43,7 +49,7 @@ const PitchConverter = () => {
           setFreqMidiNoteCents(fromFreq(v, true));
         }
         break;
-      case "pitch-converter-add-cents-input":
+      case "pitch-converter-detune-input":
         setFreqMidiNoteCents(
           fromValidNoteNameAndCents(
             freqMidiNoteCents.noteName,
@@ -58,7 +64,7 @@ const PitchConverter = () => {
     }
   };
   const handleTextInputOnBlur = (_id: string, v: string) => {
-    const output = fromNoteNameStringAndCents(v, freqMidiNoteCents.addCents);
+    const output = fromNoteNameStringAndCents(v, freqMidiNoteCents.detune);
     if (output) {
       setFreqMidiNoteCents(output);
       setTextInputErr(TextInputErrorType.NO_ERROR);
@@ -73,10 +79,26 @@ const PitchConverter = () => {
     try {
       await navigator.clipboard.writeText(sibeliusPitchBend);
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000); // Reset state after 2 seconds
+      setTimeout(() => setIsCopied(false), 1000); // Reset state after 1 second
     } catch (error) {
       console.error("Failed to copy text: ", error);
     }
+  };
+  const handleCopyOnMouseEnter = () => {
+    setIsHovered(true);
+  };
+  const handleCopyOnMouseLeave = () => {
+    setIsHovered(false);
+  };
+  const getCopyButtonText = () => {
+    if (isCopied) return "Copied";
+    if (isHovered) return "Copy?";
+    return sibeliusPitchBend;
+  };
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setMousePos({ x: event.clientX, y: event.clientY });
+    setMenuIsVisible(true);
   };
 
   return (
@@ -90,6 +112,8 @@ const PitchConverter = () => {
             isFreqValue={true}
             onChange={handleNumberInput}
             className="medium-input"
+            useContextMenu={true}
+            valueType={PitchType.FREQUENCY}
           >
             Frequency
           </NumberInput>
@@ -104,6 +128,8 @@ const PitchConverter = () => {
             onChange={handleTextInputOnChange}
             onBlur={handleTextInputOnBlur}
             className="medium-input"
+            useContextMenu={true}
+            valueType={PitchType.NOTENAME}
           >
             Note name w/ octave
           </TextInput>
@@ -111,8 +137,10 @@ const PitchConverter = () => {
             <p>{textInputErr}</p>
           )}
           <NumberInput
-            id="pitch-converter-add-cents-input"
-            value={freqMidiNoteCents.addCents}
+            id="pitch-converter-detune-input"
+            value={freqMidiNoteCents.detune}
+            min={-100}
+            max={100}
             isFreqValue={false}
             onChange={handleNumberInput}
             className="medium-input"
@@ -125,16 +153,23 @@ const PitchConverter = () => {
             isFreqValue={false}
             onChange={handleNumberInput}
             className="medium-input"
+            useContextMenu={true}
+            valueType={PitchType.MIDINOTE}
           >
             MIDI note
           </NumberInput>
           {sibeliusPitchBend !== "" && (
-            <>
-              <p>Pitch bend message for Sibelius: {sibeliusPitchBend}</p>
-              <Button onClick={handleCopyOnClick}>
-                {isCopied ? "Copied" : "Copy Pitch Bend Message"}
+            <span>
+              <p>Pitch bend message for Sibelius</p>
+              <Button
+                className="pitch-converter-fixed-size-button"
+                onClick={handleCopyOnClick}
+                onMouseEnter={handleCopyOnMouseEnter}
+                onMouseLeave={handleCopyOnMouseLeave}
+              >
+                {getCopyButtonText()}
               </Button>
-            </>
+            </span>
           )}
         </div>
         {freqMidiNoteCents.freq > 0 && (

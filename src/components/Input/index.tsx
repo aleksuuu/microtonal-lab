@@ -1,5 +1,7 @@
-import { BorderType } from "../../common/types";
+import { useState } from "react";
+import { BorderType, PitchType } from "../../common/types";
 import "./index.scss";
+import ContextMenu from "../ContextMenu";
 
 interface Props {
   border?: BorderType;
@@ -13,6 +15,8 @@ interface Props {
   min?: number;
   max?: number;
   step?: string | number;
+  useContextMenu?: boolean;
+  valueType?: PitchType;
   onChange?:
     | ((id: string, v: string) => void)
     | ((id: string, v: number) => void);
@@ -34,10 +38,24 @@ const Input = ({
   min,
   max,
   step = "any",
+  useContextMenu = false,
+  valueType,
   onChange,
   onBlur,
   onEnter,
 }: Props) => {
+  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(
+    null
+  );
+  const handleContextMenu = (event: React.MouseEvent) => {
+    if (useContextMenu) {
+      event.preventDefault();
+      setMousePos({ x: event.clientX, y: event.clientY });
+    }
+  };
+  const handleMenuClose = () => {
+    setMousePos(null);
+  };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
       const inputValue =
@@ -70,6 +88,8 @@ const Input = ({
       }
     }
   };
+
+
   return (
     <span className={`custom-input ${className}`}>
       <p>{children}</p>
@@ -85,7 +105,16 @@ const Input = ({
         onChange={handleChange}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
+        onContextMenu={handleContextMenu}
       ></input>
+      {mousePos !== null && valueType !== undefined && (
+        <ContextMenu
+          mousePos={mousePos}
+          value={value}
+          valueType={valueType}
+          onClose={handleMenuClose}
+        />
+      )}
     </span>
   );
 };

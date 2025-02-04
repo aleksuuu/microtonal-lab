@@ -1,3 +1,4 @@
+import { PitchType } from "../../common/types";
 import Input from "../Input";
 
 interface Props {
@@ -10,6 +11,8 @@ interface Props {
   min?: number;
   max?: number;
   isFreqValue?: boolean;
+  useContextMenu?: boolean;
+  valueType?: PitchType;
   onChange?: (id: string, v: number) => void;
   onBlur?: (id: string, v: number) => void;
   onEnter?: (id: string) => void;
@@ -25,6 +28,8 @@ const NumberInput = ({
   min,
   max,
   isFreqValue,
+  useContextMenu = false,
+  valueType,
   onChange,
   onBlur,
   onEnter,
@@ -42,6 +47,8 @@ const NumberInput = ({
       min={minV}
       max={maxV}
       step={isFreqValue ? "any" : 1}
+      useContextMenu={useContextMenu}
+      valueType={valueType}
       onChange={onChange}
       onBlur={onBlur}
       onEnter={onEnter}
