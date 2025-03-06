@@ -18,8 +18,8 @@ const Home = () => {
           and 4 waveforms) (TODO: JI intervals).
         </li>
         <li>
-          - <a href="/microtonal-lab/freq-to-midi">Frequency to MIDI</a>: Enter
-          up to 8 frequencies and convert them to MPE MIDI note messages (with
+          - <a href="/microtonal-lab/pitch-to-midi">Pitch to MIDI</a>: Enter up
+          to 8 pitches and convert them to MPE MIDI note messages (with
           pitchbend messages).
         </li>
         <li>

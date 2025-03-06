@@ -371,6 +371,26 @@ export const getNumbersFromTextInput = (text: string): number[] => {
   return nums;
 };
 
+export const getFreqFromTextInput = (text: string): number | null => {
+  // Check if it's a valid positive number (frequency in Hz)
+  const num = parseFloat(text);
+  if (!isNaN(num) && num > 0) return num;
+
+  // Check if it's a valid MIDI note (e.g., m60, m72.5, etc.)
+  const midiMatch = text.match(/^m(\d+(?:\.\d+)?)$/i);
+  if (midiMatch) {
+    const midiNumber = parseFloat(midiMatch[1]);
+    if (midiNumber >= 0 && midiNumber <= 127) {
+      return midiToFreq(midiNumber);
+    }
+  }
+
+  // Check if it's a valid note name (e.g., C3, F#5, Ab2+35)
+  const fmnc = fromFormattedNoteOctaveAndCents(text);
+  if (fmnc) return fmnc.freq;
+  return null;
+};
+
 export const formatFreqMidiNoteCentsIntoASingleString = (
   input: FreqMidiNoteCents
 ): string => {
@@ -402,13 +422,16 @@ export const formatFreqMidiNoteCentsIntoANote = (
 export const fromFormattedNoteOctaveAndCents = (
   input: string
 ): FreqMidiNoteCents | null => {
-  const regex = /^([A-Za-z]+)([+-]?\d*)¢?$/;
+  // const regex = /^([A-Za-z]+)([+-]?\d*)¢?$/;
+  const regex = /^([A-Ga-g][#♯bB♭]?\d+)([+-]\d+(?:\.\d+)?)?¢?$/;
   const match = input.match(regex);
 
   if (!match) return null;
+  // console.log(match[2] ? parseInt(match[2], 10) : 0);
+  console.log(match);
   return fromNoteNameStringAndCents(
     match[1],
-    match[2] ? parseInt(match[2], 10) : 0
+    match[2] ? parseFloat(match[2]) : 0
   );
 };
 

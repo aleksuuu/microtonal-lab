@@ -2,7 +2,7 @@ import "./App.scss";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Interval from "./pages/Interval";
-import FreqToMidi from "./pages/FreqToMidi";
+import PitchToMidi from "./pages/PitchToMidi";
 import NavBar from "./components/NavBar";
 import UtilityTools from "./pages/UtilityTools";
 import Tuner from "./pages/Tuner";
@@ -17,7 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/interval" element={<Interval />} />
           <Route path="/tuner" element={<Tuner />} />
-          <Route path="/freq-to-midi" element={<FreqToMidi />} />
+          <Route path="/pitch-to-midi" element={<PitchToMidi />} />
           <Route path="/utility-tools" element={<UtilityTools />} />
           <Route path="/scala-editor" element={<ScalaEditor />} />
         </Routes>
