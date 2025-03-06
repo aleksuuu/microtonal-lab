@@ -427,8 +427,6 @@ export const fromFormattedNoteOctaveAndCents = (
   const match = input.match(regex);
 
   if (!match) return null;
-  // console.log(match[2] ? parseInt(match[2], 10) : 0);
-  console.log(match);
   return fromNoteNameStringAndCents(
     match[1],
     match[2] ? parseFloat(match[2]) : 0

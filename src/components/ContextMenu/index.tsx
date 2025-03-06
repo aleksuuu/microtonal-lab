@@ -143,7 +143,6 @@ const ContextMenu = ({ mousePos, value, valueType, onClose }: Props) => {
     onClose();
   };
   const handlePlaySine = () => {
-    console.log(sine);
     if (freqMidiNoteCents && sine) {
       sine.triggerAttackRelease(freqMidiNoteCents.freq, 1);
     }
