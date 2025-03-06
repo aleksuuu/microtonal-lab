@@ -1,0 +1,13 @@
+diff --git a/node_modules/binpack/index.js b/node_modules/binpack/index.js
+index d7ed315..f7d6db3 100644
+--- a/node_modules/binpack/index.js
++++ b/node_modules/binpack/index.js
+@@ -50,7 +50,7 @@ addIntBindings(8);
+ addIntBindings(16);
+ addIntBindings(32);
+ 
+-twoToThe32 = Math.pow(2, 32);
++const twoToThe32 = Math.pow(2, 32);
+ 
+ // 64 bit bindings require special care
+ var read64 = function(unsigned){return function(buff, endian){

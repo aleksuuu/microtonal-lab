@@ -6,6 +6,8 @@ import { BorderType } from "../../common/types";
 import NumberInput from "../../components/NumberInput";
 import "./index.scss";
 import { freqToMidi } from "../../common/UtilityFuncs";
+import Grid from "../../components/Grid";
+import MonomeGridComponent from "../../components/MonomeGridComponent";
 
 const FreqToMidi = () => {
   enum MidiActions {
@@ -308,6 +310,14 @@ const FreqToMidi = () => {
     </>
   );
 
+  const handleGridOnClick = (frequency: number) => {
+    sendMicrotonalNoteMsg(
+      freqToMicrotonalNote(220, true),
+      freqToMicrotonalNote(frequency, true),
+      1
+    );
+  };
+
   return (
     <>
       <title>Microtonal Lab - Frequency to MIDI</title>
@@ -328,7 +338,7 @@ const FreqToMidi = () => {
           className="short-input"
         >
           (This value should match the upward pitch bend range of your MIDI
-          instrument (DAW/plugin/etc)).
+          instrument (DAW/plugin/etc).)
         </NumberInput>
       </div>
       <div>
@@ -345,6 +355,11 @@ const FreqToMidi = () => {
           </a>
           .)
         </p>
+      </div>
+      <div>
+        <h2>Grid: </h2>
+        <MonomeGridComponent />
+        <Grid fundamentals={[220, 330]} onClick={handleGridOnClick} />
       </div>
     </>
   );

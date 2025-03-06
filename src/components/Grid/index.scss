@@ -1,0 +1,82 @@
+@import "../../styles/variables";
+
+.grid-cell {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.grid-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 4px;
+
+  position: relative;
+}
+
+.grid-whole {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0px;
+
+  position: relative;
+}
+
+// button {
+//   display: inline-block;
+//   border: solid $default-border-width $default-button-border-color;
+//   // border: solid 1px $default-text-color;
+//   padding: 6px 12px;
+//   margin: 4px;
+//   // border-radius: 5px;
+//   // border-radius: 1px;
+//   cursor: pointer;
+//   text-align: center;
+//   transition: background 250ms ease-in-out, transform 150ms ease;
+//   -webkit-appearance: none;
+//   -moz-appearance: none;
+//   font-weight: $bold-font-weight;
+
+//   // background-color: $secondary-background-color;
+//   background-color: transparent;
+//   color: $default-text-color;
+//   &.border-normal {
+//     border-color: $default-button-border-color;
+//   }
+
+//   &:disabled,
+//   &.disabled-color {
+//     color: rgba($default-text-color, 0.3);
+//     &.border-normal {
+//       border-color: rgba($default-button-border-color, 0.3);
+//     }
+//     &.border-success {
+//       border-color: rgba($success-border-color, 0.3);
+//     }
+//     &.border-failure {
+//       border-color: rgba($failure-border-color, 0.3);
+//     }
+//   }
+
+//   &:hover:enabled {
+//     background-color: $highlight-text-color;
+//     color: $inverse-default-text-color;
+//   }
+
+//   &:active:enabled {
+//     transform: scale(0.95);
+//   }
+//   &.ans-button {
+//     font-weight: $normal-font-weight;
+//   }
+// }
