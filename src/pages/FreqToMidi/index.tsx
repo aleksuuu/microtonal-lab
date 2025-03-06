@@ -33,7 +33,7 @@ const FreqToMidi = () => {
   const [microtonalNotes, setMicrotonalNotes] = useState(
     [] as MicrotonalNote[]
   );
-  const [pitchBendRange, setPitchBendRange] = useState(2);
+  const [pitchBendRange, setPitchBendRange] = useState(48);
   const [freqInputValues, setFreqInputValues] = useState([] as number[]);
 
   useEffect(() => {
@@ -117,8 +117,8 @@ const FreqToMidi = () => {
     if (output) {
       const outputChannel = output.channels[channel];
       if (newNote.isOn) {
-        if (oldNote.isOn && oldNote.lastNoteOn !== undefined) {
-          outputChannel.sendNoteOff(oldNote.lastNoteOn);
+        if (oldNote.isOn) {
+          outputChannel.sendNoteOff(oldNote.midiNote);
         }
         outputChannel.sendPitchBend(newNote.pitchbend);
         outputChannel.sendNoteOn(newNote.midiNote);
@@ -130,8 +130,7 @@ const FreqToMidi = () => {
 
   const freqToMicrotonalNote = (
     freq: number,
-    isOn: boolean,
-    prevMidiNote?: number
+    isOn: boolean
   ): MicrotonalNote => {
     const midiNoteFloat = freqToMidi(freq);
     const midiNote = Math.floor(midiNoteFloat);
@@ -141,7 +140,6 @@ const FreqToMidi = () => {
       midiNote: midiNote,
       pitchbend: pitchbend,
       isOn: isOn,
-      lastNoteOn: prevMidiNote,
     };
   };
 
@@ -151,21 +149,18 @@ const FreqToMidi = () => {
     isOn?: boolean
   ) => {
     const newMicrotonalNotes = microtonalNotes.map((oldNote, i) => {
-      if (i === channel - 1) {
+      if (i === channel - 2) {
         let newFreq = oldNote.currFreq;
         let newIsOn = oldNote.isOn;
-        let newLastNoteOn = oldNote.lastNoteOn;
         if (frequency !== undefined) {
           newFreq = frequency;
         }
         if (isOn !== undefined) {
           newIsOn = isOn;
-          if (isOn) {
-            newLastNoteOn = oldNote.midiNote;
-          }
         }
-        const newNote = freqToMicrotonalNote(newFreq, newIsOn, newLastNoteOn);
-        sendMicrotonalNoteMsg(oldNote, newNote, i + 1);
+        const newNote = freqToMicrotonalNote(newFreq, newIsOn);
+        console.log("old: " + oldNote.midiNote + "new: " + newNote.midiNote);
+        sendMicrotonalNoteMsg(oldNote, newNote, i + 2);
         return newNote;
       } else {
         return oldNote;
@@ -192,7 +187,7 @@ const FreqToMidi = () => {
     }
     const channel = textAndChannelNumber[1];
     const newValues = freqInputValues.map((oldV, i) => {
-      if (i === channel - 1) {
+      if (i === channel - 2) {
         return v;
       } else {
         return oldV;
@@ -232,7 +227,7 @@ const FreqToMidi = () => {
   };
 
   const makeNoteOnOrOffButton = (channel: number): React.ReactElement => {
-    const isOn = microtonalNotes[channel - 1].isOn;
+    const isOn = microtonalNotes[channel - 2].isOn;
     const buttonId = `note-${isOn ? "off" : "on"}-${channel}`; // this is flipped because the id should indicate the function of the button, which is to turn on when the note is off
     const buttonBorder = isOn ? BorderType.SUCCESS : BorderType.NORMAL;
     // const buttonText = isOn ? "⏽" : "⭘";
@@ -255,13 +250,13 @@ const FreqToMidi = () => {
         {/* TODO: eventually switch to FreqInput with correct styles */}
         {/* <FreqInput
           id={`freq-input-${channel}`}
-          initValue={microtonalNotes[channel - 1].currFreq}
+          initValue={microtonalNotes[channel - 2].currFreq}
           onChange={handleFreqInput}
           numberInputClassName="short-input-no-text"
         ></FreqInput> */}
         <NumberInput
           id={`freq-input-${channel}`}
-          value={freqInputValues[channel - 1]}
+          value={freqInputValues[channel - 2]}
           isFreqValue={true}
           onChange={handleFreqInputChange}
           onBlur={handleFreqInputBlur}
@@ -277,7 +272,8 @@ const FreqToMidi = () => {
       return <></>;
     }
     const rows = [];
-    for (let chan = 1; chan <= numberOfFreqs; chan++) {
+    for (let chan = 2; chan <= numberOfFreqs + 1; chan++) {
+      // Reserve channel 1 for global messages
       rows.push(makeFreqInputRow(chan));
     }
     return <ul className="freq-input-rows flex-row">{rows}</ul>;
