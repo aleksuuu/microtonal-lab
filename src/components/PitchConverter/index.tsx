@@ -101,7 +101,7 @@ const PitchConverter = () => {
         <div className="utility-tools-input-form">
           <NumberInput
             id="pitch-converter-freq-input"
-            value={freqMidiNoteCents.freq}
+            value={Math.round(freqMidiNoteCents.freq * 100) / 100}
             isFreqValue={true}
             onChange={handleNumberInput}
             className="medium-input"
