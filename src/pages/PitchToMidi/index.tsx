@@ -403,14 +403,14 @@ const PitchToMidi = () => {
         <p>
           You could enter pitches in any of the following formats:
           <ul>
-            <li>- As frequency values (440, 1212.12, etc.).</li>
+            <li>- Frequency values (440, 1212.12, etc.).</li>
             <li>
-              - As note names with octaves and optionally cents (A4, C5+43,
+              - Note names with octaves and optionally cents (A4, C5+43,
               Bb3-21.21, etc.).
             </li>
             <li>
-              - As MIDI note numbers, beginning with the letter “m” (m60,
-              m72.35, etc.).
+              - MIDI note numbers, beginning with the letter “m” (m60, m72.35,
+              etc.).
             </li>
           </ul>
         </p>
