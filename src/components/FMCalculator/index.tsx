@@ -7,6 +7,7 @@ import {
 import NumberInput from "../NumberInput";
 import VerovioRenderer from "../VerovioRenderer";
 import ContextMenu from "../ContextMenu";
+import { gainToDb } from "tone";
 
 const FMCalculator = () => {
   const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(
@@ -89,7 +90,11 @@ const FMCalculator = () => {
         >
           {formatFreqMidiNoteCentsIntoASingleString(note)}
         </td>
-        <td>{note.amp && note.amp.toFixed(2)}</td>
+        <td>
+          {note.amp
+            ? `${note.amp.toFixed(2)} (${gainToDb(note.amp).toFixed(2)}dB)`
+            : 0}
+        </td>
       </tr>
     );
   };

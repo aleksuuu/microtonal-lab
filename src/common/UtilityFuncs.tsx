@@ -111,6 +111,11 @@ export const freqToNoteName = (freq: number) => {
   return noteName + equave + arrow;
 };
 
+export const roundf = (input: number, fractionDigits: number = 2): number => {
+  const multiplier = 10 ** fractionDigits;
+  return Math.round(input * multiplier) / multiplier;
+};
+
 export const fromFreq = (
   freq: number,
   generateId: boolean = false

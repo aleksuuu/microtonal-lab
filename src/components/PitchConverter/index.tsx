@@ -11,6 +11,7 @@ import {
   fromMidiNote,
   fromNoteNameStringAndCents,
   fromDetuneCentsToSibeliusPitchBend,
+  roundf,
 } from "../../common/UtilityFuncs";
 import NumberInput from "../NumberInput";
 import TextInput from "../TextInput";
@@ -101,7 +102,8 @@ const PitchConverter = () => {
         <div className="utility-tools-input-form">
           <NumberInput
             id="pitch-converter-freq-input"
-            value={Math.round(freqMidiNoteCents.freq * 100) / 100}
+            value={roundf(freqMidiNoteCents.freq)}
+            // value={Math.round(freqMidiNoteCents.freq * 100) / 100}
             isFreqValue={true}
             onChange={handleNumberInput}
             className="medium-input"
@@ -131,7 +133,7 @@ const PitchConverter = () => {
           )}
           <NumberInput
             id="pitch-converter-detune-input"
-            value={freqMidiNoteCents.detune}
+            value={roundf(freqMidiNoteCents.detune)}
             min={-100}
             max={100}
             isFreqValue={false}
@@ -142,7 +144,7 @@ const PitchConverter = () => {
           </NumberInput>
           <NumberInput
             id="pitch-converter-midi-note-input"
-            value={freqMidiNoteCents.midiNote}
+            value={roundf(freqMidiNoteCents.midiNote)}
             isFreqValue={false}
             onChange={handleNumberInput}
             className="medium-input"
