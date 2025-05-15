@@ -131,6 +131,11 @@ label {
   flex: 1;
   min-width: 420px;
 }
+.grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: 1fr;
+}
 
 .grid-4 {
   display: grid;

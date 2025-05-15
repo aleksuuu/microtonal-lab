@@ -115,6 +115,18 @@ export type ExerciseOptions = {
   infiniteMode: boolean;
 };
 
+export type Scale = {
+  name: string;
+  intervals: {
+    name: string;
+    cents: number;
+  }[];
+  notes: {
+    name: string;
+    cents: number;
+  }[];
+};
+
 export type IntervalWithNotes = {
   name: string;
   firstNote: Note;

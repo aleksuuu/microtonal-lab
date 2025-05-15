@@ -1,0 +1,50 @@
+@import "../../styles/variables";
+
+.micro-keyboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: fit-content;
+  margin: $space-default * 2 auto;
+  .micro-keyboard-row {
+    display: flex;
+    gap: 6px;
+    .micro-key {
+      // display: flex;
+      // flex-direction: row;
+      // justify-content: center;
+      // align-items: center;
+      box-sizing: border-box;
+      padding: 0px;
+      position: relative;
+      width: 60px;
+      height: 60px;
+      margin: 0px;
+      &:focus-visible {
+        outline: none;
+      }
+      .micro-key-name {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        left: 0px;
+        top: 0px;
+        font-weight: 200;
+        font-size: 16px;
+        line-height: 24px;
+        align-items: center;
+        text-align: center;
+      }
+      .micro-note-name {
+        position: relative;
+        // width: 42px;
+        // height: 42px;
+        // left: calc(50% - 42px / 2);
+        // top: calc(50% - 42px / 2);
+        font-size: 18px;
+        align-items: center;
+        text-align: center;
+      }
+    }
+  }
+}

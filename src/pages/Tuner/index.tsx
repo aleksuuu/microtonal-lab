@@ -25,7 +25,6 @@ const Tuner = () => {
       buf: Float32Array,
       sampleRate: number
     ): number | null => {
-      // Auto-correlation function to detect frequency
       let size = buf.length;
       let rms = 0;
       for (let i = 0; i < size; i++) rms += buf[i] * buf[i];
@@ -87,8 +86,26 @@ const Tuner = () => {
         dataArray,
         audioContext.sampleRate
       );
-      setFrequency(detectedFrequency);
-      requestAnimationFrame(updateFrequency);
+      // if (detectedFrequency) {
+      //   if (!frequency || Math.abs(detectedFrequency - frequency) > 1000) {
+      //     console.log(`${detectedFrequency} - ${frequency}`);
+      //     setFrequency(detectedFrequency);
+      //   }
+      // }
+      if (detectedFrequency) {
+        setFrequency((prevFrequency) => {
+          if (
+            !prevFrequency ||
+            Math.abs(detectedFrequency - prevFrequency) > 1
+          ) {
+            // console.log(`${detectedFrequency} - ${prevFrequency}`);
+            return detectedFrequency;
+          }
+          return prevFrequency; // Keep the previous frequency if the jump is too big
+        });
+      }
+
+      setTimeout(updateFrequency, 100); // Update every 100ms
     };
 
     updateFrequency();
