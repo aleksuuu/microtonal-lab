@@ -184,67 +184,70 @@ const MicrotonalKeyboard = () => {
   };
 
   return (
-    <div className="center">
-      <div className="grid-5">
-        <div>
-          <h2>Select a sound: </h2>
-          <SoundSelector onSoundChange={handleSoundChange} />
+    <>
+      <title>Microtonal Lab - Microtonal Keyboard</title>
+      <div className="center">
+        <div className="grid-5">
+          <div>
+            <h2>Select a sound: </h2>
+            <SoundSelector onSoundChange={handleSoundChange} />
+          </div>
+          <div>
+            <h2>Select a scale: </h2>
+            <ScaleSelector onScaleChange={handleScaleChange} />
+          </div>
+          <div>
+            <h2>Keyboard input</h2>
+            <Checkbox
+              id="microtonal-keyboard-keyinput"
+              checked={keyboardInputIsEnabled}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setKeyboardInputIsEnabled(e.target.checked);
+              }}
+            >
+              Enable
+            </Checkbox>
+          </div>
+          <div>
+            <h2>Octave: </h2>
+            <NumberInput
+              id="microtonal-keyboard-octave"
+              value={octave}
+              isFreqValue={false}
+              onChange={(_id: string, v: number) => {
+                setOctave(v);
+              }}
+              className="short-input"
+            ></NumberInput>
+          </div>
+          <div>
+            <h2>Transposition in cents: </h2>
+            <NumberInput
+              id="microtonal-keyboard-transp"
+              value={transpInCents}
+              isFreqValue={false}
+              min={-4800}
+              max={4800}
+              onChange={(_id: string, v: number) => {
+                setTranspInCents(v);
+              }}
+              className="medium-input"
+            ></NumberInput>
+          </div>
         </div>
-        <div>
-          <h2>Select a scale: </h2>
-          <ScaleSelector onScaleChange={handleScaleChange} />
-        </div>
-        <div>
-          <h2>Keyboard input</h2>
-          <Checkbox
-            id="microtonal-keyboard-keyinput"
-            checked={keyboardInputIsEnabled}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setKeyboardInputIsEnabled(e.target.checked);
-            }}
-          >
-            Enable
-          </Checkbox>
-        </div>
-        <div>
-          <h2>Octave: </h2>
-          <NumberInput
-            id="microtonal-keyboard-octave"
-            value={octave}
-            isFreqValue={false}
-            onChange={(_id: string, v: number) => {
-              setOctave(v);
-            }}
-            className="short-input"
-          ></NumberInput>
-        </div>
-        <div>
-          <h2>Transposition in cents: </h2>
-          <NumberInput
-            id="microtonal-keyboard-transp"
-            value={transpInCents}
-            isFreqValue={false}
-            min={-4800}
-            max={4800}
-            onChange={(_id: string, v: number) => {
-              setTranspInCents(v);
-            }}
-            className="medium-input"
-          ></NumberInput>
-        </div>
-      </div>
 
-      <div className="micro-keyboard-grid">
-        {keys.map((r, rowIdx) => makeARow(r, rowIdx))}
+        <div className="micro-keyboard-grid">
+          {keys.map((r, rowIdx) => makeARow(r, rowIdx))}
+        </div>
+        <button
+          onClick={() => {
+            instrument?.releaseAll();
+          }}
+        >
+          All Notes Off
+        </button>
       </div>
-      <button
-        onClick={() => {
-          instrument?.releaseAll();
-        }}
-      >
-        All Notes Off
-      </button>
-    </div>
+    </>
   );
 };
 
