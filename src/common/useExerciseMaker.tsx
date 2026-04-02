@@ -19,7 +19,7 @@ type DegreeAndCents = {
 
 const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   const [instrument, setInstrument] = useState<PolySynth | Sampler | null>(
-    null
+    null,
   );
   useEffect(() => {
     initSampler();
@@ -47,7 +47,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
           setExerciseState((prevState) => ({
             ...prevState,
             didSetUpInstrument: true,
-          }))
+          })),
       ).toDestination();
       sampler.release = 1;
       setInstrument(sampler);
@@ -55,8 +55,12 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
   };
 
   const initPolySynth = (oscType: SynthOscType = SynthOscType.TRIANGLE) => {
+    if (oscType === SynthOscType.NONE) {
+      console.error("Unsupported oscillator type: NONE");
+      return;
+    }
     if (oscType === SynthOscType.PIANO) {
-      console.error("Unsupported oscillator type.");
+      console.error("Unsupported oscillator type: PIANO");
       return;
     }
     if (instrument instanceof PolySynth)
@@ -185,7 +189,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       return "The number of questions must be at least 1.";
     }
     const scale = scales.scales.find(
-      (scale) => scale.name === exerciseOptions.scaleName
+      (scale) => scale.name === exerciseOptions.scaleName,
     );
     if (!scale) {
       return "Can't find requested scale.";
@@ -237,7 +241,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
           Math.abs(scaleCents[closestIndex] - scaleDegreeInCents)
             ? currIndex
             : closestIndex,
-        0
+        0,
       );
 
       let closestCents = scaleCents[indexOfClosest];
@@ -255,7 +259,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
         cents: closestCents + equaveNum * getCentsPerEquave(),
       };
     },
-    [getCentsPerEquave, getScaleCents]
+    [getCentsPerEquave, getScaleCents],
   );
 
   const getMinDegreeAndCents = useCallback(() => {
@@ -284,7 +288,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
         // this is necessary because we include the first note of the next equave in the scale, and it needs to be skipped
         centsIncrem = Math.abs(
           getScaleCents()[(d + 1) % getScaleCents().length] -
-            getScaleCents()[d % getScaleCents().length]
+            getScaleCents()[d % getScaleCents().length],
         );
         d++;
       }
@@ -316,12 +320,12 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
         instrument.triggerAttackRelease([freq1, freq2], 1);
       }
     },
-    [instrument]
+    [instrument],
   );
 
   const getIndexOfLargestBelowOrEqual = (
     arr: number[],
-    value: number
+    value: number,
   ): number => {
     if (arr.length === 0) return -1; // Handle empty array case
 
@@ -352,7 +356,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     minCents: number,
     direction: number,
     firstNoteCents: number,
-    intervalCents: number
+    intervalCents: number,
   ): number | null => {
     let secondNoteCents = null;
     if (findValueAboveEquave) {
@@ -411,14 +415,14 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
 
     const indexOfLargestIntervalPossible = getIndexOfLargestBelowOrEqual(
       exerciseState.intervalsInScale.map((interval) => interval.cents),
-      firstNoteFromExtreme - minDistanceFromExtreme
+      firstNoteFromExtreme - minDistanceFromExtreme,
     ); // e.g, if minDistanceFromExtreme is 1200 (when if and only if greater than equave) and firstNoteFromExtreme is 1500, then the largest interval possible should be 1500-1200=300 and not 1500, that way there is enough transposition space
     let interval = null;
     while (!interval || interval.cents > firstNoteFromExtreme) {
       interval = structuredClone(
         exerciseState.intervalsInScale[
           Math.floor(Math.random() * (indexOfLargestIntervalPossible + 1))
-        ]
+        ],
       ); // deep clone ensures intervalsInScale isn't modified
     }
     const secondNoteCents = getSecondNoteCents(
@@ -428,14 +432,14 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       minCents,
       direction,
       firstNote.cents,
-      interval.cents
+      interval.cents,
     );
     if (!secondNoteCents) {
       console.error("Could not find second note cents.");
       return null;
     }
     const secondNote = availableNotes.find(
-      (note) => Math.round(note.cents) === Math.round(secondNoteCents)
+      (note) => Math.round(note.cents) === Math.round(secondNoteCents),
     );
 
     if (!secondNote) {
@@ -458,7 +462,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     (cents: number): number => {
       return Math.floor(cents / getCentsPerEquave());
     },
-    [getCentsPerEquave]
+    [getCentsPerEquave],
   );
 
   const getFormattedCurrNotes = useCallback(
@@ -466,10 +470,10 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       return `${firstNote.name}${getEquaveFromCents(firstNote.cents) - 1}, ${
         secondNote.name
       }${getEquaveFromCents(secondNote.cents) - 1} (${Math.round(
-        Math.abs(secondNote.cents - firstNote.cents)
+        Math.abs(secondNote.cents - firstNote.cents),
       )}¢)`;
     },
-    [getEquaveFromCents]
+    [getEquaveFromCents],
   );
 
   const makeInterval = useCallback(() => {
@@ -508,7 +512,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
       currAnswerIsCorrect: false,
       formattedCurrNotes: getFormattedCurrNotes(
         nextInterval.firstNote,
-        nextInterval.secondNote
+        nextInterval.secondNote,
       ),
       didMakeInterval: true,
     }));
@@ -534,7 +538,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
     doPlayArpOrSim(
       freq1,
       freq2,
-      exerciseState.currInterval.playArpForThisInterval
+      exerciseState.currInterval.playArpForThisInterval,
     );
     setExerciseState((prevState) => ({
       ...prevState,
@@ -598,7 +602,7 @@ const useExerciseMaker = (exerciseOptions: ExerciseOptions) => {
         answerIsWrong();
       }
     },
-    [exerciseState.currInterval]
+    [exerciseState.currInterval],
   );
 
   return {
