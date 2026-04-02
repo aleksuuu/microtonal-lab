@@ -32,20 +32,13 @@ const PitchToMidi = () => {
   const [output, setOutput] = useState<Output | undefined>();
   const [midiEnabled, setMidiEnabled] = useState(false);
   const [microtonalNotes, setMicrotonalNotes] = useState(
-    [] as MicrotonalNote[]
+    [] as MicrotonalNote[],
   );
   const [pitchBendRange, setPitchBendRange] = useState(48);
-  // const [pitchInputValues, setPitchInputValues] = useState([] as number[]);
   const [pitchInputTexts, setPitchInputTexts] = useState([] as string[]);
   const [textInputErrs, setTextInputErrs] = useState(
-    new Array(8).fill(TextInputErrorType.NO_ERROR)
+    new Array(8).fill(TextInputErrorType.NO_ERROR),
   );
-
-  // useEffect(() => {
-  //   if (microtonalNotes) {
-  //     setPitchInputValues(microtonalNotes.map((note) => note.currFreq));
-  //   }
-  // }, [microtonalNotes]);
 
   const initMicrotonalNotes = () => {
     if (microtonalNotes.length === 0) {
@@ -63,7 +56,7 @@ const PitchToMidi = () => {
   };
   const onWebMidiEnabled = () => {
     setMidiOutputs(
-      WebMidi.outputs.map(({ name, id }) => ({ value: name, id }))
+      WebMidi.outputs.map(({ name, id }) => ({ value: name, id })),
     );
     if (WebMidi.outputs.length < 1) {
       setMidiEnabled(false);
@@ -93,7 +86,7 @@ const PitchToMidi = () => {
   };
 
   const extractTextAndChannelNumberFrom = (
-    id: string
+    id: string,
   ): [string, number] | null => {
     const match = id.match(/^(.*)-(\d+)$/);
     if (match) {
@@ -105,7 +98,7 @@ const PitchToMidi = () => {
   };
 
   const extractMidiActionAndChannelNumberFrom = (
-    id: string
+    id: string,
   ): [MidiActions, number] | null => {
     const textAndChannelNumber = extractTextAndChannelNumberFrom(id);
     if (textAndChannelNumber) {
@@ -120,7 +113,7 @@ const PitchToMidi = () => {
   const sendMicrotonalNoteMsg = (
     oldNote: MicrotonalNote,
     newNote: MicrotonalNote,
-    channel: number
+    channel: number,
   ) => {
     if (output) {
       const outputChannel = output.channels[channel];
@@ -138,7 +131,7 @@ const PitchToMidi = () => {
 
   const freqToMicrotonalNote = (
     freq: number,
-    isOn: boolean
+    isOn: boolean,
   ): MicrotonalNote => {
     const midiNoteFloat = freqToMidi(freq);
     const midiNote = Math.floor(midiNoteFloat);
@@ -154,7 +147,7 @@ const PitchToMidi = () => {
   const setOneMicrotonalNote = (
     channel: number,
     frequency?: number,
-    isOn?: boolean
+    isOn?: boolean,
   ) => {
     const newMicrotonalNotes = microtonalNotes.map((oldNote, i) => {
       if (i === channel - 2) {
@@ -175,33 +168,6 @@ const PitchToMidi = () => {
     });
     setMicrotonalNotes(newMicrotonalNotes);
   };
-
-  // const handlePitchInputBlur = (id: string, v: number) => {
-  //   const textAndChannelNumber = extractTextAndChannelNumberFrom(id);
-  //   if (!textAndChannelNumber) {
-  //     console.error("Could not get current channel.");
-  //     return;
-  //   }
-  //   const channel = textAndChannelNumber[1];
-  //   setOneMicrotonalNote(channel, v);
-  // };
-
-  // const handlePitchInputChange = (id: string, v: number) => {
-  //   const textAndChannelNumber = extractTextAndChannelNumberFrom(id);
-  //   if (!textAndChannelNumber) {
-  //     console.error("Could not get current channel.");
-  //     return;
-  //   }
-  //   const channel = textAndChannelNumber[1];
-  //   const newValues = pitchInputValues.map((oldV, i) => {
-  //     if (i === channel - 2) {
-  //       return v;
-  //     } else {
-  //       return oldV;
-  //     }
-  //   });
-  //   setPitchInputValues(newValues);
-  // };
 
   const handlePitchBendInput = (_id: string, v: number) => {
     setPitchBendRange(v);
@@ -279,15 +245,15 @@ const PitchToMidi = () => {
     if (!parsedFreq) {
       setTextInputErrs((prev) =>
         prev.map((err, i) =>
-          i === channel - 2 ? TextInputErrorType.PARSING : err
-        )
+          i === channel - 2 ? TextInputErrorType.PARSING : err,
+        ),
       );
       return;
     }
     setTextInputErrs((prev) =>
       prev.map((err, i) =>
-        i === channel - 2 ? TextInputErrorType.NO_ERROR : err
-      )
+        i === channel - 2 ? TextInputErrorType.NO_ERROR : err,
+      ),
     );
 
     setOneMicrotonalNote(channel, parsedFreq);
