@@ -6,7 +6,9 @@ import NumberInput from "../../components/NumberInput";
 import Checkbox from "../../components/Checkbox";
 import SoundSelector from "../../components/SoundSelector";
 import { PolySynth, Sampler } from "tone";
-import { fromMidiNote } from "../../common/UtilityFuncs";
+import { fromMidiNote, freqToMidi } from "../../common/UtilityFuncs";
+import { WebMidi, Output } from "webmidi"; // New Import
+import MenuOptions from "../../components/MenuOptions"; // New Import
 
 const keys: string[][] = [
   [..."1234567890-="],
@@ -30,9 +32,46 @@ const MicrotonalKeyboard = () => {
   const [instrument, setInstrument] = useState<PolySynth | Sampler | null>(
     null,
   );
+
+  // --- MIDI State ---
+  const [midiEnabled, setMidiEnabled] = useState(false);
+  const [midiOutputs, setMidiOutputs] = useState<
+    { value: string; id: string }[]
+  >([]);
+  const [selectedMidiOutput, setSelectedMidiOutput] = useState<
+    Output | undefined
+  >();
+  const [pitchBendRange, setPitchBendRange] = useState(48);
+  const [channelMap, setChannelMap] = useState<Map<number, number>>(new Map()); // KeyIdx -> MIDI Channel
+  const [nextChannel, setNextChannel] = useState(1); // Cycle 1-16
+
   const [activeIdxFreqMap, setActiveIdxFreqMap] = useState<Map<number, number>>(
     new Map(),
   );
+
+  useEffect(() => {
+    return () => {
+      // This runs when the component is destroyed
+      instrument?.releaseAll();
+      instrument?.dispose();
+    };
+  }, [instrument]);
+
+  // Initialize WebMidi
+  useEffect(() => {
+    WebMidi.enable()
+      .then(() => {
+        setMidiOutputs(
+          WebMidi.outputs.map(({ name, id }) => ({ value: name, id })),
+        );
+        if (WebMidi.outputs.length > 0) {
+          setMidiEnabled(true);
+          setSelectedMidiOutput(WebMidi.outputs[0]);
+        }
+      })
+      .catch((err) => console.error("WebMidi failed", err));
+  }, []);
+
   useEffect(() => {
     if (!keyboardInputIsEnabled || !scale) return;
     const handlePhysicalKeyDownOrUp = (
@@ -66,19 +105,25 @@ const MicrotonalKeyboard = () => {
         }
       }
     };
-    const handlePhysicalKeyDown = (e: KeyboardEvent) => {
+    const handlePhysicalKeyDown = (e: KeyboardEvent) =>
       handlePhysicalKeyDownOrUp(e, "keydown");
-    };
-    const handlePhysicalKeyUp = (e: KeyboardEvent) => {
+    const handlePhysicalKeyUp = (e: KeyboardEvent) =>
       handlePhysicalKeyDownOrUp(e, "keyup");
-    };
     window.addEventListener("keydown", handlePhysicalKeyDown);
     window.addEventListener("keyup", handlePhysicalKeyUp);
     return () => {
       window.removeEventListener("keydown", handlePhysicalKeyDown);
       window.removeEventListener("keyup", handlePhysicalKeyUp);
     };
-  }, [keyboardInputIsEnabled, scale, octave, activeIdxFreqMap]);
+  }, [
+    keyboardInputIsEnabled,
+    scale,
+    octave,
+    activeIdxFreqMap,
+    selectedMidiOutput,
+    pitchBendRange,
+    nextChannel,
+  ]);
 
   const getNoteAndOctaveDisplacementFromIdx = (idx: number) => {
     if (!scale) return null;
@@ -93,25 +138,60 @@ const MicrotonalKeyboard = () => {
     cents: number,
     octaveDisplacement: number,
   ) => {
-    if (activeKeys.has(idx)) return; // avoid browser auto-repeat
+    if (activeKeys.has(idx)) return;
 
     setActiveKeys((prev) => new Set(prev).add(idx));
-    const midiNote =
+    const midiNoteFloat =
       12 * (octave + 1 + octaveDisplacement) + (cents + transpInCents) / 100;
-    const freq = fromMidiNote(midiNote).freq;
+    const freq = fromMidiNote(midiNoteFloat).freq;
     setActiveIdxFreqMap((prev) => new Map(prev).set(idx, freq));
+
+    // Internal Sound
     instrument?.triggerAttack(freq);
+
+    // MIDI Output
+    if (selectedMidiOutput) {
+      const midiNote = Math.floor(midiNoteFloat);
+      const pbValue = (midiNoteFloat - midiNote) / pitchBendRange;
+      const chan = nextChannel;
+
+      const outputChannel = selectedMidiOutput.channels[chan];
+      outputChannel.sendPitchBend(pbValue);
+      outputChannel.sendNoteOn(midiNote);
+
+      setChannelMap((prev) => new Map(prev).set(idx, chan));
+      setNextChannel((chan % 15) + 2); // Cycle channels for MPE-like polyphony; avoiding channel 1 (usually global)
+    }
   };
+
   const handleKeyUp = (idx: number) => {
     setActiveKeys((prev) => {
       const next = new Set(prev);
       next.delete(idx);
       return next;
     });
+
+    // Internal Sound
     const freq = activeIdxFreqMap.get(idx);
     if (freq) {
       instrument?.triggerRelease(freq);
       setActiveIdxFreqMap((prev) => {
+        const next = new Map(prev);
+        next.delete(idx);
+        return next;
+      });
+    }
+
+    // MIDI Output
+    const assignedChan = channelMap.get(idx);
+    if (selectedMidiOutput && assignedChan) {
+      const midiNoteFloat = activeIdxFreqMap.get(idx)
+        ? freqToMidi(activeIdxFreqMap.get(idx)!)
+        : 60;
+      selectedMidiOutput.channels[assignedChan].sendNoteOff(
+        Math.floor(midiNoteFloat),
+      );
+      setChannelMap((prev) => {
         const next = new Map(prev);
         next.delete(idx);
         return next;
@@ -175,78 +255,122 @@ const MicrotonalKeyboard = () => {
       </div>
     );
   };
-  const handleScaleChange = (scale: Scale) => {
-    setScale(scale);
+
+  const handleMidiOutputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const outputId = e.target.selectedOptions.item(0)?.id;
+    if (outputId) {
+      setSelectedMidiOutput(WebMidi.getOutputById(outputId));
+    }
   };
-  const handleSoundChange = (instrument: PolySynth | Sampler) => {
-    instrument?.releaseAll();
-    setInstrument(instrument);
-  };
+
+  const errMsg = (
+    <>
+      {!midiEnabled && (
+        <div>
+          <h2>If you don't see any MIDI output…</h2>
+          <ul>
+            <li>
+              - Use a supported browser, such as Chrome or Firefox (Safari is
+              not natively supported).
+            </li>
+            <li>- Grant MIDI permissions in your browser.</li>
+            <li>
+              - Make sure you have MIDI devices connected. If you’d like to
+              route MIDI messages to a DAW, you could use a virtual MIDI bus (
+              <a href="https://support.apple.com/guide/audio-midi-setup/transfer-midi-information-between-apps-ams1013/mac">
+                macOS guide
+              </a>
+              ).
+            </li>
+          </ul>
+        </div>
+      )}
+    </>
+  );
 
   return (
     <>
       <title>Microtonal Lab - Microtonal Keyboard</title>
       <div className="center">
-        <div className="grid-5">
+        <div className="grid-6">
           <div>
-            <h2>Select a sound: </h2>
-            <SoundSelector onSoundChange={handleSoundChange} />
+            <h2>Internal Sound: </h2>
+            <SoundSelector
+              onSoundChange={(inst) => {
+                instrument?.releaseAll();
+                instrument?.dispose();
+                setInstrument(inst);
+              }}
+            />
+          </div>
+          {/* New MIDI Section */}
+          <div>
+            <h2>MIDI Output: </h2>
+            <MenuOptions id="midi-outputs" onChange={handleMidiOutputChange}>
+              {[{ value: "None", id: "none" }, ...midiOutputs]}
+            </MenuOptions>
+            {selectedMidiOutput && (
+              <div style={{ marginTop: "10px" }}>
+                <label>PB Range: </label>
+                <NumberInput
+                  id="pb-range"
+                  value={pitchBendRange}
+                  onChange={(_, v) => setPitchBendRange(v)}
+                  className="short-input"
+                />
+              </div>
+            )}
           </div>
           <div>
             <h2>Select a scale: </h2>
-            <ScaleSelector onScaleChange={handleScaleChange} />
+            <ScaleSelector onScaleChange={setScale} />
           </div>
           <div>
             <h2>Keyboard input</h2>
             <Checkbox
               id="microtonal-keyboard-keyinput"
               checked={keyboardInputIsEnabled}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setKeyboardInputIsEnabled(e.target.checked);
-              }}
+              onChange={(e) => setKeyboardInputIsEnabled(e.target.checked)}
             >
               Enable
             </Checkbox>
           </div>
           <div>
-            <h2>Octave: </h2>
+            <h2>Octave</h2>
             <NumberInput
               id="microtonal-keyboard-octave"
               value={octave}
-              isFreqValue={false}
-              onChange={(_id: string, v: number) => {
-                setOctave(v);
-              }}
+              onChange={(_, v) => setOctave(v)}
               className="short-input"
-            ></NumberInput>
+            />
           </div>
           <div>
-            <h2>Transposition in cents: </h2>
+            <h2>Transposition</h2>
             <NumberInput
               id="microtonal-keyboard-transp"
               value={transpInCents}
-              isFreqValue={false}
               min={-4800}
               max={4800}
-              onChange={(_id: string, v: number) => {
-                setTranspInCents(v);
-              }}
+              onChange={(_, v) => setTranspInCents(v)}
               className="medium-input"
-            ></NumberInput>
+            />
           </div>
         </div>
 
         <div className="micro-keyboard-grid">
           {keys.map((r, rowIdx) => makeARow(r, rowIdx))}
         </div>
+
         <button
           onClick={() => {
             instrument?.releaseAll();
+            selectedMidiOutput?.sendAllNotesOff();
           }}
         >
           All Notes Off
         </button>
       </div>
+      {errMsg}
     </>
   );
 };

@@ -46,7 +46,9 @@ table {
 
 @font-face {
   font-family: "Bravura Text";
-  src: local("Bravura Text"), url(./assets/BravuraText.otf) format("opentype");
+  src:
+    local("Bravura Text"),
+    url(./assets/BravuraText.otf) format("opentype");
 }
 
 .smufl {
@@ -130,6 +132,12 @@ label {
   flex-basis: 100%;
   flex: 1;
   min-width: 420px;
+}
+
+.grid-6 {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 1fr;
 }
 .grid-5 {
   display: grid;

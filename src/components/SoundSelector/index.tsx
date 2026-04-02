@@ -7,7 +7,7 @@ import piano from "../../assets/piano-F4.wav";
 
 interface Props {
   defaultSound?: SynthOscType;
-  onSoundChange: (instrument: PolySynth | Sampler) => void;
+  onSoundChange: (instrument: PolySynth | Sampler | null) => void;
 }
 
 const SoundSelector = ({
@@ -23,8 +23,12 @@ const SoundSelector = ({
   };
 
   const initPolySynth = (oscType: SynthOscType = SynthOscType.TRIANGLE) => {
+    if (oscType === SynthOscType.NONE) {
+      console.error("Unsupported oscillator type: NONE");
+      return;
+    }
     if (oscType === SynthOscType.PIANO) {
-      console.error("Unsupported oscillator type.");
+      console.error("Unsupported oscillator type: PIANO");
       return;
     }
     const polySynth = new PolySynth(Synth, {
@@ -44,7 +48,9 @@ const SoundSelector = ({
   };
 
   const handleSoundChange = (type: SynthOscType) => {
-    if (type === SynthOscType.PIANO) {
+    if (type === SynthOscType.NONE) {
+      onSoundChange(null);
+    } else if (type === SynthOscType.PIANO) {
       onSoundChange(initSampler());
     } else {
       const polySynth = initPolySynth(type);
