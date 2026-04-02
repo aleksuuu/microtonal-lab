@@ -23,21 +23,21 @@ const MicrotonalKeyboard = () => {
   const [activeKeys, setActiveKeys] = useState<Set<number>>(new Set());
   const [octave, setOctave] = useState(4);
   const [pressedOctaveKey, setPressedOctaveKey] = useState<null | "-" | "=">(
-    null
+    null,
   );
   const [transpInCents, setTranspInCents] = useState(0.0);
-  const [keyboardInputIsEnabled, setKeyboardInputIsEnabled] = useState(false);
+  const [keyboardInputIsEnabled, setKeyboardInputIsEnabled] = useState(true);
   const [instrument, setInstrument] = useState<PolySynth | Sampler | null>(
-    null
+    null,
   );
   const [activeIdxFreqMap, setActiveIdxFreqMap] = useState<Map<number, number>>(
-    new Map()
+    new Map(),
   );
   useEffect(() => {
     if (!keyboardInputIsEnabled || !scale) return;
     const handlePhysicalKeyDownOrUp = (
       e: KeyboardEvent,
-      type: "keydown" | "keyup"
+      type: "keydown" | "keyup",
     ) => {
       const key = e.key.toUpperCase();
       if (key === "-" || key === "=") {
@@ -57,7 +57,7 @@ const MicrotonalKeyboard = () => {
               handleKeyDown(
                 idx,
                 noteOct.note.cents,
-                noteOct.octaveDisplacement
+                noteOct.octaveDisplacement,
               );
             } else {
               handleKeyUp(idx);
@@ -91,7 +91,7 @@ const MicrotonalKeyboard = () => {
   const handleKeyDown = (
     idx: number,
     cents: number,
-    octaveDisplacement: number
+    octaveDisplacement: number,
   ) => {
     if (activeKeys.has(idx)) return; // avoid browser auto-repeat
 
@@ -150,7 +150,7 @@ const MicrotonalKeyboard = () => {
             handleKeyDown(
               realIdx,
               noteOct.note.cents,
-              noteOct.octaveDisplacement
+              noteOct.octaveDisplacement,
             )
           }
           className={`micro-key ${

@@ -21,10 +21,10 @@ import "./index.scss";
 
 const PitchConverter = () => {
   const [freqMidiNoteCents, setFreqMidiNoteCents] = useState<FreqMidiNoteCents>(
-    fromFreq(440, true)
+    fromFreq(440, true),
   );
   const [noteName, setNoteName] = useState(
-    freqMidiNoteCents.noteName + freqMidiNoteCents.octave
+    freqMidiNoteCents.noteName + freqMidiNoteCents.octave,
   );
   const [textInputErr, setTextInputErr] = useState(TextInputErrorType.NO_ERROR);
   const [sibeliusPitchBend, setSibeliusPitchBend] = useState("");
@@ -33,7 +33,7 @@ const PitchConverter = () => {
 
   useEffect(() => {
     setSibeliusPitchBend(
-      fromDetuneCentsToSibeliusPitchBend(freqMidiNoteCents.detune)
+      fromDetuneCentsToSibeliusPitchBend(freqMidiNoteCents.detune),
     );
   }, [freqMidiNoteCents.detune]);
 
@@ -53,8 +53,8 @@ const PitchConverter = () => {
           fromValidNoteNameAndCents(
             freqMidiNoteCents.noteName,
             freqMidiNoteCents.octave,
-            v
-          )
+            v,
+          ),
         );
         break;
       case "pitch-converter-midi-note-input":

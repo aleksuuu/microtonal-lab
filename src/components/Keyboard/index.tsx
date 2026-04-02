@@ -12,8 +12,6 @@ const keys: string[][] = [
 ];
 
 const Keyboard = (onClick: (keyIdx: number) => void) => {
-  // const [input, setInput] = useState("");
-
   const makeARow = (row: string[], idxOffset: number) => {
     return (
       <div className="micro-keyboard-row">
