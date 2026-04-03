@@ -18,6 +18,12 @@ const Home = () => {
           and 4 waveforms) (TODO: JI intervals).
         </li>
         <li>
+          -{" "}
+          <a href="/microtonal-lab/microtonal-keyboard">Microtonal Keyboard</a>:
+          Use computer keyboard to play microtones; choose one of the built-in
+          synth sounds, or send MPE MIDI out.
+        </li>
+        <li>
           - <a href="/microtonal-lab/pitch-to-midi">Pitch to MIDI</a>: Enter up
           to 8 pitches and convert them to MPE MIDI note messages (with
           pitchbend messages).
