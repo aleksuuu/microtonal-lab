@@ -43,7 +43,7 @@ const MicrotonalKeyboard = () => {
   >();
   const [pitchBendRange, setPitchBendRange] = useState(48);
   const [channelMap, setChannelMap] = useState<Map<number, number>>(new Map()); // KeyIdx -> MIDI Channel
-  const [nextChannel, setNextChannel] = useState(1); // Cycle 1-16
+  const [nextChannel, setNextChannel] = useState(2); // Cycle 2-16
 
   const [activeIdxFreqMap, setActiveIdxFreqMap] = useState<Map<number, number>>(
     new Map(),
@@ -160,7 +160,7 @@ const MicrotonalKeyboard = () => {
       outputChannel.sendNoteOn(midiNote);
 
       setChannelMap((prev) => new Map(prev).set(idx, chan));
-      setNextChannel((chan % 15) + 2); // Cycle channels for MPE-like polyphony; avoiding channel 1 (usually global)
+      setNextChannel(Math.max(2, (chan + 1) % 17)); // Cycle channels for MPE-like polyphony; avoiding channel 1 (usually global)
     }
   };
 
